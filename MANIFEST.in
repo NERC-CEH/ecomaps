@@ -1,0 +1,2 @@
+recursive-include cowsclient/public *
+recursive-include cowsclient/templates *
