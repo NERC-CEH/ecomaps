@@ -9,12 +9,12 @@
  @author C Byrom Feb 08, Modified D Lowe, May 09
 """
 
-from cowsclient.lib.base import *
-from cowsclient.lib.base import app_globals as g
+from ecomaps.lib.base import *
+from ecomaps.lib.base import app_globals as g
 from paste.request import parse_querystring
 #from ows_server.models import Utilities
-from cowsclient.lib.wmc_util import *
-from cowsclient.model import selectedItem
+from ecomaps.lib.wmc_util import *
+from ecomaps.model import selectedItem
 from pylons import config
 import copy, logging
 log = logging.getLogger(__name__)
@@ -73,7 +73,7 @@ class OldwmsvizController(BaseController):
 	            filehandle = urllib2.urlopen(req)
             except urllib2.HTTPError, e:
                 if e.code == 401:
-                    log.info ('401 unauthorized error in cowsclient')
+                    log.info ('401 unauthorized error in ecomaps')
                     return abort(401) #triggers ndg security framework
                 elif e.code == 403:  #TODO: 403 response is UNTESTED.
                     # User is authenticated but doesn't have the required permissions

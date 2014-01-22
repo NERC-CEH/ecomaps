@@ -7,7 +7,7 @@ p4
 (dp5
 S'ep:http%3A%2F%2Fthredds-prod.nerc-lancaster.ac.uk%2Fthredds%2Fwms@ds:session_endpoints'
 p6
-(icowsclient.lib.endpoint_hierarchy_builder
+(iecomaps.lib.endpoint_hierarchy_builder
 Node
 p7
 (dp8
@@ -62,7 +62,7 @@ Vdataset:http://thredds-prod.nerc-lancaster.ac.uk/thredds/wms
 p31
 ssbsS'ep:http%3A%2F%2Fthredds-prod.nerc-lancaster.ac.uk%2Fthredds%2Fwms%2FpreAggregation%2FDetailWholeDataset.ncml%3Fservice%3DWMS%26version%3D1.3.0%26request%3DGetCapabilities@ds:session_endpoints'
 p32
-(icowsclient.lib.endpoint_hierarchy_builder
+(iecomaps.lib.endpoint_hierarchy_builder
 Node
 p33
 (dp34
@@ -99,14 +99,14 @@ p48
 ssS'children'
 p49
 (lp50
-(icowsclient.lib.endpoint_hierarchy_builder
+(iecomaps.lib.endpoint_hierarchy_builder
 Node
 p51
 (dp52
 S'children'
 p53
 (lp54
-(icowsclient.lib.endpoint_hierarchy_builder
+(iecomaps.lib.endpoint_hierarchy_builder
 Node
 p55
 (dp56
@@ -141,7 +141,7 @@ ssg67
 g68
 sS'entity'
 p71
-(icowsclient.lib.wms_layer
+(iecomaps.lib.wms_layer
 WmsLayer
 p72
 (dp73
@@ -3099,7 +3099,7 @@ p1526
 ssg67
 g1525
 sg71
-(icowsclient.lib.wms_layer
+(iecomaps.lib.wms_layer
 WmsLayer
 p1527
 (dp1528
@@ -3146,7 +3146,7 @@ ssbsg68
 g55
 sS'ds:session_endpoints'
 p1538
-(icowsclient.lib.endpoint_hierarchy_builder
+(iecomaps.lib.endpoint_hierarchy_builder
 Node
 p1539
 (dp1540
@@ -3179,7 +3179,7 @@ p1552
 ssS'children'
 p1553
 (lp1554
-(icowsclient.lib.endpoint_hierarchy_builder
+(iecomaps.lib.endpoint_hierarchy_builder
 Node
 p1555
 (dp1556

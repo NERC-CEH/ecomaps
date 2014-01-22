@@ -120,7 +120,7 @@ var SubSelectionMouseToolbar = OpenLayers.Class(OpenLayers.Control.NavToolbar, {
         var controls = [this.zoomBox, this.navigationTool];
         
         if (options['featureInfoTool']) {
-            // GetFeatureInfo requests are proxied through the COWSClient server to avoid cross-site
+            // GetFeatureInfo requests are proxied through the ecomaps server to avoid cross-site
             // AJAX request blocking by the browser.
             OpenLayers.ProxyHost = '?REQUEST=proxy&URL='
             this.featureInfo = new OpenLayers.Control.WMSGetFeatureInfo({

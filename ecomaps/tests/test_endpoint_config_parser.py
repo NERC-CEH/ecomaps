@@ -5,7 +5,7 @@ import nose.tools as nt
 from mock import Mock, patch
 from ConfigParser import SafeConfigParser
 
-import cowsclient.lib.config_file_parser as config_file_parser
+import ecomaps.lib.config_file_parser as config_file_parser
 
 class TestEndpointConfigParser(unittest.TestCase):
 
@@ -15,8 +15,8 @@ class TestEndpointConfigParser(unittest.TestCase):
     def tearDown(self):
         pass
     
-    @patch('cowsclient.lib.config_file_parser.config')
-    @patch('cowsclient.lib.config_file_parser.os.path.exists')
+    @patch('ecomaps.lib.config_file_parser.config')
+    @patch('ecomaps.lib.config_file_parser.os.path.exists')
     def test_001_buildsItemsList(self, mockOsExists, mockConfig):
        
         mockOsExists.return_value = True
@@ -48,7 +48,7 @@ class TestEndpointConfigParser(unittest.TestCase):
         nt.assert_equal(itemList[0], self.config_data['Endpoint:a'])
         nt.assert_equal(itemList[1], self.config_data['Endpoint:b'])
         
-    @patch('cowsclient.lib.config_file_parser.config')    
+    @patch('ecomaps.lib.config_file_parser.config')
     def test_002_readsPathFromConfigFile(self, mockConfig):
         
         mockConfig.get.return_value = "endpoint_file.ini"

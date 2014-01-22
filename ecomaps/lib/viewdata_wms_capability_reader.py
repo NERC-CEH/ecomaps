@@ -6,7 +6,7 @@ Extension of WMS capabilities reader to include information for the Viewdata dat
 
 import logging
 
-from cowsclient.lib.wms_capability_reader import WmsCapabilityReader
+from ecomaps.lib.wms_capability_reader import WmsCapabilityReader
 
 log = logging.getLogger(__name__)
 

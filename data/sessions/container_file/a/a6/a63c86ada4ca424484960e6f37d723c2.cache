@@ -7,7 +7,7 @@ p4
 (dp5
 S'ds:session_endpoints'
 p6
-(icowsclient.lib.endpoint_hierarchy_builder
+(iecomaps.lib.endpoint_hierarchy_builder
 Node
 p7
 (dp8

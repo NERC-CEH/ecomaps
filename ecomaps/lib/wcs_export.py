@@ -11,10 +11,10 @@ import urllib
 
 from owslib.wcs import WebCoverageService
 
-from cowsclient.lib.base import response, config, request
-import cowsclient.lib.date_util as date_util
-from cowsclient.lib.export_parameters import ExportParameters, ExportResult
-from cowsclient.lib.wmc_util import proxyFix, resetProxy, parseEndpointString
+from ecomaps.lib.base import response, config, request
+import ecomaps.lib.date_util as date_util
+from ecomaps.lib.export_parameters import ExportParameters, ExportResult
+from ecomaps.lib.wmc_util import proxyFix, resetProxy, parseEndpointString
 
 log = logging.getLogger(__name__)
 

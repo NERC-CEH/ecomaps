@@ -1,4 +1,4 @@
-from cowsclient.lib.base import *
+from ecomaps.lib.base import *
 
 class TemplateController(BaseController):
 

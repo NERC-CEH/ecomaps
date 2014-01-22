@@ -1,6 +1,6 @@
 import unittest
 
-from cowsclient.model.date_time_options import DateTimeOptionsBuilder
+from ecomaps.model.date_time_options import DateTimeOptionsBuilder
 
 class TestDateTimeOptionsBuilder(unittest.TestCase):
 
@@ -93,7 +93,7 @@ def suite():
     
 if __name__ == '__main__':
     import logging
-    from cowsclient.tests import TEST_LOG_FORMAT_STRING
+    from ecomaps.tests import TEST_LOG_FORMAT_STRING
     logging.basicConfig(level=logging.DEBUG, format=TEST_LOG_FORMAT_STRING)
     
     s = suite()

@@ -7,10 +7,10 @@ except:
 
 log = logging.getLogger(__name__)
 
-from cowsclient.lib.legend_image_builder import LegendImageBuilder
-from cowsclient.lib.ipccDdcMetadataImageBuilder import IpccDdcMetadataImageBuilder
-from cowsclient.lib.viewdataMetadataImageBuilder import ViewdataMetadataImageBuilder
-from cowsclient.lib.wmsvizMetadataImageBuilder import WmsvizMetadataImageBuilder
+from ecomaps.lib.legend_image_builder import LegendImageBuilder
+from ecomaps.lib.ipccDdcMetadataImageBuilder import IpccDdcMetadataImageBuilder
+from ecomaps.lib.viewdataMetadataImageBuilder import ViewdataMetadataImageBuilder
+from ecomaps.lib.wmsvizMetadataImageBuilder import WmsvizMetadataImageBuilder
 
 
 class FigureBuilder(object):

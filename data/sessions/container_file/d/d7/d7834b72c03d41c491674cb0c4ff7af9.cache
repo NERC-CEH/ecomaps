@@ -7,14 +7,14 @@ p4
 (dp5
 Vcl:title@cl:Initial TDS Installation@ep:http%3A%2F%2Flocalhost%3A8080%2Fthredds%2Fwms%2FtestAll%2FCHESS_MODEL001_RUN001_OUT_precip_1971-01.nc%3Fservice%3DWMS%26version%3D1.3.0%26request%3DGetCapabilities@ds:session_endpoints
 p6
-(icowsclient.lib.endpoint_hierarchy_builder
+(iecomaps.lib.endpoint_hierarchy_builder
 Node
 p7
 (dp8
 S'children'
 p9
 (lp10
-(icowsclient.lib.endpoint_hierarchy_builder
+(iecomaps.lib.endpoint_hierarchy_builder
 Node
 p11
 (dp12
@@ -49,7 +49,7 @@ ssg23
 g24
 sS'entity'
 p27
-(icowsclient.lib.wms_layer
+(iecomaps.lib.wms_layer
 WmsLayer
 p28
 (dp29
@@ -380,7 +380,7 @@ p168
 ssg23
 g6
 sg27
-(icowsclient.lib.wms_layer
+(iecomaps.lib.wms_layer
 WmsLayer
 p169
 (dp170
@@ -409,7 +409,7 @@ sg123
 (lp172
 sbsbsS'ep:http%3A%2F%2Flocalhost%3A8080%2Fthredds%2Fwms%2FtestAll%2FCHESS_MODEL001_RUN001_OUT_precip_1971-01.nc%3Fservice%3DWMS%26version%3D1.3.0%26request%3DGetCapabilities@ds:session_endpoints'
 p173
-(icowsclient.lib.endpoint_hierarchy_builder
+(iecomaps.lib.endpoint_hierarchy_builder
 Node
 p174
 (dp175
@@ -467,7 +467,7 @@ ssbsg24
 g11
 sS'ep:http%3A%2F%2Flocalhost%3A8080%2Fthredds%2Fwms%2FtestAll%2F2004050400_eta_211.nc%3Fservice%3DWMS%26version%3D1.3.0%26request%3DGetCapabilities@ds:session_endpoints'
 p199
-(icowsclient.lib.endpoint_hierarchy_builder
+(iecomaps.lib.endpoint_hierarchy_builder
 Node
 p200
 (dp201
@@ -504,14 +504,14 @@ p215
 ssS'children'
 p216
 (lp217
-(icowsclient.lib.endpoint_hierarchy_builder
+(iecomaps.lib.endpoint_hierarchy_builder
 Node
 p218
 (dp219
 S'children'
 p220
 (lp221
-(icowsclient.lib.endpoint_hierarchy_builder
+(iecomaps.lib.endpoint_hierarchy_builder
 Node
 p222
 (dp223
@@ -546,7 +546,7 @@ ssg234
 g235
 sS'entity'
 p238
-(icowsclient.lib.wms_layer
+(iecomaps.lib.wms_layer
 WmsLayer
 p239
 (dp240
@@ -818,7 +818,7 @@ p350
 ssg234
 g349
 sg238
-(icowsclient.lib.wms_layer
+(iecomaps.lib.wms_layer
 WmsLayer
 p351
 (dp352
@@ -865,7 +865,7 @@ ssbsg235
 g222
 sS'ds:session_endpoints'
 p362
-(icowsclient.lib.endpoint_hierarchy_builder
+(iecomaps.lib.endpoint_hierarchy_builder
 Node
 p363
 (dp364
@@ -892,14 +892,14 @@ ssg216
 (lp370
 g200
 ag174
-a(icowsclient.lib.endpoint_hierarchy_builder
+a(iecomaps.lib.endpoint_hierarchy_builder
 Node
 p371
 (dp372
 S'children'
 p373
 (lp374
-(icowsclient.lib.endpoint_hierarchy_builder
+(iecomaps.lib.endpoint_hierarchy_builder
 Node
 p375
 (dp376
@@ -932,7 +932,7 @@ p388
 ssS'children'
 p389
 (lp390
-(icowsclient.lib.endpoint_hierarchy_builder
+(iecomaps.lib.endpoint_hierarchy_builder
 Node
 p391
 (dp392
@@ -960,7 +960,7 @@ ssg389
 (lp399
 sS'entity'
 p400
-(icowsclient.lib.wms_layer
+(iecomaps.lib.wms_layer
 WmsLayer
 p401
 (dp402
@@ -1193,7 +1193,7 @@ sS'dimensions'
 p496
 (lp497
 sbsbasg400
-(icowsclient.lib.wms_layer
+(iecomaps.lib.wms_layer
 WmsLayer
 p498
 (dp499

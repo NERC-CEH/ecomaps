@@ -87,9 +87,9 @@ def getUniqueList(items):
                 
 if __name__ == '__main__':
     import unittest
-    from cowsclient.tests.test_date_time_options_builder import suite
+    from ecomaps.tests.test_date_time_options_builder import suite
     
-    from cowsclient.tests import TEST_LOG_FORMAT_STRING
+    from ecomaps.tests import TEST_LOG_FORMAT_STRING
     logging.basicConfig(level=logging.DEBUG, format=TEST_LOG_FORMAT_STRING)
     
     unittest.TextTestRunner(verbosity=2).run(suite())

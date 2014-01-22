@@ -4,9 +4,9 @@ Reads and holds the user interface configuration options.
 @author rwilkinson
 """
 import logging
-import cowsclient.lib.config_file_parser as config_file_parser
+import ecomaps.lib.config_file_parser as config_file_parser
 from ConfigParser import NoOptionError, NoSectionError
-from cowsclient.lib.status_builder import StatusBuilder
+from ecomaps.lib.status_builder import StatusBuilder
 
 log = logging.getLogger(__name__)
 

@@ -5,8 +5,8 @@ Loads the WMS capabilities for endpoints into the cache.
 """
 import sys
 import logging
-from cowsclient.lib.datasets import Datasets
-from cowsclient.lib.endpoint_hierarchy_builder import EndpointHierarchyBuilder
+from ecomaps.lib.datasets import Datasets
+from ecomaps.lib.endpoint_hierarchy_builder import EndpointHierarchyBuilder
 
 logging.basicConfig()
 log = logging.getLogger(__name__)

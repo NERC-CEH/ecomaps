@@ -1,7 +1,7 @@
 # python class to support methods on a WMC ... to conform with
 # renderEntity etc ...
 #
-from cowsclient.lib.utilities import *
+from ecomaps.lib.utilities import *
 #from geoUtilities import *
 #from ndgUtils.ETxmlView import loadET, nsdumb
 #from ndgUtils.DocumentRetrieve import genericHTTP

@@ -3,7 +3,7 @@ import logging
 from mock import Mock, patch
 from ConfigParser import SafeConfigParser
 
-import cowsclient.lib.config_file_parser as config_file_parser
+import ecomaps.lib.config_file_parser as config_file_parser
 
 log = logging.getLogger(__name__)
 
@@ -35,8 +35,8 @@ class TestDisplayOptionsConfig(unittest.TestCase):
     def tearDown(self):
         pass
     
-    @patch('cowsclient.lib.config_file_parser.config')
-    @patch('cowsclient.lib.config_file_parser.os.path.exists')
+    @patch('ecomaps.lib.config_file_parser.config')
+    @patch('ecomaps.lib.config_file_parser.os.path.exists')
     def test_001_returnsEmptyWhenNoSections(self, mockConfig, mockOsExists):
         mockOsExists.return_value = True
         mockConfig.get.return_value = self.path
@@ -47,8 +47,8 @@ class TestDisplayOptionsConfig(unittest.TestCase):
         assert self.builder.getDefaultOptions('page1') == []
         assert self.builder.getHideOptions('page1') == []
         
-    @patch('cowsclient.lib.config_file_parser.config')
-    @patch('cowsclient.lib.config_file_parser.os.path.exists')
+    @patch('ecomaps.lib.config_file_parser.config')
+    @patch('ecomaps.lib.config_file_parser.os.path.exists')
     def test_002_callsReadOnPath(self, mockConfig, mockOsExists):
         mockOsExists.return_value = True
         mockConfig.get.return_value = self.path
@@ -59,8 +59,8 @@ class TestDisplayOptionsConfig(unittest.TestCase):
         
         self.builder._config.read.assert_called_with(self.path)
         
-    @patch('cowsclient.lib.config_file_parser.config')
-    @patch('cowsclient.lib.config_file_parser.os.path.exists')
+    @patch('ecomaps.lib.config_file_parser.config')
+    @patch('ecomaps.lib.config_file_parser.os.path.exists')
     def test_003_createsHideOptions(self, mockConfig, mockOsExists):
         
         mockOsExists.return_value = True
@@ -74,8 +74,8 @@ class TestDisplayOptionsConfig(unittest.TestCase):
             ]
         
         
-    @patch('cowsclient.lib.config_file_parser.config')
-    @patch('cowsclient.lib.config_file_parser.os.path.exists')
+    @patch('ecomaps.lib.config_file_parser.config')
+    @patch('ecomaps.lib.config_file_parser.os.path.exists')
     def test_004_createsDefaultOptions(self, mockConfig, mockOsExists):
         
         options = self.builder.getDefaultOptions('page1');
@@ -100,7 +100,7 @@ def suite():
     
 if __name__ == '__main__':
     import logging
-    from cowsclient.tests import TEST_LOG_FORMAT_STRING
+    from ecomaps.tests import TEST_LOG_FORMAT_STRING
     logging.basicConfig(level=logging.DEBUG, format=TEST_LOG_FORMAT_STRING)
     
     s = suite()

@@ -13,13 +13,13 @@ import logging
 import paste
 from owslib.wcs import WebCoverageService
 
-from cowsclient.lib.base import BaseController, response, config, request, c, render
-from cowsclient.lib.base import app_globals as g
-from cowsclient.lib.wmc_util import proxyFix, resetProxy, parseEndpointString
-from cowsclient.model.date_time_options import DateTimeOptionsBuilder
-import cowsclient.lib.utils as utils
+from ecomaps.lib.base import BaseController, response, config, request, c, render
+from ecomaps.lib.base import app_globals as g
+from ecomaps.lib.wmc_util import proxyFix, resetProxy, parseEndpointString
+from ecomaps.model.date_time_options import DateTimeOptionsBuilder
+import ecomaps.lib.utils as utils
 
-from cowsclient.lib.config_file_parser import OutlineLayersConfigParser, EndpointConfigFileParser
+from ecomaps.lib.config_file_parser import OutlineLayersConfigParser, EndpointConfigFileParser
 
 import pprint
 

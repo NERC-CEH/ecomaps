@@ -13,8 +13,8 @@ from pylons.templating import render_genshi as render
 from paste import httpexceptions
 import paste.request
 
-import cowsclient.lib.helpers as h
-import cowsclient.model as model
+import ecomaps.lib.helpers as h
+import ecomaps.model as model
 
 # To simplify upgrading to Pylons-1.0
 app_globals = config['pylons.app_globals']

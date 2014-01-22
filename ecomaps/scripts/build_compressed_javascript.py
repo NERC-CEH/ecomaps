@@ -13,7 +13,7 @@ YUI_COMPRESSOR_PATH = './yuicompressor-2.4.2.jar'
 
 def buildCompressedFile(files):
 
-    outputsDir = os.path.join(pkg_resources.resource_filename('cowsclient',''), 'public/js')
+    outputsDir = os.path.join(pkg_resources.resource_filename('ecomaps',''), 'public/js')
     
     tempOutputFile = os.path.join(outputsDir, COMPRESSED_JS_NAME + '.tmp')
     outputFile = os.path.join(outputsDir, COMPRESSED_JS_NAME)

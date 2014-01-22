@@ -1,16 +1,16 @@
-This file is for you to describe the cowsclient application. Typically
+This file is for you to describe the ecomaps application. Typically
 you would include information such as the information below:
 
 Installation and Setup
 ======================
 
-Install ``cowsclient`` using easy_install::
+Install ``ecomaps`` using easy_install::
 
-    easy_install cowsclient
+    easy_install ecomaps
 
 Make a config file as follows::
 
-    paster make-config cowsclient config.ini
+    paster make-config ecomaps config.ini
 
 Tweak the config file as appropriate and then setup the application::
 

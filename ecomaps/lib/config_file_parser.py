@@ -4,7 +4,7 @@ Created on 12 Nov 2009
 @author: pnorton
 '''
 
-from cowsclient.lib.base import config
+from ecomaps.lib.base import config
 
 from ConfigParser import SafeConfigParser
 import logging

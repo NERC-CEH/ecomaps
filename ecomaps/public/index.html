@@ -29,9 +29,9 @@
 
 <h2>Weren't expecting to see this page?</h2>
 
-<p>The <tt>cowsclient/public/</tt> directory is searched for static files
- <i>before</i> your controllers are run. Remove this file (<tt>cowsclient/public/index.html</tt>)
-  and edit the routes in <tt>cowsclient/config/routing.py</tt> to point the
+<p>The <tt>ecomaps/public/</tt> directory is searched for static files
+ <i>before</i> your controllers are run. Remove this file (<tt>cowecomapsblic/index.html</tt>)
+  and edit the routes in <tt>cowsclecomapsg/routing.py</tt> to point the
   <a href="/">root path</a> to a 'hello' controller we'll create below:
   <pre> map.connect('', controller='hello', action='index')</pre>
 </p>
@@ -40,14 +40,14 @@
 <p>You're now ready to start creating your own web application. To create a 'hello' controller,
   run the following command in your project's root directory: 
 <pre>
-cowsclient$ paster controller hello
+cowsclienecomapscontroller hello
 </pre>
 
-  This generates the following the following code in <tt>cowsclient/controllers/hello.py</tt>:
+  This generates the following the following code in <tt>cowsclient/cecomaps/hello.py</tt>:
 <pre>
 import logging
 
-from cowsclient.lib.base import *
+from ecomaps.lib.base import *
 
 log = logging.getLogger(__name__)
 

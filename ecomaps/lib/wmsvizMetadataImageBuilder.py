@@ -18,7 +18,7 @@ from matplotlib.transforms import Bbox
 from matplotlib.patches import Rectangle
 from pylons import config
 
-import cowsclient.lib.image_util as image_util
+import ecomaps.lib.image_util as image_util
 
 log = logging.getLogger(__name__)
 

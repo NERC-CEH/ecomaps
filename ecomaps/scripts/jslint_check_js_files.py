@@ -10,7 +10,7 @@ JS_LINT_COMMAND = './jslint'
 
 def jsLintCheckFiles(files):
     
-    jsDir = os.path.join(pkg_resources.resource_filename('cowsclient',''), 'public/js')
+    jsDir = os.path.join(pkg_resources.resource_filename('ecomaps',''), 'public/js')
     
     for f in files:
         filePath = os.path.join(jsDir,f)
@@ -25,7 +25,7 @@ def jsLintCheckFiles(files):
     
 
 if __name__ == '__main__':
-    from cowsclient.lib.js_files_list import getJSFilesForPage
+    from ecomaps.lib.js_files_list import getJSFilesForPage
     javascript_files = getJSFilesForPage('wmsviz')
         
     jsLintCheckFiles(javascript_files)

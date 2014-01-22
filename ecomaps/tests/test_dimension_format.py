@@ -1,8 +1,8 @@
 import unittest
 
-import cowsclient.lib.dimension_format as dimension_format
-from cowsclient.lib.dimension_format import DimensionFormat
-from cowsclient.lib.dimension_format import DimensionFieldFormat
+import ecomaps.lib.dimension_format as dimension_format
+from ecomaps.lib.dimension_format import DimensionFormat
+from ecomaps.lib.dimension_format import DimensionFieldFormat
 
 class TestDimensionFormat(unittest.TestCase):
     """
@@ -80,7 +80,7 @@ def suite():
     
 if __name__ == '__main__':
     import logging
-    from cowsclient.tests import TEST_LOG_FORMAT_STRING
+    from ecomaps.tests import TEST_LOG_FORMAT_STRING
     logging.basicConfig(level=logging.DEBUG, format=TEST_LOG_FORMAT_STRING)
 
     s = suite()

@@ -10,11 +10,11 @@ import logging
 import re
 import urllib
 import urllib2
-from cowsclient.lib.endpoint_hierarchy_builder import EndpointHierarchyBuilder
-from cowsclient.lib.endpoint_hierarchy_builder import Node
-import cowsclient.lib.outline_layer as outline_layer
-import cowsclient.lib.session_endpoint_dataset as session_endpoint_dataset
-from cowsclient.lib.viewdata_wms_capability_reader import ViewdataWmsCapabilityReader
+from ecomaps.lib.endpoint_hierarchy_builder import EndpointHierarchyBuilder
+from ecomaps.lib.endpoint_hierarchy_builder import Node
+import ecomaps.lib.outline_layer as outline_layer
+import ecomaps.lib.session_endpoint_dataset as session_endpoint_dataset
+from ecomaps.lib.viewdata_wms_capability_reader import ViewdataWmsCapabilityReader
 
 log = logging.getLogger(__name__)
 

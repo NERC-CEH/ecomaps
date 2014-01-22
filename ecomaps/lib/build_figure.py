@@ -9,13 +9,13 @@ try:
 except:
     import Image
 
-from cowsclient.lib.base import request
-import cowsclient.lib.image_util as image_util
-from cowsclient.lib.png_combine import merge
-from cowsclient.lib.figure_builder import FigureBuilder
-import cowsclient.lib.figure_parameters as figure_parameters
-from cowsclient.lib.figure_parameters import LayerInfoBuilder
-import cowsclient.lib.wmc_util as wmc_util
+from ecomaps.lib.base import request
+import ecomaps.lib.image_util as image_util
+from ecomaps.lib.png_combine import merge
+from ecomaps.lib.figure_builder import FigureBuilder
+import ecomaps.lib.figure_parameters as figure_parameters
+from ecomaps.lib.figure_parameters import LayerInfoBuilder
+import ecomaps.lib.wmc_util as wmc_util
 
 log = logging.getLogger(__name__)
 

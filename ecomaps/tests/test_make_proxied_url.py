@@ -6,7 +6,7 @@ Created on 3 Apr 2012
 import unittest
 import nose
 
-from cowsclient.lib.wms_capability_reader import WmsCapabilityReader
+from ecomaps.lib.wms_capability_reader import WmsCapabilityReader
 
 class TestMakeProxiedUrl(unittest.TestCase):
     """Tests for WmsCapabilityReader.makeProxiedUrl

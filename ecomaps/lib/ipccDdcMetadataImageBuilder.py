@@ -17,10 +17,10 @@ from matplotlib.backends.backend_cairo import RendererCairo as Renderer
 from matplotlib.transforms import Bbox
 from matplotlib.patches import Rectangle
 
-import cowsclient.lib.caption_manager as caption_manager
-import cowsclient.lib.image_util as image_util
-import cowsclient.lib.outline_layer as outline_layer
-import cowsclient.lib.user_interface_config as user_interface_config
+import ecomaps.lib.caption_manager as caption_manager
+import ecomaps.lib.image_util as image_util
+import ecomaps.lib.outline_layer as outline_layer
+import ecomaps.lib.user_interface_config as user_interface_config
 
 log = logging.getLogger(__name__)
 

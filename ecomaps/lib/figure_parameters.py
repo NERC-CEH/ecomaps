@@ -5,9 +5,9 @@ Moved from figure_builder.py.
 @author: rwilkinson
 """
 import logging
-import cowsclient.lib.coordinate_params as coordinate_params
-import cowsclient.lib.datasets as datasets
-from cowsclient.lib.wmc_util import parseEndpointString
+import ecomaps.lib.coordinate_params as coordinate_params
+import ecomaps.lib.datasets as datasets
+from ecomaps.lib.wmc_util import parseEndpointString
 
 log = logging.getLogger(__name__)
 

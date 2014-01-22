@@ -7,7 +7,7 @@ Manages a Beaker cache of WMS capabilities documents.
 import logging
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
-from cowsclient.lib.wmc_util import GetWebMapCapabilities
+from ecomaps.lib.wmc_util import GetWebMapCapabilities
 
 log = logging.getLogger(__name__)
 
@@ -22,7 +22,7 @@ class WmsCapabilityCache():
             cache_opts = {
                 'cache.expire': config.get('wmscapabilitycache.expire', None),
                 'cache.type': config.get('wmscapabilitycache.type', 'file'),
-                'cache.data_dir': config.get('wmscapabilitycache.data_dir', '/tmp/cowsclient/wmscapabilitycache/data'),
+                'cache.data_dir': config.get('wmscapabilitycache.data_dir', '/tmp/ecomaps/wmscapabilitycache/data'),
                 'cache.lock_dir': config.get('wmscapabilitycache.lock_dir', None)
                 }
             cacheMgr = CacheManager(**parse_cache_config_options(cache_opts))

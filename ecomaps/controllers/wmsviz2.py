@@ -11,7 +11,7 @@
 
 import logging
 
-from cowsclient.controllers.wmsviz import WmsvizController
+from ecomaps.controllers.wmsviz import WmsvizController
 
 log = logging.getLogger(__name__)
 

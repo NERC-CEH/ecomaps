@@ -22,7 +22,7 @@ caption_style: <formatter-key>
 
 from datetime import datetime
 import logging
-import cowsclient.lib.date_util as date_util
+import ecomaps.lib.date_util as date_util
 
 logger = logging.getLogger(__name__)
 

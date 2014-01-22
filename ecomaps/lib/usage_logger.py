@@ -4,7 +4,7 @@ Usage logger
 @author: rwilkinson
 """
 import logging
-from cowsclient.lib.base import request
+from ecomaps.lib.base import request
 
 log = logging.getLogger(__name__)
 

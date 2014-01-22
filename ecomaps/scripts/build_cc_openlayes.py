@@ -23,7 +23,7 @@ OUTPUT_FILE_NAME = 'OpenLayers.js'
 
 if __name__ == '__main__':
 
-    openlayersDir = os.path.join(pkg_resources.resource_filename('cowsclient',''), 'public/js/openlayers')
+    openlayersDir = os.path.join(pkg_resources.resource_filename('ecomaps',''), 'public/js/openlayers')
     buildDir = os.path.join(openlayersDir, 'build')
     buildFile = os.path.join(buildDir, 'build.py')
     
@@ -34,7 +34,7 @@ if __name__ == '__main__':
     
     pprint.pprint(sys.path)
     import mergejs
-    outputsDir = os.path.join(pkg_resources.resource_filename('cowsclient',''), 'public/js/cc_openlayers')
+    outputsDir = os.path.join(pkg_resources.resource_filename('cowecomaps'), 'public/js/cc_openlayers')
     outputFile = os.path.join(outputsDir, OUTPUT_FILE_NAME)
     
     

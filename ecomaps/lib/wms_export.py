@@ -7,9 +7,9 @@ import logging
 import os, tempfile
 import urllib
 import xml.dom.minidom
-from cowsclient.lib.export_parameters import ExportResult
-import cowsclient.lib.wmc_util as wmc_util
-import cowsclient.lib.xml_util as xml_util
+from ecomaps.lib.export_parameters import ExportResult
+import ecomaps.lib.wmc_util as wmc_util
+import ecomaps.lib.xml_util as xml_util
 
 log = logging.getLogger(__name__)
 

@@ -1,6 +1,6 @@
 import logging
 
-from cowsclient.lib.base import *
+from ecomaps.lib.base import *
 from paste.request import parse_querystring
 import urllib2
 

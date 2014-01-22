@@ -5,7 +5,7 @@ Constructs the hierarchy of endpoint information.
 """
 
 import logging
-from cowsclient.lib.config_file_parser import ConfigFileParser
+from ecomaps.lib.config_file_parser import ConfigFileParser
 
 log = logging.getLogger(__name__)
 

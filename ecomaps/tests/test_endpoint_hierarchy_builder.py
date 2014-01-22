@@ -11,7 +11,7 @@ import nose.tools as nt
 from mock import Mock, patch
 from ConfigParser import SafeConfigParser
 
-import cowsclient.lib.endpoint_hierarchy_builder as endpoint_hierarchy_builder
+import ecomaps.lib.endpoint_hierarchy_builder as endpoint_hierarchy_builder
 
 class TestEndpointHierarchyBuilder(unittest.TestCase):
 
@@ -30,7 +30,7 @@ class TestEndpointHierarchyBuilder(unittest.TestCase):
     def tearDown(self):
         pass
 
-    @patch('cowsclient.lib.config_file_parser.os.path.exists')
+    @patch('ecomaps.lib.config_file_parser.os.path.exists')
     def test_001_buildsHierarchyForPage(self, mockOsExists):
         """Tests reading of valid configuration data with nested and un-nested datasets.
         """
@@ -131,7 +131,7 @@ class TestEndpointHierarchyBuilder(unittest.TestCase):
         assert self.parser.idMap['ep:ep1212@ds:set121@ds:set12@ds:Data Category 1'].treeInfo['text'] == 'Data Category 1: Data Set 2.1: Endpoint 1.2.1.2'
         assert self.parser.idMap['ep:ep1212@ds:set121@ds:set12@ds:Data Category 1'].treeInfo['cls'] == 'folder'
 
-    @patch('cowsclient.lib.config_file_parser.os.path.exists')
+    @patch('ecomaps.lib.config_file_parser.os.path.exists')
     def test_002_handlesCircularDatasetReferences(self, mockOsExists):
         """Tests handling of circular dataset references where a dataset references itself as a child.
         """
@@ -149,7 +149,7 @@ class TestEndpointHierarchyBuilder(unittest.TestCase):
         assert len(self.parser.idMap['ds:Data Category 1'].children) == 1
         assert len(self.parser.idMap['ds:set11@ds:Data Category 1'].children) == 0
 
-    @patch('cowsclient.lib.config_file_parser.os.path.exists')
+    @patch('ecomaps.lib.config_file_parser.os.path.exists')
     def test_003_handlesCircularDatasetReferences(self, mockOsExists):
         """Tests handling of circular dataset references where a dataset references its parent as a child.
         """

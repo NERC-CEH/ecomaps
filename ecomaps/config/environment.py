@@ -4,9 +4,9 @@ import os
 from genshi.template import TemplateLoader
 from pylons.configuration import PylonsConfig
 
-import cowsclient.lib.app_globals as app_globals
-import cowsclient.lib.helpers
-from cowsclient.config.routing import make_map
+import ecomaps.lib.app_globals as app_globals
+import ecomaps.lib.helpers
+from ecomaps.config.routing import make_map
 
 def load_environment(global_conf, app_conf):
     """Configure the Pylons environment via the ``pylons.config``
@@ -22,11 +22,11 @@ def load_environment(global_conf, app_conf):
                  templates=[os.path.join(root, 'templates')])
 
     # Initialize config with the basic options
-    config.init_app(global_conf, app_conf, package='cowsclient', paths=paths)
+    config.init_app(global_conf, app_conf, package='ecomaps', paths=paths)
 
     config['routes.map'] = make_map(config)
     config['pylons.app_globals'] = app_globals.Globals(config)
-    config['pylons.h'] = cowsclient.lib.helpers
+    config['pylons.h'] = ecomaps.lib.helpers
 
     config['pylons.app_globals'].genshi_loader = TemplateLoader(
         paths['templates'], auto_reload=True)

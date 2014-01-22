@@ -9,7 +9,7 @@
  @author C Byrom Feb 08
 """
 
-from cowsclient.lib import utilities
+from ecomaps.lib import utilities
 import logging
 
 log = logging.getLogger(__name__)

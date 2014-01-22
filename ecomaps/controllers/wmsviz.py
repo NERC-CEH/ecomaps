@@ -17,17 +17,17 @@ import xml.sax.saxutils as saxutils
 
 #from ows_server.models import Utilities
 from paste.request import parse_querystring
-import cowsclient.lib.utils as utils
+import ecomaps.lib.utils as utils
 
-# cowsclient imports
-from cowsclient.model import selectedItem
-from cowsclient.lib.base import BaseController, response, config, request, c, session, render, abort
-from cowsclient.lib.base import app_globals as g
-from cowsclient.lib.wmc_util import GetWebMapContext, GetWebMapCapabilities, GetLegend, GetLegendUrl, GetFeatureInfo, openURL, GetResponse, parseEndpointString, getQueryParameter
-from cowsclient.lib.build_figure import build_figure
-from cowsclient.lib.status_builder import StatusBuilder
+# ecomaps imports
+from ecomaps.model import selectedItem
+from ecomaps.lib.base import BaseController, response, config, request, c, session, render, abort
+from ecomaps.lib.base import app_globals as g
+from ecomaps.lib.wmc_util import GetWebMapContext, GetWebMapCapabilities, GetLegend, GetLegendUrl, GetFeatureInfo, openURL, GetResponse, parseEndpointString, getQueryParameter
+from ecomaps.lib.build_figure import build_figure
+from ecomaps.lib.status_builder import StatusBuilder
 
-from cowsclient.lib.base import request
+from ecomaps.lib.base import request
 
 log = logging.getLogger(__name__)
 

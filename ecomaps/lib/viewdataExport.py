@@ -6,15 +6,15 @@ Export generation including animations.
 import logging
 import os, tempfile
 from pylons import config
-import cowsclient.lib.figure_parameters as figure_parameters
-from cowsclient.lib.figure_parameters import LayerInfoBuilder
-import cowsclient.lib.endpoint_hierarchy_builder as endpoint_hierarchy_builder
-from cowsclient.lib.export_parameters import ExportParameters, ExportResult
-import cowsclient.lib.kml_export as kml_export
-import cowsclient.lib.svs_export as svs_export
-import cowsclient.lib.video_export as video_export
-import cowsclient.lib.wcs_export as wcs_export
-import cowsclient.lib.wms_export as wms_export
+import ecomaps.lib.figure_parameters as figure_parameters
+from ecomaps.lib.figure_parameters import LayerInfoBuilder
+import ecomaps.lib.endpoint_hierarchy_builder as endpoint_hierarchy_builder
+from ecomaps.lib.export_parameters import ExportParameters, ExportResult
+import ecomaps.lib.kml_export as kml_export
+import ecomaps.lib.svs_export as svs_export
+import ecomaps.lib.video_export as video_export
+import ecomaps.lib.wcs_export as wcs_export
+import ecomaps.lib.wms_export as wms_export
 
 log = logging.getLogger(__name__)
 

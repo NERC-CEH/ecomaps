@@ -5,7 +5,7 @@ import nose.tools as nt
 from mock import Mock, patch
 from ConfigParser import SafeConfigParser
 
-import cowsclient.lib.config_file_parser as config_file_parser
+import ecomaps.lib.config_file_parser as config_file_parser
 
 class TestConfigFileParser(unittest.TestCase):
 
@@ -17,7 +17,7 @@ class TestConfigFileParser(unittest.TestCase):
     def tearDown(self):
         pass
     
-    @patch('cowsclient.lib.config_file_parser.os.path.exists')
+    @patch('ecomaps.lib.config_file_parser.os.path.exists')
     def test_001_buildsItemsList(self, mockOsExists):
        
         mockOsExists.return_value = True
@@ -49,7 +49,7 @@ class TestConfigFileParser(unittest.TestCase):
         nt.assert_equal(itemList[1], self.config_data['Item:c'])
         nt.assert_equal(itemList[2], self.config_data['Item:b'])
 
-    @patch('cowsclient.lib.config_file_parser.os.path.exists')
+    @patch('ecomaps.lib.config_file_parser.os.path.exists')
     def test_002_requiredParams(self, mockOsExists):
        
         mockOsExists.return_value = True       

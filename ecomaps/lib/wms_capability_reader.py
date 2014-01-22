@@ -9,11 +9,11 @@ import re
 import urlparse
 import xml.dom.minidom
 
-from cowsclient.lib.endpoint_hierarchy_builder import EndpointHierarchyBuilder, Node
-from cowsclient.lib.wmc_util import parseEndpointString
-from cowsclient.lib.wms_layer import WmsLayer
-from cowsclient.lib.wms_capability_cache import WmsCapabilityCache
-import cowsclient.lib.xml_util as xml_util
+from ecomaps.lib.endpoint_hierarchy_builder import EndpointHierarchyBuilder, Node
+from ecomaps.lib.wmc_util import parseEndpointString
+from ecomaps.lib.wms_layer import WmsLayer
+from ecomaps.lib.wms_capability_cache import WmsCapabilityCache
+import ecomaps.lib.xml_util as xml_util
 
 log = logging.getLogger(__name__)
 

@@ -7,9 +7,9 @@ import logging
 import copy
 import os, shutil, tempfile
 from pylons import config
-import cowsclient.lib.build_figure as build_figure
-from cowsclient.lib.export_parameters import ExportResult
-import cowsclient.lib.wmc_util as wmc_util
+import ecomaps.lib.build_figure as build_figure
+from ecomaps.lib.export_parameters import ExportResult
+import ecomaps.lib.wmc_util as wmc_util
 
 log = logging.getLogger(__name__)
 

@@ -5,7 +5,7 @@ Classes for parameters for exports and the results.
 """
 import logging
 import re
-import cowsclient.lib.outline_layer as outline_layer
+import ecomaps.lib.outline_layer as outline_layer
 
 log = logging.getLogger(__name__)
 

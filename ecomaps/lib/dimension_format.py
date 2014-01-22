@@ -1,7 +1,7 @@
 import logging
 import shlex
 
-import cowsclient.lib.date_util as date_util
+import ecomaps.lib.date_util as date_util
 
 log = logging.getLogger(__name__)
 

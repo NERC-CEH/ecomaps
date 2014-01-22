@@ -8,9 +8,9 @@ and getting associated legend data
 
 @author: Calum Byrom, modified for NDG Security by Dominic Lowe
 """
-from cowsclient.lib.base import *
-from cowsclient.model.WMC import WMC
-from cowsclient.lib import exceptions
+from ecomaps.lib.base import *
+from ecomaps.model.WMC import WMC
+from ecomaps.lib import exceptions
 import urllib2, urllib
 import os
 import logging
@@ -120,7 +120,7 @@ def GetWebMapCapabilities(endpoint):
     except urllib2.HTTPError, e:            
         log.exception("exception occurred")
         if e.code == 401:
-            log.info ('401 unauthorized error in cowsclient')
+            log.info ('401 unauthorized error in ecomaps')
             return abort(401) #triggers ndg security framework
         elif e.code == 403:  #TODO: 403 response is UNTESTED.
             # User is authenticated but doesn't have the required permissions

@@ -1,4 +1,4 @@
-cowsclient_extjs
+ecomaps_extjs
 ++++++++++++++++
 
 This is the main index page of your documentation. It should be written in

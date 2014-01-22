@@ -13,8 +13,8 @@ try:
 except:
     import Image
 
-from cowsclient.lib.base import request
-from cowsclient.lib.wmc_util import openURL
+from ecomaps.lib.base import request
+from ecomaps.lib.wmc_util import openURL
 
 from cStringIO import StringIO
 
@@ -169,6 +169,6 @@ class LegendImageBuilder(object):
         if self.externalImages:
             labelImageSource = labelLocation
         else:
-            inStrm = pkg_resources.resource_stream('cowsclient.resources.images', labelLocation)
+            inStrm = pkg_resources.resource_stream('ecomaps.resources.images', labelLocation)
             labelImageSource = StringIO(inStrm.read())
         return Image.open(labelImageSource)

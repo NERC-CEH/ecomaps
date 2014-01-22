@@ -1,2 +1,2 @@
-recursive-include cowsclient/public *
-recursive-include cowsclient/templates *
+recursive-include ecomaps/public *
+recursive-include ecomaps/templates *

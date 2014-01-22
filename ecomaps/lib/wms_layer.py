@@ -6,8 +6,8 @@ Holds data for a layer from a WMS capabilities document.
 
 import logging
 
-import cowsclient.lib.dimension_format as dimension_format
-import cowsclient.lib.xml_util as xml_util
+import ecomaps.lib.dimension_format as dimension_format
+import ecomaps.lib.xml_util as xml_util
 
 log = logging.getLogger(__name__)
 

@@ -1,6 +1,6 @@
 import unittest
 
-from cowsclient.lib.date_util import comptime
+from ecomaps.lib.date_util import comptime
 
 class TestDateUtil(unittest.TestCase):
     """
@@ -141,7 +141,7 @@ def suite():
     
 if __name__ == '__main__':
     import logging
-    from cowsclient.tests import TEST_LOG_FORMAT_STRING
+    from ecomaps.tests import TEST_LOG_FORMAT_STRING
     logging.basicConfig(level=logging.DEBUG, format=TEST_LOG_FORMAT_STRING)
 
     s = suite()

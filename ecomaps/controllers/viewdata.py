@@ -11,15 +11,15 @@ from pylons import url
 from pylons.decorators import jsonify
 from pylons.controllers.util import redirect
 from paste.fileapp import FileApp
-from cowsclient.lib.base import config, c, request, response, render, session, abort
-from cowsclient.lib.build_figure import build_figure
-import cowsclient.lib.config_file_parser as config_file_parser
-import cowsclient.lib.datasets as datasets
-from cowsclient.lib.session_endpoint_data import SessionEndpointData
-from cowsclient.lib.status_builder import StatusBuilder
-import cowsclient.lib.usage_logger as usage_logger
-import cowsclient.lib.viewdataExport as viewdataExport
-from cowsclient.controllers.wmsviz import WmsvizController
+from ecomaps.lib.base import config, c, request, response, render, session, abort
+from ecomaps.lib.build_figure import build_figure
+import ecomaps.lib.config_file_parser as config_file_parser
+import ecomaps.lib.datasets as datasets
+from ecomaps.lib.session_endpoint_data import SessionEndpointData
+from ecomaps.lib.status_builder import StatusBuilder
+import ecomaps.lib.usage_logger as usage_logger
+import ecomaps.lib.viewdataExport as viewdataExport
+from ecomaps.controllers.wmsviz import WmsvizController
 
 log = logging.getLogger(__name__)
 

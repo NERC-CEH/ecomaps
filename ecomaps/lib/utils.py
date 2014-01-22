@@ -1,5 +1,5 @@
 
-from cowsclient.lib.wmc_util import openURL
+from ecomaps.lib.wmc_util import openURL
 
 import logging
 import urllib2 

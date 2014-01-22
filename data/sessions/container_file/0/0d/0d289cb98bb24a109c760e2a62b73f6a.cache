@@ -7,7 +7,7 @@ p4
 (dp5
 Vll:LandCover@cl:Land Cover Map 2007 Great Britain 1 km Dominant Target class@cl:Initial TDS Installation@ep:http%3A%2F%2Flocalhost%3A8080%2Fthredds%2Fwms%2FtestAll%2FLCM2007_GB_1K_DOM_TAR.nc%3Fservice%3DWMS%26version%3D1.3.0%26request%3DGetCapabilities@ds:session_endpoints
 p6
-(icowsclient.lib.endpoint_hierarchy_builder
+(iecomaps.lib.endpoint_hierarchy_builder
 Node
 p7
 (dp8
@@ -42,7 +42,7 @@ ssg20
 g6
 sS'entity'
 p23
-(icowsclient.lib.wms_layer
+(iecomaps.lib.wms_layer
 WmsLayer
 p24
 (dp25
@@ -276,7 +276,7 @@ p119
 (lp120
 sbsbsVcl:Land Cover Map 2007 Great Britain 1 km Dominant Target class@cl:Initial TDS Installation@ep:http%3A%2F%2Flocalhost%3A8080%2Fthredds%2Fwms%2FtestAll%2FLCM2007_GB_1K_DOM_TAR.nc%3Fservice%3DWMS%26version%3D1.3.0%26request%3DGetCapabilities@ds:session_endpoints
 p121
-(icowsclient.lib.endpoint_hierarchy_builder
+(iecomaps.lib.endpoint_hierarchy_builder
 Node
 p122
 (dp123
@@ -302,7 +302,7 @@ p128
 ssg20
 g121
 sg23
-(icowsclient.lib.wms_layer
+(iecomaps.lib.wms_layer
 WmsLayer
 p129
 (dp130
@@ -331,7 +331,7 @@ sg119
 (lp132
 sbsbsS'ep:http%3A%2F%2Flocalhost%3A8080%2Fthredds%2Fwms%2FtestAll%2FLCM2007_GB_1K_DOM_TAR.nc%3Fservice%3DWMS%26version%3D1.3.0%26request%3DGetCapabilities@ds:session_endpoints'
 p133
-(icowsclient.lib.endpoint_hierarchy_builder
+(iecomaps.lib.endpoint_hierarchy_builder
 Node
 p134
 (dp135
@@ -387,7 +387,7 @@ Vdataset:http://localhost:8080/thredds/wms/testAll/LCM2007_GB_1K_DOM_TAR.nc?serv
 p158
 ssbsS'ds:session_endpoints'
 p159
-(icowsclient.lib.endpoint_hierarchy_builder
+(iecomaps.lib.endpoint_hierarchy_builder
 Node
 p160
 (dp161

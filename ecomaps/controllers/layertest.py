@@ -9,11 +9,11 @@
  @author C Byrom Feb 08, Modified D Lowe, May 09
 """
 
-from cowsclient.lib.base import *
+from ecomaps.lib.base import *
 from paste.request import parse_querystring
 #from ows_server.models import Utilities
-from cowsclient.lib.wmc_util import *
-from cowsclient.model import selectedItem
+from ecomaps.lib.wmc_util import *
+from ecomaps.model import selectedItem
 from pylons import config
 import copy, logging
 log = logging.getLogger(__name__)

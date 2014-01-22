@@ -5,10 +5,10 @@ Created on 7 Oct 2009
 '''
 
 import re
-import cowsclient.lib.utils as utils
-import cowsclient.lib.config_file_parser as config_file_parser
+import ecomaps.lib.utils as utils
+import ecomaps.lib.config_file_parser as config_file_parser
 from ConfigParser import NoOptionError, NoSectionError
-from cowsclient.lib.base import config
+from ecomaps.lib.base import config
 import logging
 
 log = logging.getLogger(__name__)
