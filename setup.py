@@ -16,7 +16,7 @@ setup(
     packages=find_packages(exclude=['ez_setup']),
     include_package_data=True,
     test_suite='nose.collector',
-    package_data={'cowecomaps['i18n/*/LC_MESSAGES/*.mo']},
+    package_data={'ecomaps['i18n/*/LC_MESSAGES/*.mo']},
     #message_extractors = {'cowsclient': [
     #        ('**.py', 'python', None),
     #        ('templates/**.mako', 'mako', None),
