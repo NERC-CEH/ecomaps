@@ -1,0 +1,43 @@
+<html xmlns:py="http://genshi.edgewall.org/"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:xi="http://www.w3.org/2001/XInclude">
+<head>
+    <title>ECOMAPS // Welcome</title>
+    <link rel="stylesheet" type="text/css" href="../layout/login.css"/>
+</head>
+<body>
+    <div id="logo"></div>
+    <div id="banner"></div>
+    <div id="content">
+        <div class="content-title">Welcome to ECOMAPS</div>
+        <div class="content-body form">
+
+        <form action="/account/dologin?came_from=${came_from}" method="POST">
+
+                <py:if test="message">
+                <div class="error-message">${message}</div>
+                </py:if>
+                <ol>
+                    <li>Please log in:</li>
+                    <li>
+                        <label for="login">Username:</label> ${h.html_tags.text('login')}
+                    </li>
+                    <li>
+                        <label for="password">Password:</label> ${h.html_tags.password('password')}
+                    </li>
+                </ol>
+                <div class="submit-container">
+                    <input type="submit" value="Log In" />
+                </div>
+            </form>
+            <div id="footer">
+                <div>
+                    Provided by:
+                </div>
+            <a href="http://www.ceh.ac.uk" target="_blank"><img src="../layout/images/ceh_transparent.gif" /></a>
+            <a style="float:right" href="http://www.tessella.co.uk" target="_blank"><img src="../layout/images/tessella.png" /></a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

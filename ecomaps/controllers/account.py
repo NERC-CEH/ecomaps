@@ -25,15 +25,19 @@ class AccountController(BaseController):
             if came_from:
                 redirect(url(str(came_from)))
 
-        return render('login.mako', extra_vars={'came_from': came_from, 'message': message})
+        return render('login.html', extra_vars={'came_from': came_from, 'message': message})
 
     def loggedin(self):
         return "You are logged in"
 
     def dologin(self):
+
         who_api = get_api(request.environ)
         message = ''
         came_from = request.params.get('came_from')
+
+        if not request.POST:
+            return redirect(url(controller='account', action='login', came_from=came_from))
 
         if came_from is u'':
             came_from = 'loggedin'
@@ -64,9 +68,10 @@ class AccountController(BaseController):
             del request.environ['REMOTE_USER']
 
         return htmlfill.render(
-            render('login.mako', extra_vars={'came_from': came_from, 'message': message}),
+            render('login.html', extra_vars={'came_from': came_from, 'message': message}),
             defaults=c.form_result,
-            errors=c.form_errors
+            errors=c.form_errors,
+            auto_error_formatter=custom_formatter
         )
 
     def logout(self):
@@ -74,4 +79,10 @@ class AccountController(BaseController):
         who_api = get_api(request.environ)
         headers = who_api.logout()
 
-        return HTTPFound(location='/', headers=headers)
+        return HTTPFound(location='/account/login', headers=headers)
+
+def custom_formatter(error):
+    """Custom error formatter"""
+    return '<span class="error-message">%s</span>' % (
+        htmlfill.html_quote(error)
+    )

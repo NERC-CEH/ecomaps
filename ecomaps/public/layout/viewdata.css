@@ -165,3 +165,9 @@ html, body {
     left: 56px;
     position: relative;
 }
+
+/* Banner image container */
+div.banner-image
+{
+    background: #87A7AF;
+}
