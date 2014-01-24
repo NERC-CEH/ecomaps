@@ -6,7 +6,7 @@ html
 }
 
 html {
-  background: url(images/3750.jpg) no-repeat center center fixed;
+  background: url(images/3751.jpg) no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -81,7 +81,7 @@ span.error-message
 .form ol
 {
     list-style-type: none;
-    margin: 0 auto;
+    margin: 0 5%;
     padding: 1em;
 }
 
@@ -100,7 +100,7 @@ span.error-message
 label
 {
     display: inline-block;
-    width: 120px;
+    width: 75px;
     text-align: right;
 }
 

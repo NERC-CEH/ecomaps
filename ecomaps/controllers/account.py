@@ -40,7 +40,7 @@ class AccountController(BaseController):
             return redirect(url(controller='account', action='login', came_from=came_from))
 
         if came_from is u'':
-            came_from = 'loggedin'
+            came_from = '/viewdata'
 
         schema = LoginForm()
         c.form_errors = {}
