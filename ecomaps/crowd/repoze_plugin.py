@@ -116,7 +116,7 @@ class CrowdRepozePlugin(object):
         # Set a cookie in the user's browser by returning the correct header instruction
         cookie_val = "%s" % token
         set_cookie = '%s=%s; Path=/;' % (self._cookie_name, cookie_val)
-        return [('Set-Cookie', set_cookie)]
+        return [(str('Set-Cookie'), str(set_cookie))]
 
     def forget(self, environ, identity):
         """Reverse of remember, will remove any reference to a previously-active
