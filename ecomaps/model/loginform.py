@@ -9,5 +9,5 @@ class LoginForm(formencode.Schema):
     allow_extra_fields = True
     filter_extra_fields = True
 
-    login = formencode.validators.PlainText(not_empty=True)
+    login = formencode.validators.NotEmpty()
     password = formencode.validators.String(not_empty=True)
