@@ -19,7 +19,6 @@ def initialise_session(config, manual_connection_string=None):
 
     Session.configure(bind=engine)
 
-
 @contextmanager
 def session_scope():
     """Provide a transactional scope that we can wrap around calls to the database"""
@@ -37,7 +36,6 @@ def session_scope():
 
 
 ## Model definitions below ##
-
 
 class User(Base):
     """A user of the Ecomaps system"""
@@ -60,8 +58,6 @@ class DatasetType(Base):
 
     id = Column(Integer, primary_key=True)
     type = Column(String(10))
-
-    datasets = relationship("Dataset", order_by="Dataset.id", backref="dataset_type")
 
     def __repr__(self):
         """String representation of the dataset type"""
@@ -128,10 +124,10 @@ class Analysis(Base):
     viewable_by = Column(Integer, ForeignKey('users.id'), nullable=True)
 
     # FK Relationships
-    run_by_user = relationship("User")
-    point_dataset = relationship("Dataset")
-    result_dataset = relationship("Dataset")
-    viewable_by_user = relationship("User")
+    run_by_user = relationship("User", foreign_keys=[run_by])
+    point_dataset = relationship("Dataset", foreign_keys=[point_data_dataset_id])
+    result_dataset = relationship("Dataset", foreign_keys=[result_dataset_id])
+    viewable_by_user = relationship("User", foreign_keys=[viewable_by])
 
     # M2M for coverage datasets
     coverage_datasets = relationship("Dataset",
