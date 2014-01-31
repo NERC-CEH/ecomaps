@@ -20,12 +20,13 @@ def initialise_session(config, manual_connection_string=None):
     Session.configure(bind=engine)
 
 @contextmanager
-def session_scope():
+def session_scope(session_class):
     """Provide a transactional scope that we can wrap around calls to the database"""
 
-    session = Session()
+    session = session_class()
 
     try:
+        # Give this session back to the 'with' block
         yield session
         session.commit()
     except:
@@ -43,7 +44,8 @@ class User(Base):
     __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True)
-    username = Column(String(30))
+    username = Column(String(50))
+    email = Column(String(255))
     name = Column(String(50))
 
     def __repr__(self):
@@ -104,6 +106,7 @@ class Model(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(100))
     description = Column(String(500))
+    code_path = Column(String(500))
 
     def __repr__(self):
         """String representation of the model"""
@@ -122,12 +125,14 @@ class Analysis(Base):
     run_by = Column(Integer, ForeignKey('users.id'))
     result_dataset_id = Column(Integer, ForeignKey('datasets.id'))
     viewable_by = Column(Integer, ForeignKey('users.id'), nullable=True)
+    model_id = Column(Integer, ForeignKey('models.id'))
 
     # FK Relationships
     run_by_user = relationship("User", foreign_keys=[run_by])
     point_dataset = relationship("Dataset", foreign_keys=[point_data_dataset_id])
     result_dataset = relationship("Dataset", foreign_keys=[result_dataset_id])
     viewable_by_user = relationship("User", foreign_keys=[viewable_by])
+    model = relationship("Model")
 
     # M2M for coverage datasets
     coverage_datasets = relationship("Dataset",

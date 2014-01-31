@@ -117,6 +117,15 @@ class CrowdClient(object):
         """
         self._make_request('session/' + token, method='DELETE')
 
+    def get_user_info(self, username):
+        """Gets a user object from Crowd
+            Params:
+                username: Name of user to get info for
+            Returns: User JSON
+        """
+
+        return self._make_request('user?username=%s' % username)
+
     def _make_request(self, resource, data=None, method=None):
         """Helper function for making requests to the Crowd REST API
             Params:

@@ -113,6 +113,14 @@ class CrowdRepozePlugin(object):
             user_object = self._client.create_user_session(username, password, remote_address)
             token = user_object['token']
 
+            # Now pull out the user information
+            user_info = self._client.get_user_info(username)
+
+            # We'll use these in case we need to add to a local database
+            environ['user.name'] = user_info['display-name']
+            environ['user.email'] = user_info['email']
+            environ['user.username'] = username
+
         # Set a cookie in the user's browser by returning the correct header instruction
         cookie_val = "%s" % token
         set_cookie = '%s=%s; Path=/;' % (self._cookie_name, cookie_val)

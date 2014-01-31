@@ -9,14 +9,31 @@ from ecomaps.lib.base import BaseController, render
 from repoze.who.api import get_api
 from ecomaps.model.loginform import LoginForm
 from formencode import htmlfill
+from ecomaps.services.general import ServiceException
+from ecomaps.services.user import UserService
 
 __author__ = 'Phil Jenkins (Tessella)'
 
 log = logging.getLogger(__name__)
 
 class AccountController(BaseController):
+    """Encapsulates operations on a user's ecomaps account"""
+
+    _user_service = None
+
+    def __init__(self, user_service=UserService()):
+        """Constructor for the user controller, takes in any services required
+            Params:
+                user_service: User service to use within the controller
+        """
+        super(BaseController, self).__init__()
+
+        self._user_service = user_service
+
 
     def login(self):
+        """Action for the 'log in' view"""
+
         identity = request.environ.get('REMOTE_USER')
         came_from = request.params.get('came_from', None)
         message = request.params.get('message', None)
@@ -27,10 +44,8 @@ class AccountController(BaseController):
 
         return render('login.html', extra_vars={'came_from': came_from, 'message': message})
 
-    def loggedin(self):
-        return "You are logged in"
-
     def dologin(self):
+        """ Handles the log in request"""
 
         who_api = get_api(request.environ)
         message = ''
@@ -56,6 +71,22 @@ class AccountController(BaseController):
                 authenticated, headers = who_api.login(c.form_result)
 
                 if authenticated:
+
+                    # Who is this user?
+                    # If we've got enough info, we should see if they are in
+                    # the ecomaps database already
+                    if request.environ['user.username']:
+                        log.debug("Looking for %s in Ecomaps DB" % request.environ['user.username'])
+
+                        try:
+                            u = self._user_service.get_user_by_username(request.environ['user.username'])
+                            log.debug("%s = user %s in database" % (u.username,u.name))
+                        except ServiceException:
+                            # User doesn't exist in our database, so add
+                            self._user_service.create(request.environ['user.username'],
+                                                      request.environ['user.name'],
+                                                      request.environ['user.email'])
+
                     return HTTPFound(location=came_from, headers=headers)
 
                 message = 'Login failed: check your username and/or password.'
@@ -75,6 +106,7 @@ class AccountController(BaseController):
         )
 
     def logout(self):
+        """Action to log the user out of ecomaps - removing their session"""
 
         who_api = get_api(request.environ)
         headers = who_api.logout()

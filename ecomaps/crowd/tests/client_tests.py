@@ -59,6 +59,14 @@ class CrowdClientTests(unittest.TestCase):
 
         self.assertRaises(SessionNotFoundException, lambda: self.client.verify_user_session(response['token']))
 
+    def test_get_user_info_returns_populated_object(self):
+
+        username = "jenp"
+
+        user = self.client.get_user_info(username)
+
+        self.assertEqual(username, user['name'])
+
 
 def main():
     unittest.main()
