@@ -1,17 +1,12 @@
-import unittest
-from mock import Mock, MagicMock, ANY
+from mock import MagicMock, ANY
 from ecomaps.model import User
+from ecomaps.services.tests.base import BaseTest
 from ecomaps.services.user import UserService
 
 __author__ = 'Phil Jenkins (Tessella)'
 
 
-class UserServiceTests(unittest.TestCase):
-
-    _mock_session = None
-
-    def setUp(self):
-        self._mock_session = Mock
+class UserServiceTest(BaseTest):
 
     def test_create_user(self):
 

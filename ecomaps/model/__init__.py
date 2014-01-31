@@ -91,12 +91,12 @@ class Dataset(Base):
         """String representation of the Dataset class"""
 
         return "<Dataset(name=%s, wms_url=%s, netcdf_url=%s, dataset_type_id=%s)>" \
-               % (
-                     self.name,
-                     self.wms_url,
-                     self.netcdf_url,
-                     self.dataset_type_id
-                )
+            % (
+                self.name,
+                self.wms_url,
+                self.netcdf_url,
+                self.dataset_type_id
+            )
 
 class Model(Base):
     """Represents the calculation model used by an Ecomaps analysis"""

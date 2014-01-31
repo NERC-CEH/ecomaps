@@ -47,7 +47,9 @@ class WmsvizController(BaseController):
         """
         Default controller method to handle the initial requests to the page
         """
-        log.debug('endtered wmsviz controller index action')
+        log.debug('entered wmsviz controller index action')
+
+
         
         g.helpIcon='layout/icons/help.png'  #needs to go in config
         
