@@ -23,4 +23,14 @@ class AnalysisService(DatabaseService):
                         .filter(or_(Analysis.viewable_by == user_id, Analysis.run_by == user_id)) \
                         .all()
 
+    def get_public_analyses(self):
+        """Gets all analyses that are classed as 'public' i.e. they
+                aren't restricted to a particular user account"""
 
+        with self.readonly_scope() as session:
+
+            return session.query(Analysis) \
+                        .options(subqueryload(Analysis.point_dataset)) \
+                        .options(subqueryload(Analysis.coverage_datasets)) \
+                        .filter(Analysis.viewable_by == None) \
+                        .all()
