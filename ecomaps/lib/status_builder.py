@@ -58,7 +58,7 @@ class StatusBuilder(object):
                 
         status['DataOptions'] = self._getDataOptions()
                 
-        log.debug('STATUS CUSTOM TEXT %s'%status['CustomTextOptions'])
+        #log.debug('STATUS CUSTOM TEXT %s'%status['CustomTextOptions'])
         return status
         
     
@@ -185,7 +185,7 @@ class StatusBuilder(object):
         """
         try:
             result = self.userInterfaceConfigParser.getConfigOption(section, option)
-        except (NoOptionError, NoSectionError):
+        except (NoOptionError, NoSectionError, TypeError):
             result = default
         # This can be used to allow multi-line values in the configuration file, but collapse it to
         # a single line for JSON parsing.

@@ -299,8 +299,9 @@ class HelpTextConfigParser(ConfigFileParser):
     def getHelpText(self):
         """Parses the help text file and returns a dictionary of the help items found.
         """
-        self._config.read(self.filePath)
-        if self._config.has_section('helptext'):
-            return self._buildItemDictFromSection('helptext')
+        if self.filePath:
+            self._config.read(self.filePath)
+            if self._config.has_section('helptext'):
+                return self._buildItemDictFromSection('helptext')
         else:
             return {}

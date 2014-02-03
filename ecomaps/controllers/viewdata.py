@@ -20,6 +20,8 @@ from ecomaps.lib.status_builder import StatusBuilder
 import ecomaps.lib.usage_logger as usage_logger
 import ecomaps.lib.viewdataExport as viewdataExport
 from ecomaps.controllers.wmsviz import WmsvizController
+from ecomaps.services.dataset import DatasetService
+from ecomaps.services.user import UserService
 
 log = logging.getLogger(__name__)
 
@@ -29,6 +31,17 @@ class ViewdataController(WmsvizController):
     It mainly delegates to the wmsviz controller.
     """
     indexTemplate = "viewdata.html"
+
+    _user_service = None
+    _dataset_service = None
+
+    def __init__(self,
+                 user_service=UserService(),
+                 dataset_service=DatasetService()):
+
+        super(WmsvizController, self).__init__()
+        self._user_service = user_service
+        self._dataset_service = dataset_service
 
     def _getConfiguration():
         """ Reads the configuration values.
@@ -40,10 +53,13 @@ class ViewdataController(WmsvizController):
     def _isUserInterfaceFeatureEnabled(configuration, option):
         """ Determines whether one of the user interface configuration options is enabled.
         """
-        return (('ViewDataUserInterfaceConfig' not in configuration) or
-                (option not in configuration['ViewDataUserInterfaceConfig']) or
-                ('show' not in configuration['ViewDataUserInterfaceConfig'][option]) or
-                configuration['ViewDataUserInterfaceConfig'][option]['show'] == 'true')
+        if configuration['ViewDataUserInterfaceConfig'] is None:
+            return False
+        else:
+            return (('ViewDataUserInterfaceConfig' not in configuration) or
+                    (option not in configuration['ViewDataUserInterfaceConfig']) or
+                    ('show' not in configuration['ViewDataUserInterfaceConfig'][option]) or
+                    configuration['ViewDataUserInterfaceConfig'][option]['show'] == 'true')
 
     # Get the configuration values (e.g., for server side validation).
     configuration = _getConfiguration()
@@ -68,6 +84,13 @@ class ViewdataController(WmsvizController):
         node in the dataset tree.
         """
         try:
+            # Who's asking for these datasets?
+            username = request.environ['REMOTE_USER']
+            user_obj = self._user_service.get_user_by_username(username)
+
+            # Now to get the datasets that this user can see
+            datasets = self._dataset_service.get_datasets_for_user(user_obj.id)
+
             return self.datasetManager.getDatasets(request, self._get_session_endpoint_data())
         except urllib2.HTTPError, exc:
             log.info("get_datasets request received HTTP error code %d" % exc.code)
