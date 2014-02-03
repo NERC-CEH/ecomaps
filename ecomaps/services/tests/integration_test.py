@@ -110,3 +110,18 @@ class IntegrationTests(unittest.TestCase):
 
         self.assertNotEqual(analysis_list, None, "Expected a result to be populated")
         self.assertEqual(len(analysis_list), 1, "Expected 1 analysis back")
+
+    def test_publish_analysis(self):
+
+        analysis_service = AnalysisService()
+
+        with analysis_service.readonly_scope() as session:
+
+            analysis = session.query(Analysis).filter(Analysis.viewable_by == self._user_id).first()
+
+        analysis_service.publish_analysis(analysis.id)
+
+        with analysis_service.readonly_scope() as another_session:
+
+            updated_analysis = another_session.query(Analysis).filter(Analysis.id == analysis.id).one()
+            self.assertEqual(updated_analysis.viewable_by, None, "Expected viewable by field to be cleared out")
