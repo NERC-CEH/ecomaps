@@ -11,6 +11,7 @@ from routes.middleware import RoutesMiddleware
 
 from ecomaps.config.environment import load_environment
 from repoze.who.config import make_middleware_with_config as make_who_with_config
+from ecomaps.lib import helpers
 
 def make_app(global_conf, full_stack=True, static_files=True, **app_conf):
     """Create a Pylons WSGI application and return it

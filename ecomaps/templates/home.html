@@ -1,0 +1,19 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:py="http://genshi.edgewall.org/"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      lang="en">
+<head>
+    <title></title>
+</head>
+<body>
+    <h1>Welcome <span py:if="c.name">${c.name}</span></h1>
+    <a href="${h.url(controller='account', action='logout')}">Log out</a>
+
+    <h2>Menu</h2>
+
+    <a href="${h.url(controller='viewdata', action='index')}">Explore</a>
+    <a href="${h.url(controller='analysis', action='create')}">New Analysis</a>
+    <a href="${h.url(controller='analysis', action='index')}">My Ecomaps</a>
+
+</body>
+</html>

@@ -24,7 +24,7 @@ class AnalysisService(DatabaseService):
                         .all()
 
     def get_public_analyses(self):
-        """Gets all analyses that are classed as 'pulblic' i.e. they
+        """Gets all analyses that are classed as 'public' i.e. they
                 aren't restricted to a particular user account"""
 
         with self.readonly_scope() as session:
