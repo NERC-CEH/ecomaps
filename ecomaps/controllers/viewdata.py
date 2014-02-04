@@ -84,12 +84,41 @@ class ViewdataController(WmsvizController):
         node in the dataset tree.
         """
         try:
-            # Who's asking for these datasets?
-            username = request.environ['REMOTE_USER']
-            user_obj = self._user_service.get_user_by_username(username)
 
-            # Now to get the datasets that this user can see
-            datasets = self._dataset_service.get_datasets_for_user(user_obj.id)
+            try:
+                # Node is purely numeric...will be the root node
+                node_id = int(request.params['node'])
+
+                # Initial request for dataset types
+                dataset_types = self._dataset_service.get_dataset_types()
+
+                return self.datasetManager.load_dataset_types(dataset_types)
+
+            except ValueError:
+
+                # Request for list of datasets, or endpoint info...
+                node = request.params['node']
+
+                if node.startswith('type_'):
+
+                     # Let's trim down to get at the ID value
+                    type_id = int(node[len('type_')])
+                    username = request.environ['REMOTE_USER']
+                    user_obj = self._user_service.get_user_by_username(username)
+
+                    dataset_list = self._dataset_service.get_datasets_for_user(user_obj.id, type_id)
+
+                    return self.datasetManager.load_datasets(dataset_list)
+
+            # 0 = root node
+            # if request.params['node'] is not u'0':
+            #     # Who's asking for these datasets?
+            #     username = request.environ['REMOTE_USER']
+            #     user_obj = self._user_service.get_user_by_username(username)
+            #
+            #     # Now to get the datasets that this user can see
+            #     datasets = self._dataset_service.get_datasets_for_user(user_obj.id)
+
 
             return self.datasetManager.getDatasets(request, self._get_session_endpoint_data())
         except urllib2.HTTPError, exc:

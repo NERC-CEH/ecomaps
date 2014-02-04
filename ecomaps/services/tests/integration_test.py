@@ -1,5 +1,5 @@
 import unittest
-from ecomaps.model import initialise_session, Base, Session, User, Dataset, Analysis
+from ecomaps.model import initialise_session, Base, Session, User, Dataset, Analysis, DatasetType
 from ecomaps.services.analysis import AnalysisService
 from ecomaps.services.dataset import DatasetService
 
@@ -21,18 +21,35 @@ class IntegrationTests(unittest.TestCase):
     def _populate_session(self):
 
         with self._service.transaction_scope() as session:
+
+            pointDst = DatasetType()
+            pointDst.type = 'Point'
+
+            coverDst = DatasetType()
+            coverDst.type = 'Coverage'
+
+            resultDst = DatasetType()
+            resultDst.type = 'Result'
+
+            session.add(pointDst)
+            session.add(coverDst)
+            session.add(resultDst)
+
             dataset_a = Dataset()
+            dataset_a.dataset_type = pointDst
             dataset_a.viewable_by_user_id = self._user_id
             dataset_a.name = "Dataset1"
 
             session.add(dataset_a)
 
             dataset_b = Dataset()
+            dataset_b.dataset_type = pointDst
             dataset_b.name = "Dataset2"
 
             session.add(dataset_b)
 
             dataset_c = Dataset()
+            dataset_c.dataset_type = pointDst
             dataset_c.viewable_by_user_id = self._another_user_id
             dataset_c.name = "Dataset3"
 
@@ -92,7 +109,7 @@ class IntegrationTests(unittest.TestCase):
 
     def test_get_datasets_for_user(self):
 
-        datasets = self._service.get_datasets_for_user(self._user_id)
+        datasets = self._service.get_datasets_for_user(self._user_id, 1)
         self.assertEqual(len(datasets), 2, "Expected 2 viewable datasets back")
 
     def test_get_analyses_for_user(self):

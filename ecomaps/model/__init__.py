@@ -59,7 +59,7 @@ class DatasetType(Base):
     __tablename__ = 'dataset_types'
 
     id = Column(Integer, primary_key=True)
-    type = Column(String(10))
+    type = Column(String(30))
 
     def __repr__(self):
         """String representation of the dataset type"""

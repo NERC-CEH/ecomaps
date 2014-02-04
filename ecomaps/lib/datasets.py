@@ -60,6 +60,55 @@ class Datasets:
 
         self.wmsCapabilityReader = ViewdataWmsCapabilityReader(config)
 
+    def load_dataset_types(self, dataset_types):
+        """Constructs a treeview node set from a list of dataset types
+            params:
+                dataset_types: List of dataset types
+        """
+
+        nodes = []
+
+        # Add the outline layer
+        nodes.append(outline_layer.treeInfo)
+
+        for dataset_type in dataset_types:
+
+            tree_info = {
+                'cls': 'folder',
+                'id': 'type_%s' % dataset_type.id,
+                'text': dataset_type.type
+            }
+
+            nodes.append(tree_info)
+
+        return nodes
+
+    def load_datasets(self, dataset_list):
+        """Converts our dataset models into the endpoint info we need
+            Params:
+                dataset_list: List of datasets to convert
+        """
+
+        if len(dataset_list) is 0:
+            return [{
+                'text': 'No datasets found',
+                'cls' : 'file',
+                'leaf': True
+            }]
+
+        datasets = []
+
+        for ds in dataset_list:
+            datasets.append(
+                {
+                    'id': 'ds_%s' % ds.id,
+                    'text': ds.name,
+                    'wmsurl': ds.wms_url
+                }
+            )
+
+        return datasets
+
     def getDatasets(self, request, sessionEndpointData):
         """Returns the node tree information for the children of the specified node ID.
         @param request: HTTP request object
