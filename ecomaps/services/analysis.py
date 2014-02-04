@@ -48,3 +48,19 @@ class AnalysisService(DatabaseService):
             # Now update the "viewable by" field - setting to None
             # infers that the analysis is published
             analysis.viewable_by = None
+
+    def index(self):
+
+        pass
+
+    def create(self, name, point_dataset_id, coverage_dataset_ids, user_id, parameters):
+        """Creates a new analysis object
+            Params:
+                name - Friendly name for the analysis
+                point_dataset_id - Dataset containing point data
+                coverage_dataset_ids - List of coverage dataset ids
+                user_id - Who is creating this analysis?
+                parameters - Extra parameters to pass to the model code
+        """
+
+        pass
