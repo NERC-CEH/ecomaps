@@ -109,7 +109,12 @@ class IntegrationTests(unittest.TestCase):
 
     def test_get_datasets_for_user(self):
 
-        datasets = self._service.get_datasets_for_user(self._user_id, 1)
+        datasets = self._service.get_datasets_for_user(self._user_id, dataset_type_id=1)
+        self.assertEqual(len(datasets), 2, "Expected 2 viewable datasets back")
+
+    def test_get_datasets_for_user_with_type_name(self):
+
+        datasets = self._service.get_datasets_for_user(self._user_id, dataset_type='Point')
         self.assertEqual(len(datasets), 2, "Expected 2 viewable datasets back")
 
     def test_get_analyses_for_user(self):

@@ -103,7 +103,9 @@ class Datasets:
                 {
                     'id': 'ds_%s' % ds.id,
                     'text': ds.name,
-                    'wmsurl': ds.wms_url
+                    'wmsurl': ds.wms_url,
+                    'cls': 'file',
+                    'leaf': True
                 }
             )
 

@@ -21,7 +21,7 @@ class DatasetServiceTest(BaseTest):
         self._mock_session.query.return_value = mock_query
 
         service = DatasetService(self._mock_session)
-        service.get_datasets_for_user(1234, 1)
+        service.get_datasets_for_user(1234, dataset_type_id=1)
 
         self._mock_session.query.assert_called_once_with(Dataset)
         mock_query.filter.assert_called_once_with(ANY, ANY)
