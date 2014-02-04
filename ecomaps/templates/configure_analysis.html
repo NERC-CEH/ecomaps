@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:py="http://genshi.edgewall.org/">
+<head>
+    <title>Configure Analysis</title>
+</head>
+<body>
+    <h1>Configure Analysis Page</h1>
+    <p>Choose point data:</p>
+
+    <select>
+        <li py:for="dataset in c.point_datasets">
+                <option>${dataset.name}</option>
+        </li>
+    </select>
+
+    <p>Choose coverage data:</p>
+
+    <select>
+        <li py:for="dataset in c.coverage_datasets">
+                <option>${dataset.name}</option>
+        </li>
+    </select>
+
+</body>
+</html>

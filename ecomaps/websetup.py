@@ -39,3 +39,32 @@ def setup_app(command, conf, vars):
         ds.name = 'Land Cover Map 2007'
 
         session.add(ds)
+
+        # Additional databases for the purpose of testing the analysis configuration page
+        ds1 = Dataset()
+        ds1.dataset_type = coverDst
+        ds1.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/cover1'
+        ds1.name = 'Land Cover Map 1'
+
+        session.add(ds1)
+
+        ds2 = Dataset()
+        ds2.dataset_type = coverDst
+        ds2.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/cover2'
+        ds2.name = 'Land Cover Map 2'
+
+        session.add(ds2)
+
+        ds3 = Dataset()
+        ds3.dataset_type = pointDst
+        ds3.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/point1'
+        ds3.name = 'Land Point Map 1'
+
+        session.add(ds3)
+
+        ds4 = Dataset()
+        ds4.dataset_type = pointDst
+        ds4.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/point2'
+        ds4.name = 'Land Point Map 2'
+
+        session.add(ds4)
