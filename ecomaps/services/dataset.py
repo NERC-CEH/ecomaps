@@ -19,5 +19,6 @@ class DatasetService(DatabaseService):
             # Find all datasets that are viewable by this user (private)
             # or are public (null viewable_by)
             # Note SQLAlchemy wants '== None' not 'is None'
+            #
             return session.query(Dataset).filter(or_(Dataset.viewable_by_user_id == user_id,
                                                  Dataset.viewable_by_user_id == None)).all()
