@@ -26,3 +26,15 @@ class AnalysisController(BaseController):
 
         self._user_service = user_service
         self._analysis_service = analysis_service
+
+
+    def index(self):
+        """Default action for the analysis controller"""
+
+        # Who am I?
+        user = self._user_service.get_user_by_username(request.environ['REMOTE_USER'])
+
+        # Grab the analyses...
+        c.analyses = self._analysis_service.get_analyses_for_user(user.id)
+
+        return render('analysis_list.html')

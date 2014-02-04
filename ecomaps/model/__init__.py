@@ -126,6 +126,7 @@ class Analysis(Base):
     result_dataset_id = Column(Integer, ForeignKey('datasets.id'))
     viewable_by = Column(Integer, ForeignKey('users.id'), nullable=True)
     model_id = Column(Integer, ForeignKey('models.id'))
+    goodness_of_fit = Column(Integer)
 
     # FK Relationships
     run_by_user = relationship("User", foreign_keys=[run_by])

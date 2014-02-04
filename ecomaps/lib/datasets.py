@@ -376,6 +376,37 @@ class Datasets:
         else:
             return
 
+    def get_ecomaps_layer_data(self, dataset):
+        """Looks up layer data in the given WMS url, and returns a layer entity object
+            suitable for the map viewer
+            Params:
+                wms_url: URL to the descriptor service
+        """
+
+        (wcs_url, numRepl) = WMS_REGEX.subn('wcs', dataset.wms_url)
+        log.debug("Trying WCS URL %s", wcs_url)
+
+        endpoint = {
+            'wmsurl': dataset.wms_url,
+            'wcsurl': wcs_url
+        }
+
+        layer_info = self.wmsCapabilityReader.getLayers(endpoint, dataset.name, None, None, True)
+
+        # The returned structure will have numerous child layers, however we're only interested in the
+        # very last one, as that contains the map data
+
+        def inspect_children(layer_obj):
+
+            if len(layer_obj.children) == 0:
+
+                return layer_obj
+            else:
+                return inspect_children(layer_obj.children[0])
+
+        return inspect_children(layer_info[0])
+
+
     def getLayerData(self, layerId, sessionEndpointData):
         """Returns a data for a layer, specified by ID, that was retrieved from the WMS capabilities
         document.

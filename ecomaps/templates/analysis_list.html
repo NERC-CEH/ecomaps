@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:py="http://genshi.edgewall.org/">
+<head>
+    <title>Analysis List</title>
+</head>
+<body>
+    <h1>My Ecomaps</h1>
+
+    <table if="c.analyses">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Run On</th>
+                <th>Run By</th>
+                <th>Published?</th>
+                <th>Goodness of fit</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr py:for="analysis in c.analyses">
+                <td>
+                    ${analysis.name}
+                </td>
+                <td>
+                    ${analysis.run_date.strftime('%d-%b-%Y %H:%M')}
+                </td>
+                <td>
+                    ${analysis.run_by_user.name}
+                </td>
+                <td>
+                    <span py:choose="">
+                        <span py:when="analysis.viewable_by == None">Y</span>
+                        <span py:otherwise="">N</span>
+                    </span>
+                </td>
+                <td>
+                    ${analysis.goodness_of_fit}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

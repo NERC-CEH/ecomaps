@@ -20,6 +20,7 @@ class AnalysisService(DatabaseService):
             return session.query(Analysis) \
                         .options(subqueryload(Analysis.point_dataset)) \
                         .options(subqueryload(Analysis.coverage_datasets)) \
+                        .options(subqueryload(Analysis.run_by_user)) \
                         .filter(or_(Analysis.viewable_by == user_id, Analysis.run_by == user_id)) \
                         .all()
 

@@ -85,6 +85,8 @@ class ViewdataController(WmsvizController):
         """
         try:
 
+            #return self.datasetManager.getDatasets(request, self._get_session_endpoint_data())
+
             try:
                 # Node is purely numeric...will be the root node
                 node_id = int(request.params['node'])
@@ -106,9 +108,15 @@ class ViewdataController(WmsvizController):
                     username = request.environ['REMOTE_USER']
                     user_obj = self._user_service.get_user_by_username(username)
 
-                    dataset_list = self._dataset_service.get_datasets_for_user(user_obj.id, type_id)
+                    dataset_list = self._dataset_service.get_datasets_for_user(user_obj.id, dataset_type_id=type_id)
 
                     return self.datasetManager.load_datasets(dataset_list)
+
+                elif node.startswith('ds_'):
+
+                    pass
+                    # Get dataset by ID
+                    # pass WMS url to
 
             # 0 = root node
             # if request.params['node'] is not u'0':
@@ -132,11 +140,24 @@ class ViewdataController(WmsvizController):
         """ In response to an AJAX request, returns layer data extracted from the WMS capabilities
         data for the specified layer.
         """
-        wmsCapabilities = self.datasetManager.getLayerDataAsDict(request, self._get_session_endpoint_data())
-        if wmsCapabilities != None:
-            usage_logger.getUsageLogger(request).info('Get WMS capabilities: endpoint "%s" layer "%s"' %
-                                                      (wmsCapabilities['getMapUrl'], wmsCapabilities['name']))
-        return wmsCapabilities
+
+        # Is this a new-style request for a dataset?
+        if request.params['layerid'].startswith("ds"):
+
+            # Extract the dataset ID
+            ds_id = request.params['layerid'][len('ds_'):]
+
+            dataset = self._dataset_service.get_dataset_by_id(ds_id)
+
+            return self.datasetManager.get_ecomaps_layer_data(dataset).entity.getAsDict()
+
+        else:
+            # Use the old-style approach
+            wmsCapabilities = self.datasetManager.getLayerDataAsDict(request, self._get_session_endpoint_data())
+            if wmsCapabilities != None:
+                usage_logger.getUsageLogger(request).info('Get WMS capabilities: endpoint "%s" layer "%s"' %
+                                                          (wmsCapabilities['getMapUrl'], wmsCapabilities['name']))
+            return wmsCapabilities
 
     @jsonify
     def add_session_endpoint(self):
