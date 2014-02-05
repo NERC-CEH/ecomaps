@@ -80,18 +80,26 @@ class AnalysisRunner(object):
 
         self._source_dir = source_dir
 
-    def run(self):
+    def run(self, analysis_obj):
+        """Runs the analysis, updating the model object passed in with a result file URL and a
+            PNG image (base64 encoded)
+         Params:
+            analysis: Ecomaps analysis model to update
+        """
 
         with working_directory(os.path.join(os.path.dirname(__file__), self._source_dir)) as dir:
 
             #RUN
             analysis = EcomapsAnalysis(dir)
+
+            # Swap the urls out for the coverage and point datasets in the analysis object
             output_file_loc, image_file_loc = analysis.run('http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/ECOMAPSDetail/ECOMAPSInputLOI01.nc',
                          'http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/LCM2007_25mAggregation/DetailWholeDataset.ncml')
 
             with open(image_file_loc, "rb") as img:
 
                 encoded_image = base64.b64encode(img.read())
+                analysis_obj.result_image = encoded_image
 
             # Copy the result file to the ecomaps THREDDS server
             # This'll need moving to the config!
@@ -99,7 +107,12 @@ class AnalysisRunner(object):
 
             shutil.copyfile(output_file_loc, os.path.join(dest_dir, 'output_test.nc'))
 
-            p=0
+            # Generate a WMS URL for the image...
+            wms_url = 'TODO'
+
+            # Create a result dataset
+
+            # Set analysis_obj result dataset
 
 
 if __name__ == "__main__":

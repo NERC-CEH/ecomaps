@@ -1,6 +1,6 @@
 import unittest
-import os
 from ecomaps.analysis.run import AnalysisRunner
+from ecomaps.model import Analysis
 
 __author__ = 'Phil Jenkins (Tessella)'
 
@@ -8,6 +8,10 @@ class TestEcomapsAnalysis(unittest.TestCase):
 
     def test_analysis_run(self):
 
-        runner = AnalysisRunner(os.path.join(os.path.dirname(__file__), 'code_root/'))
+        pass
+        test_analysis = Analysis()
 
-        runner.run()
+        runner = AnalysisRunner('code_root')
+        runner.run(test_analysis)
+
+        self.assertNotEqual(test_analysis.result_image, None, "Expected an image to be populated")

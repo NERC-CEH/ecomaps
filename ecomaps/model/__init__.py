@@ -1,4 +1,4 @@
-from sqlalchemy import engine_from_config, Column, Integer, String, ForeignKey, Table, DateTime, create_engine
+from sqlalchemy import engine_from_config, Column, Integer, String, ForeignKey, Table, DateTime, create_engine, Text
 from sqlalchemy.orm import relationship
 from ecomaps.model.meta import Session, Base
 from contextlib import contextmanager
@@ -127,6 +127,7 @@ class Analysis(Base):
     viewable_by = Column(Integer, ForeignKey('users.id'), nullable=True)
     model_id = Column(Integer, ForeignKey('models.id'))
     goodness_of_fit = Column(Integer)
+    result_image = Column(Text)
 
     # FK Relationships
     run_by_user = relationship("User", foreign_keys=[run_by])
