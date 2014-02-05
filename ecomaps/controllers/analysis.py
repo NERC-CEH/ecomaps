@@ -1,10 +1,12 @@
 import logging
+import formencode
 
 from ecomaps.lib.base import BaseController, c, request, response, render, session, abort
 from ecomaps.services.analysis import AnalysisService
 from ecomaps.services.user import UserService
 from ecomaps.services.dataset import DatasetService
 from pylons import tmpl_context as c
+from ecomaps.model.configure_analysis_form import ConfigureAnalysisForm
 
 #from pylons import request, response, session, tmpl_context as c, url
 #from pylons.controllers.util import abort, redirect
@@ -34,14 +36,27 @@ class AnalysisController(BaseController):
     def create(self):
         """ Creates the configure analysis page"""
 
-        identity = request.environ.get('REMOTE_USER')
+        if not request.POST:
 
-        if identity is not None:
+            identity = request.environ.get('REMOTE_USER')
 
-            user = self._user_service.get_user_by_username(identity)
-            user_id = user.id
-            c.point_datasets = self._dataset_service.get_datasets_for_user(user_id,'Point')
-            c.coverage_datasets = self._dataset_service.get_datasets_for_user(user_id, 'Coverage')
+            if identity is not None:
 
-        return render('configure_analysis.html')
+                user = self._user_service.get_user_by_username(identity)
+                user_id = user.id
+                c.point_datasets = self._dataset_service.get_datasets_for_user(user_id,'Point')
+                c.coverage_datasets = self._dataset_service.get_datasets_for_user(user_id, 'Coverage')
+
+            return render('configure_analysis.html')
+
+        schema = ConfigureAnalysisForm()
+        c.form_errors = {}
+
+        if request.POST:
+
+            try:
+                c.form_result = schema.to_python(dict(request.params))
+            except formencode.Invalid, error:
+                response.content_type = 'text/plain'
+                return 'Invalid: '+unicode(error)
 
