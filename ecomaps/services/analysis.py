@@ -63,4 +63,12 @@ class AnalysisService(DatabaseService):
                 parameters - Extra parameters to pass to the model code
         """
 
+        with self.transaction_scope() as session:
+
+            analysis = Analysis()
+            analysis.id = user_id
+            analysis.name = name
+            analysis.point_data_dataset_id = point_dataset_id
+
+            session.add(analysis)
         pass
