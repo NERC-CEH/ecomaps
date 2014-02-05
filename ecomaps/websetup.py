@@ -46,22 +46,14 @@ def setup_app(command, conf, vars):
         ds.netcdf_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/testAll/LCM2007_GB_1K_DOM_TAR.nc'
 
         session.add(ds)
-
+        
         ds2 = Dataset()
         ds2.dataset_type = pointDst
         ds2.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/wms/CHESSModel001Run001OutputAggregation/DetailWholeDataset.ncml?service=WMS&version=1.3.0&request=GetCapabilities'
         ds2.name = 'Example CHESS dataset'
 
         session.add(ds2)
-
-        ds3 = Dataset()
-        ds3.dataset_type = resultDst
-        ds3.wms_url = 'http://localhost:8080/thredds/wms/testAll/output_test.nc?service=WMS&version=1.3.0&request=GetCapabilities'
-        ds3.name = 'Example result file'
-        ds3.netcdf_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/testAll/LCM2007_GB_1K_DOM_TAR.nc'
-
-        session.add(ds)
-
+        
         a1 = Analysis()
         a1.name = "JENP's Analysis 1"
         a1.viewable_by_user = user
@@ -72,3 +64,32 @@ def setup_app(command, conf, vars):
         a1.point_dataset = ds2
 
         session.add(a1)
+
+        # Additional databases for the purpose of testing the analysis configuration page
+        ds1 = Dataset()
+        ds1.dataset_type = coverDst
+        ds1.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/cover1'
+        ds1.name = 'Land Cover Map 1'
+
+        session.add(ds1)
+
+        ds2 = Dataset()
+        ds2.dataset_type = coverDst
+        ds2.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/cover2'
+        ds2.name = 'Land Cover Map 2'
+
+        session.add(ds2)
+
+        ds3 = Dataset()
+        ds3.dataset_type = pointDst
+        ds3.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/point1'
+        ds3.name = 'Land Point Map 1'
+
+        session.add(ds3)
+
+        ds4 = Dataset()
+        ds4.dataset_type = pointDst
+        ds4.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/point2'
+        ds4.name = 'Land Point Map 2'
+
+        session.add(ds4)
