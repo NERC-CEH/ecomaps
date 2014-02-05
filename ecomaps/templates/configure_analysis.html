@@ -8,11 +8,11 @@
 <body>
     <h1>Configure Analysis Page</h1>
 
-    <form>
+    <form method="POST">
         <p>Choose point data:
 
-            <select>
-                <option py:for="dataset in c.point_datasets">
+            <select name="point_dataset_id" id="point_dataset_id">
+                <option py:for="dataset in c.point_datasets" value="${dataset.id}">
                     ${dataset.name}
                 </option>
             </select>
@@ -21,17 +21,17 @@
 
         <p>Choose coverage data:</p>
 
-        <select multiple="true">
-            <option py:for="dataset in c.coverage_datasets">
+        <select multiple="true" id="coverage_sets_ids" name="coverage_sets_ids" >
+            <option py:for="dataset in c.coverage_datasets" value="${dataset.id}">
                 ${dataset.name}
             </option>
         </select>
 
         <p>Parameter1
-            <input type="text"/>
+            ${h.html_tags.text('parameter1')}
         </p>
 
-        <input type="submit" value="Run" />
+        <input type="submit" name="submit" value="Run" />
 
     </form>
 

@@ -9,6 +9,5 @@ class ConfigureAnalysisForm(formencode.Schema):
     allow_extra_fields = True
     filter_extra_fields = True
 
-    point_dataset = formencode.validators.String(not_empty=True)
-    coverage_sets = formencode.validators.String(not_empty=True)
-    parameter1 = formencode.validatlors.String(not_empty=True)
+    coverage_sets_ids = formencode.validators.String(not_empty=True)
+    parameter1 = formencode.validators.String(not_empty=True)
