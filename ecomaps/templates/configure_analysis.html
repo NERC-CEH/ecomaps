@@ -7,21 +7,33 @@
 </head>
 <body>
     <h1>Configure Analysis Page</h1>
-    <p>Choose point data:</p>
 
-    <select>
-        <li py:for="dataset in c.point_datasets">
-                <option>${dataset.name}</option>
-        </li>
-    </select>
+    <form>
+        <p>Choose point data:
 
-    <p>Choose coverage data:</p>
+            <select>
+                <option py:for="dataset in c.point_datasets">
+                    ${dataset.name}
+                </option>
+            </select>
 
-    <select>
-        <li py:for="dataset in c.coverage_datasets">
-                <option>${dataset.name}</option>
-        </li>
-    </select>
+        </p>
+
+        <p>Choose coverage data:</p>
+
+        <select multiple="true">
+            <option py:for="dataset in c.coverage_datasets">
+                ${dataset.name}
+            </option>
+        </select>
+
+        <p>Parameter1
+            <input type="text"/>
+        </p>
+
+        <input type="submit" value="Run" />
+
+    </form>
 
 </body>
 </html>
