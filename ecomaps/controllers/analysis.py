@@ -53,8 +53,6 @@ class AnalysisController(BaseController):
 
             user = self._user_service.get_user_by_username(identity)
             user_id = user.id
-            c.point_datasets = self._dataset_service.get_datasets_for_user(user_id,'Point')
-            c.coverage_datasets = self._dataset_service.get_datasets_for_user(user_id, 'Coverage')
 
             if not request.POST:
 
@@ -74,9 +72,8 @@ class AnalysisController(BaseController):
                     response.content_type = 'text/plain'
                     return 'Invalid: '+unicode(error)
                 else:
-                    self._analysis_service.create(user.name,
+                    self._analysis_service.create(form_result.get('analysis_name'),
                                 form_result.get('point_dataset_id'),
                                 form_result.get('coverage_dataset_ids'),
                                 user_id,
                                 form_result.get('parameter1'))
-

@@ -9,5 +9,6 @@ class ConfigureAnalysisForm(formencode.Schema):
     allow_extra_fields = True
     filter_extra_fields = False
 
+    analysis_name = formencode.validators.String(not_empty=True)
     coverage_dataset_ids = formencode.validators.Set()
     parameter1 = formencode.validators.String(not_empty=True)

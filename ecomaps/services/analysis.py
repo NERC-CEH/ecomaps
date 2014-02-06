@@ -68,6 +68,7 @@ class AnalysisService(DatabaseService):
         with self.transaction_scope() as session:
 
             analysis = Analysis()
+            analysis.name = name
             analysis.run_by = user_id
             analysis.viewable_by = user_id
             analysis.point_data_dataset_id = int(point_dataset_id)
