@@ -77,3 +77,4 @@ class AnalysisController(BaseController):
                                 form_result.get('coverage_dataset_ids'),
                                 user_id,
                                 form_result.get('parameter1'))
+                    return render('analysis_progress.html')
