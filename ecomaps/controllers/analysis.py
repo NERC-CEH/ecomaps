@@ -36,27 +36,33 @@ class AnalysisController(BaseController):
     def create(self):
         """ Creates the configure analysis page"""
 
-        if not request.POST:
+        identity = request.environ.get('REMOTE_USER')
+        if identity is not None:
 
-            identity = request.environ.get('REMOTE_USER')
+            user = self._user_service.get_user_by_username(identity)
+            user_id = user.id
 
-            if identity is not None:
+            if not request.POST:
 
-                user = self._user_service.get_user_by_username(identity)
-                user_id = user.id
                 c.point_datasets = self._dataset_service.get_datasets_for_user(user_id,'Point')
                 c.coverage_datasets = self._dataset_service.get_datasets_for_user(user_id, 'Coverage')
 
-            return render('configure_analysis.html')
+                return render('configure_analysis.html')
 
-        schema = ConfigureAnalysisForm()
-        c.form_errors = {}
+            schema = ConfigureAnalysisForm()
+            form_errors = {}
 
-        if request.POST:
+            if request.POST:
 
-            try:
-                c.form_result = schema.to_python(dict(request.params))
-            except formencode.Invalid, error:
-                response.content_type = 'text/plain'
-                return 'Invalid: '+unicode(error)
+                try:
+                    form_result = schema.to_python(dict(request.params))
+                except formencode.Invalid, error:
+                    response.content_type = 'text/plain'
+                    return 'Invalid: '+unicode(error)
+                else:
+                    self._analysis_service.create(user.name,
+                                form_result.get('point_dataset_id'),
+                                form_result.get('coverage_datasets_ids'),
+                                user_id,
+                                form_result.get('parameter1'))
 
