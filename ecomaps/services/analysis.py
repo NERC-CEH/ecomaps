@@ -50,9 +50,16 @@ class AnalysisService(DatabaseService):
             # infers that the analysis is published
             analysis.viewable_by = None
 
-    def index(self):
+    def get_analysis_by_id(self, analysis_id):
+        """Returns a single analysis with the given ID
+            Params:
+                analysis_id - ID of the analysis to look for
+        """
 
-        pass
+        with self.readonly_scope() as session:
+
+            return session.query(Analysis).get(analysis_id)
+
 
     def create(self, name, point_dataset_id, coverage_dataset_ids, user_id, parameters):
         """Creates a new analysis object

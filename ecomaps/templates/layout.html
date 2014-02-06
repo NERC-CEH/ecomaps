@@ -8,10 +8,10 @@
             EcoMaps<py:if test="title"> | ${title}</py:if>
         </title>
 
-        <link href="../layout/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen" />
-        <link href="../layout/ecomaps.css" rel="stylesheet" media="screen" />
+        <link href="/layout/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen" />
+        <link href="/layout/ecomaps.css" rel="stylesheet" media="screen" />
 
-        <script type="text/javascript" src="../layout/bootstrap/js/bootstrap.js"></script>
+        <script type="text/javascript" src="/layout/bootstrap/js/bootstrap.js"></script>
     </head>
 </py:match>
 
@@ -20,7 +20,22 @@
         <div class="navbar navbar-inverse navbar-fixed-top">
             <div class="navbar-inner">
                 <div class="container">
-                    <a class="brand">EcoMaps</a>
+                    <div class="pull-right">
+                        <a class="btn" href="${h.url(controller='account', action='logout')}">Log out</a>
+                    </div>
+                    <a class="brand" href="${h.url(controller='home')}">EcoMaps</a>
+
+                    <ul class="nav">
+                        <li>
+                            <a href="${h.url(controller='viewdata')}">Explore</a>
+                        </li>
+                        <li>
+                            <a href="${h.url(controller='analysis', action='create')}">New Analysis</a>
+                        </li>
+                        <li>
+                            <a href="${h.url(controller='analysis')}">My Ecomaps</a>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>

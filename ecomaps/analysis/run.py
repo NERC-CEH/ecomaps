@@ -136,11 +136,6 @@ class AnalysisRunner(object):
             analysis_obj.result_dataset = result_ds
 
 
-if __name__ == "__main__":
-
-    runner = AnalysisRunner('code_root')
-    runner.run()
-
 
 
 

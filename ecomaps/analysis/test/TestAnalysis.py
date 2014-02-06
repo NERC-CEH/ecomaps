@@ -1,4 +1,6 @@
 import unittest
+import shutil
+from mock import MagicMock
 from ecomaps.analysis.run import AnalysisRunner
 from ecomaps.model import Analysis
 

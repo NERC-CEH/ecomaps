@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:py="http://genshi.edgewall.org/">
+      xmlns:py="http://genshi.edgewall.org/"
+      xmlns:xi="http://www.w3.org/2001/XInclude">
+
+<xi:include href="layout.html" />
 <head>
     <title>Analysis List</title>
 </head>
 <body>
     <h1>My Ecomaps</h1>
 
-    <table if="c.analyses">
+    <table if="c.analyses" class="table">
         <thead>
             <tr>
                 <th>Name</th>
@@ -20,7 +23,7 @@
         <tbody>
             <tr py:for="analysis in c.analyses">
                 <td>
-                    ${analysis.name}
+                    <a href="${h.url(controller='analysis', action='view', id=analysis.id)}">${analysis.name}</a>
                 </td>
                 <td>
                     ${analysis.run_date.strftime('%d-%b-%Y %H:%M')}

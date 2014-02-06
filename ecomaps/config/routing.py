@@ -23,8 +23,8 @@ def make_map(config):
 
     # CUSTOM ROUTES HERE
     map.connect('/{controller}', action='index', id=None)
-    map.connect('/{controller}/{action}', id=None)
     map.connect('/{controller}/{action}/{id}')
+    map.connect('/{controller}/{action}', id=None)
     map.connect('*url', controller='template', action='view')
 
     return map
