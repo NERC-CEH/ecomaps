@@ -24,6 +24,11 @@ class BaseController(WSGIController):
     def __call__(self, environ, start_response):
         """Invoke the Controller"""
 
+        # Before we do anything, is there a "REMOTE USER"?
+        # If not, we've not been authenticated!
+        if not environ.get('REMOTE_USER') and 'login' not in environ.get('PATH_INFO'):
+            raise httpexceptions.HTTPUnauthorized()
+
         # Redirect to a canonical form of the URL if necessary.
         self._redirect_noncanonical_url(environ)
 
@@ -37,7 +42,7 @@ class BaseController(WSGIController):
         """Convert the URL to the form /{controller}/ if the request URL is of
         the form /{controller} and redirect.
         """
-        if environ['PATH_INFO'].lstrip('/').find('/') < 0:
+        if environ['PATH_INFO'] != '/' and environ['PATH_INFO'].lstrip('/').find('/') < 0:
             environ['PATH_INFO'] += '/'
             url = paste.request.construct_url(environ)
             raise httpexceptions.HTTPMovedPermanently(url)
