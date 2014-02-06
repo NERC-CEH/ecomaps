@@ -155,7 +155,7 @@ class WmsCapabilityReader():
         # otherwise just add a leaf node.
         children = []
         node = Node(layer.id, layer, children, treeInfo, keywordData)
-        idMap[layer.id] = node
+        #idMap[layer.id] = node
         nodes.append(node)
         if isLeaf:
             log.debug("Found layer: title '%s' (ID=%s)", layer.title, layer.id)

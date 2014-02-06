@@ -1,5 +1,5 @@
 import unittest
-from ecomaps.model import initialise_session, Base, Session, User, Dataset, Analysis, DatasetType
+from ecomaps.model import initialise_session, Base, Session, User, Dataset, Analysis, DatasetType, AnalysisCoverageDataset
 from ecomaps.services.analysis import AnalysisService
 from ecomaps.services.dataset import DatasetService
 
@@ -57,17 +57,17 @@ class IntegrationTests(unittest.TestCase):
 
             analysis_a = Analysis()
             analysis_a.point_dataset = dataset_a
-            analysis_a.coverage_datasets = [dataset_b]
+            analysis_a.coverage_datasets.append(AnalysisCoverageDataset(dataset_b))
             analysis_a.viewable_by = self._user_id
 
             analysis_b = Analysis()
             analysis_b.point_dataset = dataset_a
-            analysis_b.coverage_datasets = [dataset_b]
+            analysis_b.coverage_datasets.append(AnalysisCoverageDataset(dataset_b))
             analysis_b.run_by = self._user_id
 
             analysis_c = Analysis()
             analysis_c.point_dataset = dataset_a
-            analysis_c.coverage_datasets = [dataset_b]
+            analysis_c.coverage_datasets.append(AnalysisCoverageDataset(dataset_b))
             analysis_c.viewable_by = self._another_user_id
 
             session.add(analysis_a)

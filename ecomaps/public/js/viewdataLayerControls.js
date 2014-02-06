@@ -269,7 +269,7 @@ function ViewdataLayerControls(eventsManager, maxLayers, loginDialog) {
      */
     this.selectLayerByNode = function(node) {
         var nodeType = ViewdataLayerControls.nodeTypeFromId(node.id);
-        if (nodeType === "ll") {
+        if (nodeType === "ds" || nodeType==="ll") {
             var text = node.text;
 
             var parentNode = node.parentNode;
@@ -726,6 +726,11 @@ function ViewdataLayerControls(eventsManager, maxLayers, loginDialog) {
  * @param id - node ID
  */
 ViewdataLayerControls.nodeTypeFromId = function(id) {
+
+    if(id.substr(0,2) === "ds") {
+        return id.substr(0,2);
+    }
+
     var pos = id.indexOf(":");
     if (pos > 0) {
         return id.substr(0, pos);

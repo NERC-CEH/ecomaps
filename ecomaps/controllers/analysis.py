@@ -33,14 +33,28 @@ class AnalysisController(BaseController):
         self._analysis_service = analysis_service
         self._dataset_service = dataset_service
 
+    def index(self):
+        """Default action for the analysis controller"""
+
+        # Who am I?
+        user = self._user_service.get_user_by_username(request.environ['REMOTE_USER'])
+
+        # Grab the analyses...
+        c.analyses = self._analysis_service.get_analyses_for_user(user.id)
+
+        return render('analysis_list.html')
+
     def create(self):
         """ Creates the configure analysis page"""
 
         identity = request.environ.get('REMOTE_USER')
+
         if identity is not None:
 
             user = self._user_service.get_user_by_username(identity)
             user_id = user.id
+            c.point_datasets = self._dataset_service.get_datasets_for_user(user_id,'Point')
+            c.coverage_datasets = self._dataset_service.get_datasets_for_user(user_id, 'Coverage')
 
             if not request.POST:
 
