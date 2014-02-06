@@ -7,7 +7,7 @@ class ConfigureAnalysisForm(formencode.Schema):
     """Used to validate data from the Configure Analysis page"""
 
     allow_extra_fields = True
-    filter_extra_fields = True
+    filter_extra_fields = False
 
-    coverage_sets_ids = formencode.validators.String(not_empty=True)
+    coverage_dataset_ids = formencode.validators.Set()
     parameter1 = formencode.validators.String(not_empty=True)

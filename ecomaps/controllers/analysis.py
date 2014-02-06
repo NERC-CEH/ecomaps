@@ -69,14 +69,14 @@ class AnalysisController(BaseController):
             if request.POST:
 
                 try:
-                    form_result = schema.to_python(dict(request.params))
+                    form_result = schema.to_python(request.params)
                 except formencode.Invalid, error:
                     response.content_type = 'text/plain'
                     return 'Invalid: '+unicode(error)
                 else:
                     self._analysis_service.create(user.name,
                                 form_result.get('point_dataset_id'),
-                                form_result.get('coverage_datasets_ids'),
+                                form_result.get('coverage_dataset_ids'),
                                 user_id,
                                 form_result.get('parameter1'))
 
