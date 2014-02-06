@@ -1,11 +1,13 @@
 import logging
 from pylons.controllers.util import redirect
+import formencode
 
 from ecomaps.lib.base import BaseController, c, request, response, render, session, abort
 from ecomaps.services.analysis import AnalysisService
 from ecomaps.services.user import UserService
 from ecomaps.services.dataset import DatasetService
 from pylons import tmpl_context as c, url
+from ecomaps.model.configure_analysis_form import ConfigureAnalysisForm
 
 #from pylons import request, response, session, tmpl_context as c, url
 #from pylons.controllers.util import abort, redirect
@@ -32,13 +34,11 @@ class AnalysisController(BaseController):
         self._analysis_service = analysis_service
         self._dataset_service = dataset_service
 
-    def index(self, id=None):
+    def index(self):
         """Default action for the analysis controller"""
 
         # Who am I?
         user = self._user_service.get_user_by_username(request.environ['REMOTE_USER'])
-
-        # Just display the user's analyses
 
         # Grab the analyses...
         c.analyses = self._analysis_service.get_analyses_for_user(user.id)
@@ -57,7 +57,29 @@ class AnalysisController(BaseController):
             c.point_datasets = self._dataset_service.get_datasets_for_user(user_id,'Point')
             c.coverage_datasets = self._dataset_service.get_datasets_for_user(user_id, 'Coverage')
 
-        return render('configure_analysis.html')
+            if not request.POST:
+
+                c.point_datasets = self._dataset_service.get_datasets_for_user(user_id,'Point')
+                c.coverage_datasets = self._dataset_service.get_datasets_for_user(user_id, 'Coverage')
+
+                return render('configure_analysis.html')
+
+            schema = ConfigureAnalysisForm()
+            form_errors = {}
+
+            if request.POST:
+
+                try:
+                    form_result = schema.to_python(dict(request.params))
+                except formencode.Invalid, error:
+                    response.content_type = 'text/plain'
+                    return 'Invalid: '+unicode(error)
+                else:
+                    self._analysis_service.create(user.name,
+                                form_result.get('point_dataset_id'),
+                                form_result.get('coverage_datasets_ids'),
+                                user_id,
+                                form_result.get('parameter1'))
 
     def view(self, id=None):
         """Action to handle viewing a single analysis"""
@@ -77,6 +99,3 @@ class AnalysisController(BaseController):
             c.analysis = analysis
 
             return render('analysis_view.html')
-
-
-
