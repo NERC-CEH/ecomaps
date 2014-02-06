@@ -66,13 +66,6 @@ class DatasetType(Base):
 
         return "<DatasetType(type=%s)>" % self.type
 
-## Many-to-many relationship between an analysis and coverage datasets
-analysis_coverage_datasets = Table(
-    'analysis_coverage_datasets',
-    Base.metadata,
-    Column('dataset_id', Integer, ForeignKey('datasets.id')),
-    Column('analysis_id', Integer, ForeignKey('analyses.id')))
-
 class Dataset(Base):
     """Metadata around a map dataset"""
 
@@ -86,6 +79,10 @@ class Dataset(Base):
     viewable_by_user_id = Column(Integer, ForeignKey('users.id'), nullable=True)
 
     dataset_type = relationship("DatasetType", backref="datasets")
+
+    def __init__(self, id=None):
+
+        self.id = id
 
     def __repr__(self):
         """String representation of the Dataset class"""
@@ -137,11 +134,28 @@ class Analysis(Base):
     model = relationship("Model")
 
     # M2M for coverage datasets
-    coverage_datasets = relationship("Dataset",
-                                     secondary='analysis_coverage_datasets')
+    coverage_datasets = relationship("AnalysisCoverageDataset")
 
     def __repr__(self):
         """String representation of the analysis"""
 
         return "<Analysis(name=%s, run_date=%s, run_by=%s)>" % (self.name, self.run_date, self.run_by)
 
+
+class AnalysisCoverageDataset(Base):
+    """Provides a link between an analysis and a coverage dataset"""
+
+    __tablename__ = 'analysis_coverage_datasets'
+
+    analysis_id = Column(Integer, ForeignKey('analyses.id'), primary_key=True)
+    dataset_id = Column(Integer, ForeignKey('datasets.id'), primary_key=True)
+
+    dataset = relationship('Dataset')
+
+    def __init__(self, dataset=None, dataset_id=None):
+        """Convenience, lets you pass in a dataset or an id"""
+
+        if dataset:
+            self.dataset=dataset
+        elif dataset_id:
+            self.dataset_id = dataset_id

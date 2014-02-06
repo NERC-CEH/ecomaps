@@ -1,7 +1,7 @@
 import datetime
 import pylons.test
 from ecomaps.config.environment import load_environment
-from ecomaps.model import session_scope, DatasetType, Dataset, Analysis, User
+from ecomaps.model import session_scope, DatasetType, Dataset, Analysis, User, AnalysisCoverageDataset
 from ecomaps.model.meta import Base, Session
 
 __author__ = 'Phil Jenkins (Tessella)'
@@ -58,7 +58,20 @@ def setup_app(command, conf, vars):
         a1.name = "JENP's Analysis 1"
         a1.viewable_by_user = user
         a1.run_date = datetime.datetime.now()
-        a1.coverage_datasets = [ds]
+
+        # Adding a coverage dataset
+
+        # 1. Create the link object
+        cds = AnalysisCoverageDataset()
+
+        # 2. Either assign the dataset directly
+        cds.dataset = ds
+
+        # 3. Or just use the dataset ID
+        # cds.dataset_id = 1
+
+        # 4. Add to the analyses' collection
+        a1.coverage_datasets.append(cds)
         a1.goodness_of_fit = 75
         a1.run_by_user = user
         a1.point_dataset = ds2
