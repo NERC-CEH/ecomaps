@@ -3,7 +3,9 @@ from contextlib import contextmanager
 import tempfile
 import shutil
 import os
+import uuid
 from ecomaps.analysis.code_root.ecomaps_analysis import EcomapsAnalysis
+from ecomaps.model import Dataset
 
 __author__ = 'Phil Jenkins (Tessella)'
 
@@ -72,6 +74,9 @@ class AnalysisRunner(object):
     """Utility to run an analysis within the context of a temporary directory"""
 
     _source_dir = None
+    _thredds_wms_format = None
+    _netcdf_file_store = None
+    _open_ndap_format = None
 
     def __init__(self, source_dir):
 
@@ -79,6 +84,16 @@ class AnalysisRunner(object):
         # Move this out to a config.
 
         self._source_dir = source_dir
+
+        # Read the config
+        from ConfigParser import SafeConfigParser
+
+        config = SafeConfigParser()
+        config.read(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'config.ini'))
+
+        self._thredds_wms_format = config.get('thredds', 'thredds_wms_format')
+        self._netcdf_file_store = config.get('thredds', 'netcdf_file_location')
+        self._open_ndap_format = config.get('thredds', 'open_ndap_format')
 
     def run(self, analysis_obj):
         """Runs the analysis, updating the model object passed in with a result file URL and a
@@ -92,33 +107,34 @@ class AnalysisRunner(object):
             #RUN
             analysis = EcomapsAnalysis(dir)
 
+            file_name = "%s_%s.nc" % (analysis_obj.name, uuid.uuid4())
+
             # Swap the urls out for the coverage and point datasets in the analysis object
             output_file_loc, image_file_loc = analysis.run('http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/ECOMAPSDetail/ECOMAPSInputLOI01.nc',
                          'http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/LCM2007_25mAggregation/DetailWholeDataset.ncml')
 
+            # Write the result image to
             with open(image_file_loc, "rb") as img:
 
                 encoded_image = base64.b64encode(img.read())
                 analysis_obj.result_image = encoded_image
 
             # Copy the result file to the ecomaps THREDDS server
-            # This'll need moving to the config!
-            dest_dir = '/usr/share/tomcat6/content/thredds/public/testdata'
+            # Set the file name to the name of the analysis + a bit of uniqueness
+            shutil.copyfile(output_file_loc, os.path.join(self._netcdf_file_store, file_name))
 
-            shutil.copyfile(output_file_loc, os.path.join(dest_dir, 'output_test.nc'))
-
-            # Generate a WMS URL for the image...
-            wms_url = 'TODO'
+            # Generate a WMS URL for the output file...
+            wms_url = self._thredds_wms_format % file_name
 
             # Create a result dataset
+            result_ds = Dataset()
+            result_ds.name = 'Results for %s' % analysis_obj.name
+            result_ds.wms_url = wms_url
+            result_ds.netcdf_url = self._open_ndap_format % file_name
 
             # Set analysis_obj result dataset
+            analysis_obj.result_dataset = result_ds
 
-
-if __name__ == "__main__":
-
-    runner = AnalysisRunner('code_root')
-    runner.run()
 
 
 

@@ -1,11 +1,12 @@
 import logging
+from pylons.controllers.util import redirect
 import formencode
 
 from ecomaps.lib.base import BaseController, c, request, response, render, session, abort
 from ecomaps.services.analysis import AnalysisService
 from ecomaps.services.user import UserService
 from ecomaps.services.dataset import DatasetService
-from pylons import tmpl_context as c
+from pylons import tmpl_context as c, url
 from ecomaps.model.configure_analysis_form import ConfigureAnalysisForm
 
 #from pylons import request, response, session, tmpl_context as c, url

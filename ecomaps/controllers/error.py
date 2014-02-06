@@ -21,7 +21,9 @@ class ErrorController(BaseController):
             dict(prefix=request.environ.get('SCRIPT_NAME', ''),
                  code=request.params.get('code', ''),
                  message=request.params.get('message', ''))
-        return page
+        #return page
+
+        return render('not_found.html')
 
     def img(self, id):
         """Serve Pylons' stock images"""
