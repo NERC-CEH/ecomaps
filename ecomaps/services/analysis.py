@@ -2,6 +2,7 @@ from sqlalchemy.orm import subqueryload
 from sqlalchemy.sql import Alias, or_
 from ecomaps.model import Dataset, Analysis
 from ecomaps.services.general import DatabaseService
+from ecomaps.model import AnalysisCoverageDataset
 
 __author__ = 'Phil Jenkins (Tessella)'
 
@@ -65,7 +66,7 @@ class AnalysisService(DatabaseService):
         """Creates a new analysis object
             Params:
                 name - Friendly name for the analysis
-                point_dataset_id - Dataset containing point data
+                point_dataset_id - Id of dataset containing point data
                 coverage_dataset_ids - List of coverage dataset ids
                 user_id - Who is creating this analysis?
                 parameters - Extra parameters to pass to the model code
@@ -74,9 +75,17 @@ class AnalysisService(DatabaseService):
         with self.transaction_scope() as session:
 
             analysis = Analysis()
-            analysis.id = user_id
             analysis.name = name
-            analysis.point_data_dataset_id = point_dataset_id
+            analysis.run_by = user_id
+            analysis.viewable_by = user_id
+            analysis.point_data_dataset_id = int(point_dataset_id)
+
+            coverage_datasets = AnalysisCoverageDataset()
+
+            for id in coverage_dataset_ids:
+                id_as_int = int(id)
+                coverage_datasets.dataset_id = id_as_int
+                analysis.coverage_datasets.append(coverage_datasets)
 
             session.add(analysis)
         pass

@@ -54,8 +54,6 @@ class AnalysisController(BaseController):
 
             user = self._user_service.get_user_by_username(identity)
             user_id = user.id
-            c.point_datasets = self._dataset_service.get_datasets_for_user(user_id,'Point')
-            c.coverage_datasets = self._dataset_service.get_datasets_for_user(user_id, 'Coverage')
 
             if not request.POST:
 
@@ -70,32 +68,14 @@ class AnalysisController(BaseController):
             if request.POST:
 
                 try:
-                    form_result = schema.to_python(dict(request.params))
+                    form_result = schema.to_python(request.params)
                 except formencode.Invalid, error:
                     response.content_type = 'text/plain'
                     return 'Invalid: '+unicode(error)
                 else:
-                    self._analysis_service.create(user.name,
+                    self._analysis_service.create(form_result.get('analysis_name'),
                                 form_result.get('point_dataset_id'),
-                                form_result.get('coverage_datasets_ids'),
+                                form_result.get('coverage_dataset_ids'),
                                 user_id,
                                 form_result.get('parameter1'))
-
-    def view(self, id=None):
-        """Action to handle viewing a single analysis"""
-
-        if not id:
-            # Just pass to the list of analyses if no ID specified
-            return redirect(url(controller='analysis'))
-
-        # Attempt to get the analysis out of the database
-        analysis = self._analysis_service.get_analysis_by_id(id)
-
-        if not analysis:
-            c.object_type = 'analysis'
-
-            return render('not_found.html')
-        else:
-            c.analysis = analysis
-
-            return render('analysis_view.html')
+                    return render('analysis_progress.html')
