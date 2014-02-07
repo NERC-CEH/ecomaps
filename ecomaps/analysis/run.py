@@ -2,6 +2,7 @@ import base64
 from contextlib import contextmanager
 import tempfile
 import shutil
+import datetime
 import os
 import uuid
 from ecomaps.analysis.code_root.ecomaps_analysis import EcomapsAnalysis
@@ -134,6 +135,9 @@ class AnalysisRunner(object):
 
             # Set analysis_obj result dataset
             analysis_obj.result_dataset = result_ds
+
+            # Done, so set the run date too
+            analysis_obj.run_date = datetime.datetime.now()
 
 
 

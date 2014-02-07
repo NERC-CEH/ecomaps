@@ -6,6 +6,11 @@ html, body {
     overflow:hidden;
     height:100%;
 }
+
+.x-panel-body {
+    border: none;
+}
+
 .x-panel-body p {
     margin:5px;
 }

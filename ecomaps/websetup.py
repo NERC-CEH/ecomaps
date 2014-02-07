@@ -1,10 +1,21 @@
 import datetime
+import os
 import pylons.test
 from ecomaps.config.environment import load_environment
 from ecomaps.model import session_scope, DatasetType, Dataset, Analysis, User, AnalysisCoverageDataset
 from ecomaps.model.meta import Base, Session
 
 __author__ = 'Phil Jenkins (Tessella)'
+
+
+def _get_result_image():
+
+    example_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'example_image.txt')
+
+    with open(example_path, 'r') as image_file:
+
+        return image_file.read()
+
 
 
 def setup_app(command, conf, vars):
@@ -22,7 +33,7 @@ def setup_app(command, conf, vars):
 
         user = User()
         user.name = 'Phil Jenkins'
-        user.username = 'jenp'
+        user.username = 'philip.jenkins@tessella.com'
         user.email = 'phil.jenkins@tessella.com'
 
         pointDst = DatasetType()
@@ -57,7 +68,10 @@ def setup_app(command, conf, vars):
         a1 = Analysis()
         a1.name = "JENP's Analysis 1"
         a1.viewable_by_user = user
+        a1.run_by = user
         a1.run_date = datetime.datetime.now()
+        a1.result_image = _get_result_image()
+
 
         # Adding a coverage dataset
 
@@ -77,6 +91,18 @@ def setup_app(command, conf, vars):
         a1.point_dataset = ds2
 
         session.add(a1)
+
+        a2 = Analysis()
+        a2.name = "Example public analysis"
+        a2.run_date = datetime.datetime.now()
+        a2.run_by_user = user
+        a2.result_image = _get_result_image()
+        a2.coverage_datasets.append(cds)
+        a2.goodness_of_fit = 60
+        a2.point_dataset = ds2
+
+        session.add(a2)
+
 
         # Additional databases for the purpose of testing the analysis configuration page
         ds1 = Dataset()

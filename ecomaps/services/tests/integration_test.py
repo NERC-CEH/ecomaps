@@ -125,6 +125,11 @@ class IntegrationTests(unittest.TestCase):
         self.assertNotEqual(analysis_list, None, "Expected a result to be populated")
         self.assertEqual(len(analysis_list), 2, "Expected 2 analyses back")
 
+    def test_get_analysis_by_id(self):
+
+        analysis_service = AnalysisService()
+        analysis = analysis_service.get_analysis_by_id(1, 1)
+
     def test_get_public_analyses(self):
 
         analysis_service = AnalysisService()

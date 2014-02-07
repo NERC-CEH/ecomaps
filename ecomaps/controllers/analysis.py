@@ -41,7 +41,9 @@ class AnalysisController(BaseController):
         user = self._user_service.get_user_by_username(request.environ['REMOTE_USER'])
 
         # Grab the analyses...
-        c.analyses = self._analysis_service.get_analyses_for_user(user.id)
+        c.private_analyses = self._analysis_service.get_analyses_for_user(user.id)
+
+        c.public_analyses = self._analysis_service.get_public_analyses()
 
         return render('analysis_list.html')
 
@@ -79,3 +81,21 @@ class AnalysisController(BaseController):
                                 user_id,
                                 form_result.get('parameter1'))
                     return render('analysis_progress.html')
+
+    def view(self, id):
+        """Action for looking in detail at a single analysis
+            id - ID of the analysis to look at
+        """
+
+        user = request.environ.get('REMOTE_USER')
+
+        user_obj = self._user_service.get_user_by_username(user)
+
+        analysis = self._analysis_service.get_analysis_by_id(id, user_obj.id)
+
+        if analysis:
+            c.analysis = analysis
+            return render('analysis_view.html')
+        else:
+            c.object_type = 'analysis'
+            return render('not_found.html')

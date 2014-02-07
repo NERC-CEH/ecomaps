@@ -65,6 +65,7 @@ class AccountController(BaseController):
             try:
                 c.form_result = schema.to_python(request.params)
             except formencode.Invalid, error:
+                message = 'Could not log you in as there are missing values'
                 c.form_result = error.value
                 c.form_errors = error.error_dict or {}
             else:
@@ -115,6 +116,6 @@ class AccountController(BaseController):
 
 def custom_formatter(error):
     """Custom error formatter"""
-    return '<span class="error-message">%s</span>' % (
+    return '<span class="help-inline">%s</span>' % (
         htmlfill.html_quote(error)
     )

@@ -9,7 +9,6 @@
     custom_css_file = config.get('custom_css_file', None)
     login_url = config.get('login_url', None)
 ?>
-
 <head>
   <!-- The following line defines content type and utf-8 as character set. -->
   <!-- If you want your application to work flawlessly with various local -->
@@ -24,6 +23,11 @@
   <link rel="stylesheet" type="text/css" href="../layout/viewdata.css"/>
   <link rel="stylesheet" type="text/css" href="../resources/extux/css/tab-scroller-menu.css"/>
   <link py:if="custom_css_file" rel="stylesheet" type="text/css" href="${custom_css_file}"/>
+  <link href="/layout/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen" />
+  <link href="/layout/ecomaps.css" rel="stylesheet" media="screen" />
+
+  <script src="http://code.jquery.com/jquery.js"></script>
+  <script type="text/javascript" src="/layout/bootstrap/js/bootstrap.js"></script>
 
   <!-- First of javascript includes must be an adapter... -->
   <script type="text/javascript" src="../js/ext/adapter/ext/ext-base.js"></script>
@@ -336,9 +340,10 @@
                 region: 'north',
                 layout: 'fit',
                 title: customText.maptitle,
+                header: false,
                 collapsedTitle: '<div class="x-panel-header-collapsed x-unselectable">' + customText.maptitle + '</div>',
                 height: parseInt(initialStatus.BannerOptions.height),
-                collapsible: true,
+                collapsible: false,
                 floatable: false,
                 bodyStyle: initialStatus.BannerOptions.style,
                 html: bannerHtml
