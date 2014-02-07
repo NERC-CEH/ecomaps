@@ -2,10 +2,6 @@ html, body {
     height: 100%;
 }
 
-body {
-    /*padding-top: 60px;*/
-}
-
 #wrap {
     height: auto !important;
     margin: 0 auto -100px;
@@ -14,6 +10,7 @@ body {
 
 #wrap > .container {
     padding-top: 60px;
+    padding-bottom: 40px;
 }
 
 #footer {
@@ -47,6 +44,19 @@ body {
 
 .navbar-inverse .brand, .navbar-inverse .nav > li > a  {
     color: #EFEFEF;
+}
+
+.error-message
+{
+    color: #FF471F;
+    font-weight: bold;
+    padding: 0.5em;
+    border-left: solid 3px #FF471F;
+}
+
+span.error-message
+{
+    float: right;
 }
 
 a.brand > i.icon {

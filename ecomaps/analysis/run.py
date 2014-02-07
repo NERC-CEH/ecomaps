@@ -3,6 +3,7 @@ from contextlib import contextmanager
 import tempfile
 import shutil
 import datetime
+from threading import Thread
 import os
 import uuid
 from ecomaps.analysis.code_root.ecomaps_analysis import EcomapsAnalysis
@@ -69,7 +70,9 @@ def working_directory(root_dir):
     finally:
         shutil.rmtree(temp_dir)
 
+def report_progress(message):
 
+    print message
 
 class AnalysisRunner(object):
     """Utility to run an analysis within the context of a temporary directory"""
@@ -78,13 +81,15 @@ class AnalysisRunner(object):
     _thredds_wms_format = None
     _netcdf_file_store = None
     _open_ndap_format = None
+    _manager = None
 
-    def __init__(self, source_dir):
+    def __init__(self, source_dir, manager=None):
 
         # Set up the temporary directory
         # Move this out to a config.
 
         self._source_dir = source_dir
+        self._manager = manager
 
         # Read the config
         from ConfigParser import SafeConfigParser
@@ -95,6 +100,16 @@ class AnalysisRunner(object):
         self._thredds_wms_format = config.get('thredds', 'thredds_wms_format')
         self._netcdf_file_store = config.get('thredds', 'netcdf_file_location')
         self._open_ndap_format = config.get('thredds', 'open_ndap_format')
+
+    def run_async(self, analysis_obj):
+        """Runs the analysis asynchonously
+            Params:
+                analysis_obj: The ecomaps analysis object
+        """
+
+        analysis_thread = Thread(target=self.run, args=analysis_obj)
+        analysis_thread.start()
+
 
     def run(self, analysis_obj):
         """Runs the analysis, updating the model object passed in with a result file URL and a
@@ -138,6 +153,8 @@ class AnalysisRunner(object):
 
             # Done, so set the run date too
             analysis_obj.run_date = datetime.datetime.now()
+
+            self.manager and self.manager.complete()
 
 
 

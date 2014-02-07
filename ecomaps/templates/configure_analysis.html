@@ -2,40 +2,53 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:xi="http://www.w3.org/2001/XInclude"
       xmlns:py="http://genshi.edgewall.org/">
+<xi:include href="layout.html" />
 <head>
     <title>Configure Analysis</title>
+    <link rel="stylesheet" type="text/css" href="../layout/ecomaps.css"/>
 </head>
 <body>
     <h1>Configure Analysis Page</h1>
 
-    <form method="POST">
-        <p>Choose point data:
+    <form class="form-horizontal" method="POST">
 
-            <select name="point_dataset_id" id="point_dataset_id">
+        <div class="control-group">
+                <label for="point_dataset_id" class="control-label">Choose point data:</label>
+
+            <select name="point_dataset_id" id="point_dataset_id" class="controls">
                 <option py:for="dataset in c.point_datasets" value="${dataset.id}">
                     ${dataset.name}
                 </option>
             </select>
 
-        </p>
+        </div>
 
-        <p>Choose coverage data:</p>
+        <div class="control-group">
+            <label for="coverage_dataset_ids" class="control-label">Choose coverage data:</label>
 
-        <select multiple="true" id="coverage_dataset_ids" name="coverage_dataset_ids" >
-            <option py:for="dataset in c.coverage_datasets" value="${dataset.id}">
-                ${dataset.name}
-            </option>
-        </select>
+            <py:if test="msg">
+                <div class="error-message pull-right">${msg}</div>
+            </py:if>
 
-        <p>Name of Analysis
-            ${h.html_tags.text('analysis_name')}
-        </p>
+            <select multiple="true" id="coverage_dataset_ids" name="coverage_dataset_ids" class="controls">
+                <option py:for="dataset in c.coverage_datasets" value="${dataset.id}">
+                    ${dataset.name}
+                </option>
+            </select>
 
-        <p>Parameter1
-            ${h.html_tags.text('parameter1')}
-        </p>
+        </div>
 
-        <input type="submit" name="submit" value="Run" />
+        <div class="control-group">
+            <label for="analysis_name" class="control-label">Name of Analysis:</label>
+            ${h.html_tags.text('analysis_name', class_='controls')}
+        </div>
+
+        <div class="control-group">
+            <label for="parameter1" class="control-label">Parameter 1:</label>
+            ${h.html_tags.text('parameter1', class_='controls')}
+        </div>
+
+        <input type="submit" class="btn btn-primary control-group pull-right" name="submit" value="Run" />
 
     </form>
 
