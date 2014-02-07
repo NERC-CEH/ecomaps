@@ -8,6 +8,7 @@ from ecomaps.services.user import UserService
 from ecomaps.services.dataset import DatasetService
 from pylons import tmpl_context as c, url
 from ecomaps.model.configure_analysis_form import ConfigureAnalysisForm
+from formencode import htmlfill
 
 #from pylons import request, response, session, tmpl_context as c, url
 #from pylons.controllers.util import abort, redirect
@@ -55,27 +56,39 @@ class AnalysisController(BaseController):
             user = self._user_service.get_user_by_username(identity)
             user_id = user.id
 
-            if not request.POST:
+            c.point_datasets = self._dataset_service.get_datasets_for_user(user_id,'Point')
+            c.coverage_datasets = self._dataset_service.get_datasets_for_user(user_id, 'Coverage')
 
-                c.point_datasets = self._dataset_service.get_datasets_for_user(user_id,'Point')
-                c.coverage_datasets = self._dataset_service.get_datasets_for_user(user_id, 'Coverage')
+            if not request.POST:
 
                 return render('configure_analysis.html')
 
             schema = ConfigureAnalysisForm()
-            form_errors = {}
+            c.form_errors = {}
 
             if request.POST:
 
                 try:
-                    form_result = schema.to_python(request.params)
+                    c.form_result = schema.to_python(request.params)
                 except formencode.Invalid, error:
-                    response.content_type = 'text/plain'
-                    return 'Invalid: '+unicode(error)
+                    c.form_result = error.value
+                    c.form_errors = error.error_dict or {}
+                    html = render('configure_analysis.html')
+                    return htmlfill.render(html,
+                                           defaults=c.form_result,
+                                           errors=c.form_errors,
+                                           auto_error_formatter=custom_formatter)
                 else:
-                    self._analysis_service.create(form_result.get('analysis_name'),
-                                form_result.get('point_dataset_id'),
-                                form_result.get('coverage_dataset_ids'),
+                    self._analysis_service.create(c.form_result.get('analysis_name'),
+                                c.form_result.get('point_dataset_id'),
+                                c.form_result.get('coverage_dataset_ids'),
                                 user_id,
-                                form_result.get('parameter1'))
+                                c.form_result.get('parameter1'))
                     return render('analysis_progress.html')
+
+
+def custom_formatter(error):
+    """Custom error formatter"""
+    return '<span class="error-message">%s</span>' % (
+        htmlfill.html_quote(error)
+    )
