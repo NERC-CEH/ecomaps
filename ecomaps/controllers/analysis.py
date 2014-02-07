@@ -99,3 +99,7 @@ class AnalysisController(BaseController):
         else:
             c.object_type = 'analysis'
             return render('not_found.html')
+
+    def test(self):
+
+        return render('analysis_progress.html')

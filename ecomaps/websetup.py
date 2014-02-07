@@ -36,6 +36,14 @@ def setup_app(command, conf, vars):
         user.username = 'philip.jenkins@tessella.com'
         user.email = 'phil.jenkins@tessella.com'
 
+        user2 = User()
+        user2.name = 'Someone else'
+        user2.username = 'someone.else@tessella.com'
+        user2.email = 'someone.else@tessella.com'
+
+        session.add(user)
+        session.add(user2)
+
         pointDst = DatasetType()
         pointDst.type = 'Point'
 
@@ -102,6 +110,29 @@ def setup_app(command, conf, vars):
         a2.point_dataset = ds2
 
         session.add(a2)
+
+        a3 = Analysis()
+        a3.name = "Example public analysis 2"
+        a3.run_date = datetime.datetime.now()
+        a3.run_by_user = user2
+        a3.result_image = _get_result_image()
+        a3.coverage_datasets.append(cds)
+        a3.goodness_of_fit = 60
+        a3.point_dataset = ds2
+
+        session.add(a3)
+
+        a4 = Analysis()
+        a4.name = "Example private analysis - someone else"
+        a4.run_date = datetime.datetime.now()
+        a4.run_by_user = user2
+        a4.viewable_by_user = user2
+        a4.result_image = _get_result_image()
+        a4.coverage_datasets.append(cds)
+        a4.goodness_of_fit = 60
+        a4.point_dataset = ds2
+
+        session.add(a4)
 
 
         # Additional databases for the purpose of testing the analysis configuration page
