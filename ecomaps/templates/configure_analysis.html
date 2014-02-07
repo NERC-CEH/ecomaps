@@ -11,6 +11,7 @@
     <h1>Configure Analysis Page</h1>
 
     <form class="form-horizontal" method="POST">
+
         <div class="control-group">
                 <label for="point_dataset_id" class="control-label">Choose point data:</label>
 
@@ -24,6 +25,10 @@
 
         <div class="control-group">
             <label for="coverage_dataset_ids" class="control-label">Choose coverage data:</label>
+
+            <py:if test="msg">
+                <div class="error-message pull-right">${msg}</div>
+            </py:if>
 
             <select multiple="true" id="coverage_dataset_ids" name="coverage_dataset_ids" class="controls">
                 <option py:for="dataset in c.coverage_datasets" value="${dataset.id}">
@@ -43,7 +48,7 @@
             ${h.html_tags.text('parameter1', class_='controls')}
         </div>
 
-        <input type="submit" class="btn btn-primary control-group" name="submit" value="Run" />
+        <input type="submit" class="btn btn-primary control-group pull-right" name="submit" value="Run" />
 
     </form>
 

@@ -58,10 +58,12 @@ class AnalysisController(BaseController):
 
             c.point_datasets = self._dataset_service.get_datasets_for_user(user_id,'Point')
             c.coverage_datasets = self._dataset_service.get_datasets_for_user(user_id, 'Coverage')
+            msg = ''
 
             if not request.POST:
 
-                return render('configure_analysis.html')
+                return render('configure_analysis.html',
+                              extra_vars={'msg': msg})
 
             schema = ConfigureAnalysisForm()
             c.form_errors = {}
@@ -70,10 +72,19 @@ class AnalysisController(BaseController):
 
                 try:
                     c.form_result = schema.to_python(request.params)
+                    #    If coverage_dataset_ids is not populated on the form
+                    #    the validation doesn't throw an error, but instead returns an empty
+                    #    array. Hence we have to do the error-handling ourselves
+                    if not c.form_result.get('coverage_dataset_ids'):
+                        msg = "Please enter a value"
+                        raise formencode.Invalid(msg,
+                                                 None,
+                                                 c)
                 except formencode.Invalid, error:
                     c.form_result = error.value
                     c.form_errors = error.error_dict or {}
-                    html = render('configure_analysis.html')
+                    html = render('configure_analysis.html',
+                                  extra_vars={'msg': msg})
                     return htmlfill.render(html,
                                            defaults=c.form_result,
                                            errors=c.form_errors,
