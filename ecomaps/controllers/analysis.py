@@ -64,8 +64,7 @@ class AnalysisController(BaseController):
 
             if not request.POST:
 
-                return render('configure_analysis.html',
-                              extra_vars={'msg': msg})
+                return render('configure_analysis.html')
 
             schema = ConfigureAnalysisForm()
             c.form_errors = {}
