@@ -1,3 +1,4 @@
+import datetime
 from sqlalchemy.orm import subqueryload
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.sql import Alias, or_
@@ -90,6 +91,9 @@ class AnalysisService(DatabaseService):
             analysis.viewable_by = user_id
             analysis.point_data_dataset_id = int(point_dataset_id)
 
+            # Putting this in for testing purposes only!
+            analysis.run_date = datetime.datetime.now()
+
             coverage_datasets = AnalysisCoverageDataset()
 
             for id in coverage_dataset_ids:
@@ -98,4 +102,3 @@ class AnalysisService(DatabaseService):
                 analysis.coverage_datasets.append(coverage_datasets)
 
             session.add(analysis)
-        pass
