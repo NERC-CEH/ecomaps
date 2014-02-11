@@ -1,7 +1,9 @@
 import datetime
+from random import randint
 from sqlalchemy.orm import subqueryload
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.sql import Alias, or_
+from ecomaps import websetup
 from ecomaps.model import Dataset, Analysis
 from ecomaps.services.general import DatabaseService
 from ecomaps.model import AnalysisCoverageDataset
@@ -93,6 +95,17 @@ class AnalysisService(DatabaseService):
 
             # Putting this in for testing purposes only!
             analysis.run_date = datetime.datetime.now()
+            analysis.result_image = websetup._get_result_image()
+            analysis.goodness_of_fit = randint(50, 100)
+
+            result_dataset = Dataset()
+            result_dataset.dataset_type_id = 3
+            result_dataset.name = "Results for %s" % analysis.name
+            result_dataset.viewable_by_user_id = user_id
+
+            analysis.result_dataset = result_dataset
+
+            # End of temporary test code
 
             coverage_datasets = AnalysisCoverageDataset()
 
@@ -102,3 +115,8 @@ class AnalysisService(DatabaseService):
                 analysis.coverage_datasets.append(coverage_datasets)
 
             session.add(analysis)
+            session.flush([analysis])
+            session.refresh(analysis)
+
+
+            return analysis.id

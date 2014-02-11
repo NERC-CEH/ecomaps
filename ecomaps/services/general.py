@@ -46,6 +46,7 @@ class DatabaseService(object):
         try:
             yield session
             session.commit()
+            session.expunge_all()
         except:
             session.rollback()
             raise

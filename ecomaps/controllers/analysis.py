@@ -95,27 +95,40 @@ class AnalysisController(BaseController):
                                            errors=c.form_errors,
                                            auto_error_formatter=custom_formatter)
                 else:
-                    self._analysis_service.create(c.form_result.get('analysis_name'),
+                    analysis_id = self._analysis_service.create(c.form_result.get('analysis_name'),
                                 c.form_result.get('point_dataset_id'),
                                 c.form_result.get('coverage_dataset_ids'),
                                 user_id,
                                 c.form_result.get('parameter1'))
+
+                    c.analysis_id = analysis_id
+
                     return render('analysis_progress.html')
 
     def view(self, id):
         """Action for looking in detail at a single analysis
             id - ID of the analysis to look at
         """
-
         user = request.environ.get('REMOTE_USER')
 
         user_obj = self._user_service.get_user_by_username(user)
+
+        added_successfully = ''
+
+        if request.POST:
+            try:
+                c.form_result = request.params
+                id = int(c.form_result.get('id_to_publish'))
+                self._analysis_service.publish_analysis(id)
+                added_successfully = True
+            except:
+                added_successfully = False
 
         analysis = self._analysis_service.get_analysis_by_id(id, user_obj.id)
 
         if analysis:
             c.analysis = analysis
-            return render('analysis_view.html')
+            return render('analysis_view.html', extra_vars={'added_successfully': added_successfully})
         else:
             c.object_type = 'analysis'
             return render('not_found.html')

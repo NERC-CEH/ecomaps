@@ -18,8 +18,21 @@
     </div>
     <div class="row">
         <div class="span12">
-            <h4>Progress</h4>
+            <h4>Progress messages will appear here</h4>
+            <p>
+                This page is for testing purposes only. It will redirect after 5 seconds.
+            </p>
         </div>
     </div>
+
+    <script type="text/javascript" language="JavaScript">
+        $(function () {
+
+            window.setTimeout(function(){
+                window.location.href = 'view/${c.analysis_id}'
+            }, 5000)
+
+        });
+    </script>
 </body>
 </html>
