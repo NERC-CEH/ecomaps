@@ -110,16 +110,22 @@ class AnalysisController(BaseController):
 
         user_obj = self._user_service.get_user_by_username(user)
 
+        added_successfully = ''
+
         if request.POST:
-            c.form_result = request.params
-            id = int(c.form_result.get('id_to_publish'))
-            self._analysis_service.publish_analysis(id)
+            try:
+                c.form_result = request.params
+                id = int(c.form_result.get('id_to_publish'))
+                self._analysis_service.publish_analysis(id)
+                added_successfully = True
+            except:
+                added_successfully = False
 
         analysis = self._analysis_service.get_analysis_by_id(id, user_obj.id)
 
         if analysis:
             c.analysis = analysis
-            return render('analysis_view.html')
+            return render('analysis_view.html', extra_vars={'added_successfully': added_successfully})
         else:
             c.object_type = 'analysis'
             return render('not_found.html')

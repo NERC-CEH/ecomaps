@@ -8,6 +8,22 @@
     <title>${c.analysis.name}</title>
 </head>
 <body>
+    <div>
+        <py:if test="added_successfully">
+            <py:choose>
+                <py:when test="added_successfully">
+                    <div class="alert alert-success">
+                        <b>Well done!</b> You have successfully published an Ecomap.
+                    </div>
+                </py:when>
+                <py:otherwise>
+                    <div class="alert alert-error">
+                        <b>Oh snap!</b> Ecomap was not published correctly.
+                    </div>
+                </py:otherwise>
+            </py:choose>
+        </py:if>
+    </div>
 
     <div class="row">
         <div class="span5">
