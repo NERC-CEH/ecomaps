@@ -95,11 +95,14 @@ class AnalysisController(BaseController):
                                            errors=c.form_errors,
                                            auto_error_formatter=custom_formatter)
                 else:
-                    self._analysis_service.create(c.form_result.get('analysis_name'),
+                    analysis_id = self._analysis_service.create(c.form_result.get('analysis_name'),
                                 c.form_result.get('point_dataset_id'),
                                 c.form_result.get('coverage_dataset_ids'),
                                 user_id,
                                 c.form_result.get('parameter1'))
+
+                    c.analysis_id = analysis_id
+
                     return render('analysis_progress.html')
 
     def view(self, id):
