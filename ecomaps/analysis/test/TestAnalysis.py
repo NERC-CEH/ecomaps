@@ -1,3 +1,4 @@
+import threading
 import unittest
 import shutil
 from mock import MagicMock
@@ -13,6 +14,7 @@ class TestEcomapsAnalysis(unittest.TestCase):
         test_analysis = Analysis()
         test_analysis.name = "Testing times"
         runner = AnalysisRunner('code_root')
+
         runner.run(test_analysis)
 
         self.assertNotEqual(test_analysis.result_image, None, "Expected an image to be populated")

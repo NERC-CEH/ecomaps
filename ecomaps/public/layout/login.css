@@ -6,7 +6,7 @@ html
 }
 
 html {
-  background: url(images/3751.jpg) no-repeat center center fixed;
+  background: url(images/3750.jpg) no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -18,12 +18,12 @@ body
     height: 100%;
     margin: 0;
     min-width: 768px;
+    background: none;
 }
 
 #logo
 {
-    height: 250px;
-    background-image: url(images/ecomaps.png);
+    height: 200px;
     background-repeat: no-repeat;
     background-position: center top;
 }
@@ -34,23 +34,22 @@ body
     opacity: 0.3;
     position: absolute;
     top: 15px;
-    height: 220px;
+    height: 150px;
     width: 100%;
 }
 
-#content
+#login-form
 {
-    opacity: 0.8;
-    margin: 1em  auto;
-    width: 800px;
-    min-width: 800px;
+    background: #FFFFFF;
+    margin-left: 150px;
+    opacity: 0.9;
+    padding: 20px;
 }
 
-.content-title
+h1
 {
-    background: #FFF;
-    color: #33717F;
-    font-weight: bold;
+    color: #FFF;
+    background: #00A3CC;
     padding: 0.5em;
 }
 
@@ -71,57 +70,6 @@ body
 span.error-message
 {
     float: right;
-}
-
-.form form
-{
-    margin-bottom: 0;
-}
-
-.form ol
-{
-    list-style-type: none;
-    margin: 0 5%;
-    padding: 1em;
-}
-
-.form ol li
-{
-    padding: 0.5em;
-}
-
-.form ol li input
-{
-    border: none;
-    padding: 0.5em;
-    width: 300px;
-}
-
-label
-{
-    display: inline-block;
-    width: 75px;
-    text-align: right;
-}
-
-div.submit-container
-{
-    background: #33717F;
-    padding: 1em;
-    text-align: right;
-}
-
-div.submit-container input
-{
-    padding: 0.5em;
-    border: solid 3px #FFF;
-}
-
-div.submit-container input:hover
-{
-    border: solid 3px #A6EF33;
-    cursor: pointer;
-    color: #33717F;
 }
 
 div#footer

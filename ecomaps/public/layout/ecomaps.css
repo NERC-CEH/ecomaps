@@ -1,6 +1,31 @@
-body {
+html, body {
+    height: 100%;
+}
+
+#wrap {
+    height: auto !important;
+    margin: 0 auto -100px;
+    min-height: 100%;
+}
+
+#wrap > .container {
     padding-top: 60px;
     padding-bottom: 40px;
+}
+
+#footer {
+    background-color: #F5F5F5;
+    border-top: 1px solid #E5E5E5;
+}
+
+#footer > a {
+    display: block;
+    padding: 10px;
+}
+
+#push, #footer {
+    /* 1px less than the padding, margins due to the 1px border on the footer */
+    height: 99px;
 }
 
 .hero-unit h1
@@ -32,4 +57,8 @@ body {
 span.error-message
 {
     float: right;
+}
+
+a.brand > i.icon {
+    margin: 5px 5px 5px 0;
 }

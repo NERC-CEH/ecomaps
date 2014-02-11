@@ -11,36 +11,46 @@
         <link href="/layout/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen" />
         <link href="/layout/ecomaps.css" rel="stylesheet" media="screen" />
 
+        <script src="http://code.jquery.com/jquery.js"></script>
         <script type="text/javascript" src="/layout/bootstrap/js/bootstrap.js"></script>
     </head>
 </py:match>
 
 <py:match path="body" once="true">
     <body py:attrs="select('@*')">
-        <div class="navbar navbar-inverse navbar-fixed-top">
-            <div class="navbar-inner">
-                <div class="container">
-                    <div class="pull-right">
-                        <a class="btn" href="${h.url(controller='account', action='logout')}">Log out</a>
-                    </div>
-                    <a class="brand" href="${h.url(controller='home')}">EcoMaps</a>
+        <div id="wrap">
+            <div class="navbar navbar-inverse navbar-fixed-top">
+                <div class="navbar-inner">
+                    <div class="container">
+                        <div class="pull-right">
+                            <a class="btn" href="${h.url(controller='account', action='logout')}">Log out</a>
+                        </div>
+                        <a class="brand" href="${h.url(controller='home')}">EcoMaps</a>
 
-                    <ul class="nav">
-                        <li>
-                            <a href="${h.url(controller='viewdata')}">Explore</a>
-                        </li>
-                        <li>
-                            <a href="${h.url(controller='analysis', action='create')}">New Analysis</a>
-                        </li>
-                        <li>
-                            <a href="${h.url(controller='analysis')}">My Ecomaps</a>
-                        </li>
-                    </ul>
+                        <ul class="nav">
+                            <li>
+                                <a href="${h.url(controller='viewdata')}">Explore</a>
+                            </li>
+                            <li>
+                                <a href="${h.url(controller='analysis', action='create')}">New Analysis</a>
+                            </li>
+                            <li>
+                                <a href="${h.url(controller='analysis')}">My Ecomaps</a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
+            <div class="container">
+                ${select('*|text()')}
+            </div>
+            <div id="push"></div>
         </div>
-        <div class="container">
-            ${select('*|text()')}
+        <div id="footer">
+                <a class="pull-left" href="http://www.ceh.ac.uk" target="_blank"><img src="/layout/images/ceh_transparent.gif" /></a>
+
+                <a class="pull-right" href="http://www.tessella.co.uk" target="_blank"><img src="../layout/images/tessella.png" /></a>
+
         </div>
     </body>
 </py:match>

@@ -1,4 +1,5 @@
 from sqlalchemy.orm import subqueryload
+from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.sql import Alias, or_
 from ecomaps.model import Dataset, Analysis
 from ecomaps.services.general import DatabaseService
@@ -34,6 +35,7 @@ class AnalysisService(DatabaseService):
             return session.query(Analysis) \
                         .options(subqueryload(Analysis.point_dataset)) \
                         .options(subqueryload(Analysis.coverage_datasets)) \
+                        .options(subqueryload(Analysis.run_by_user)) \
                         .filter(Analysis.viewable_by == None) \
                         .all()
 
@@ -51,7 +53,7 @@ class AnalysisService(DatabaseService):
             # infers that the analysis is published
             analysis.viewable_by = None
 
-    def get_analysis_by_id(self, analysis_id):
+    def get_analysis_by_id(self, analysis_id, user_id):
         """Returns a single analysis with the given ID
             Params:
                 analysis_id - ID of the analysis to look for
@@ -59,7 +61,15 @@ class AnalysisService(DatabaseService):
 
         with self.readonly_scope() as session:
 
-            return session.query(Analysis).get(analysis_id)
+            try:
+
+                return session.query(Analysis).filter(Analysis.id == analysis_id,
+                                              or_(or_(Analysis.viewable_by == user_id,
+                                                      Analysis.viewable_by == None),
+                                                  Analysis.run_by == user_id)).one()
+
+            except NoResultFound:
+                return None
 
 
     def create(self, name, point_dataset_id, coverage_dataset_ids, user_id, parameters):

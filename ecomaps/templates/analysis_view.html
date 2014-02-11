@@ -5,9 +5,17 @@
 
 <xi:include href="layout.html" />
 <head>
-    <title>Analysis List</title>
+    <title>${c.analysis.name}</title>
 </head>
 <body>
-    Viewing ${c.analysis.name}...
+
+    <div class="row">
+        <div class="span5">
+            <h1>${c.analysis.name}</h1>
+        </div>
+        <div class="span7">
+            <img class="img-polaroid" src="data:image/png;base64, ${c.analysis.result_image}" />
+        </div>
+    </div>
 </body>
 </html>
