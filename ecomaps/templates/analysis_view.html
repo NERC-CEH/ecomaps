@@ -17,5 +17,14 @@
             <img class="img-polaroid" src="data:image/png;base64, ${c.analysis.result_image}" />
         </div>
     </div>
+
+    <form method="POST">
+        <div>
+            <py:if test="c.analysis.viewable_by">
+                <input type="hidden" id="id_to_publish" name="id_to_publish" value='${c.analysis.id}' />
+                 <input type="submit" class="btn btn-primary btn-large pull-right" name="submit" value="Publish" />
+            </py:if>
+        </div>
+    </form>
 </body>
 </html>
