@@ -33,7 +33,11 @@ html, body {
     font-size: 200%;
 }
 
+.navbar{
+    filter: none;
+}
 .navbar-inverse .navbar-inner {
+    filter: none;
     background: #00A3CC;
     border-color: #999999;
 }
