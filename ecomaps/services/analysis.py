@@ -55,6 +55,7 @@ class AnalysisService(DatabaseService):
             # Now update the "viewable by" field - setting to None
             # infers that the analysis is published
             analysis.viewable_by = None
+            analysis.result_dataset.viewable_by_user_id = None
 
     def get_analysis_by_id(self, analysis_id, user_id):
         """Returns a single analysis with the given ID
