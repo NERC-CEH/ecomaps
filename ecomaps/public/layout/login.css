@@ -6,11 +6,12 @@ html
 }
 
 html {
-  background: url(images/3750.jpg) no-repeat center center fixed;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
+    background: url(images/3750.jpg) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    width:100%;
 }
 
 body
@@ -32,6 +33,7 @@ body
 {
     background: #FFF;
     opacity: 0.3;
+    filter: alpha(opacity=30);
     position: absolute;
     top: 15px;
     height: 150px;
