@@ -14,7 +14,7 @@
 
         <div class="control-group">
                 <label for="point_dataset_id" class="control-label">Choose point data:</label>
-l
+
             <select name="point_dataset_id" id="point_dataset_id" class="controls">
                 <option py:for="dataset in c.point_datasets" value="${dataset.id}">
                     ${dataset.name}
@@ -58,7 +58,6 @@ l
                 // Find the parent control group
                 // Swap the message with the input
                 $(el).insertAfter($(el).next());
-
                 $(el).closest("div.control-group").addClass("error");
             });
         })

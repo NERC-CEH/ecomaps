@@ -1,5 +1,6 @@
 import base64
 from contextlib import contextmanager
+import logging
 import tempfile
 import shutil
 import datetime
@@ -7,9 +8,11 @@ from threading import Thread
 import os
 import uuid
 from ecomaps.analysis.code_root.ecomaps_analysis import EcomapsAnalysis
-from ecomaps.model import Dataset
+from ecomaps.model import Dataset, session_scope, Analysis
 
 __author__ = 'Phil Jenkins (Tessella)'
+
+log = logging.getLogger(__name__)
 
 class EcomapsAnalysisWorkingDirectory(object):
     """Encapsulates the aspects of a directory containing the ecomaps analysis"""
@@ -81,7 +84,7 @@ class AnalysisRunner(object):
     _thredds_wms_format = None
     _netcdf_file_store = None
     _open_ndap_format = None
-    _manager = None
+    _analysis_obj = None
 
     def __init__(self, source_dir, manager=None):
 
@@ -89,7 +92,6 @@ class AnalysisRunner(object):
         # Move this out to a config.
 
         self._source_dir = source_dir
-        self._manager = manager
 
         # Read the config
         from ConfigParser import SafeConfigParser
@@ -107,7 +109,7 @@ class AnalysisRunner(object):
                 analysis_obj: The ecomaps analysis object
         """
 
-        analysis_thread = Thread(target=self.run, args=analysis_obj)
+        analysis_thread = Thread(target=self.run, kwargs={'analysis_obj':analysis_obj})
         analysis_thread.start()
 
 
@@ -118,22 +120,26 @@ class AnalysisRunner(object):
             analysis: Ecomaps analysis model to update
         """
 
+        self._analysis_obj = analysis_obj
+
         with working_directory(os.path.join(os.path.dirname(__file__), self._source_dir)) as dir:
+
+            log.debug("Analysis for %s has started" % self._analysis_obj.name)
 
             #RUN
             analysis = EcomapsAnalysis(dir)
 
-            file_name = "%s_%s.nc" % (analysis_obj.name, uuid.uuid4())
+            file_name = "%s_%s.nc" % (self._analysis_obj.name, uuid.uuid4())
 
             # Swap the urls out for the coverage and point datasets in the analysis object
             output_file_loc, image_file_loc = analysis.run('http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/ECOMAPSDetail/ECOMAPSInputLOI01.nc',
-                         'http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/LCM2007_25mAggregation/DetailWholeDataset.ncml')
+                         'http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/LCM2007_25mAggregation/DetailWholeDataset.ncml', self._update_progress)
 
             # Write the result image to
             with open(image_file_loc, "rb") as img:
 
                 encoded_image = base64.b64encode(img.read())
-                analysis_obj.result_image = encoded_image
+                self._analysis_obj.result_image = encoded_image
 
             # Copy the result file to the ecomaps THREDDS server
             # Set the file name to the name of the analysis + a bit of uniqueness
@@ -144,19 +150,40 @@ class AnalysisRunner(object):
 
             # Create a result dataset
             result_ds = Dataset()
-            result_ds.name = 'Results for %s' % analysis_obj.name
+            result_ds.name = 'Results for %s' % self._analysis_obj.name
             result_ds.wms_url = wms_url
             result_ds.netcdf_url = self._open_ndap_format % file_name
 
-            # Set analysis_obj result dataset
-            analysis_obj.result_dataset = result_ds
+            self._save_analysis(self._analysis_obj, result_ds)
 
-            # Done, so set the run date too
-            analysis_obj.run_date = datetime.datetime.now()
-
-            self.manager and self.manager.complete()
+            self._update_progress('Complete', True)
 
 
+    def _update_progress(self, message, complete=False):
+        """Simply updates the analysis progress message
+            Params:
+                analysis_obj: Analysis object to update
+                message: Message to use
+                complete: Set to True if complete
+        """
 
+        log.debug(message)
+
+        with session_scope() as session:
+
+            a = session.query(Analysis).get(self._analysis_obj.id)
+
+            a.progress_message = message
+            a.complete = complete
+            session.add(a)
+
+    def _save_analysis(self, analysis_obj, result_ds):
+
+        with session_scope() as session:
+
+            a = session.query(Analysis).get(self._analysis_obj.id)
+            a.result_dataset = result_ds
+            a.run_date = datetime.datetime.now()
+            session.add(a)
 
 
