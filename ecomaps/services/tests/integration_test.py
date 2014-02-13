@@ -8,7 +8,7 @@ __author__ = 'Phil Jenkins (Tessella)'
 
 class IntegrationTests(unittest.TestCase):
 
-    _connectionstring = 'mysql+mysqlconnector://ecomaps-admin:ecomaps@localhost/ecomaps_test'
+    _connectionstring = 'mysql+mysqlconnector://ecomaps-admin:U7gb1HmW@localhost/ecomaps_test'
     _user_id = None
     _another_user_id = None
     _service = None
@@ -139,6 +139,7 @@ class IntegrationTests(unittest.TestCase):
 
         analysis_service = AnalysisService()
         analysis = analysis_service.get_analysis_by_id(1, 1)
+        g=0
 
     def test_get_public_analyses(self):
 

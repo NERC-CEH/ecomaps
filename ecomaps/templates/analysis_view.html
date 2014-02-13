@@ -25,43 +25,58 @@
         </py:if>
     </div>
 
-    <div class="row">
-        <div class="span5">
-            <h1>${c.analysis.name}</h1>
-
+    <py:choose>
+        <py:when test="c.analysis.complete">
             <div class="row">
-                <div class="span6">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Result</th>
-                                <th>Value</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    Goodness of fit
-                                </td>
-                                <td>${c.analysis.goodness_of_fit}</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="span5">
+                    <h1>${c.analysis.name}</h1>
+
+                    <div class="row">
+                        <div class="span6">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Result</th>
+                                        <th>Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            Goodness of fit
+                                        </td>
+                                        <td>${c.analysis.goodness_of_fit}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="span7">
+                    <img class="img-polaroid" src="data:image/png;base64, ${c.analysis.result_image}" />
                 </div>
             </div>
-        </div>
-        <div class="span7">
-            <img class="img-polaroid" src="data:image/png;base64, ${c.analysis.result_image}" />
-        </div>
-    </div>
 
-    <form method="POST">
-        <div>
-            <py:if test="c.analysis.viewable_by">
-                <input type="hidden" id="id_to_publish" name="id_to_publish" value='${c.analysis.id}' />
-                 <input type="submit" class="btn btn-primary btn-large pull-right" name="submit" value="Publish" />
-            </py:if>
-        </div>
-    </form>
+            <form method="POST">
+                <div>
+                    <py:if test="c.analysis.viewable_by">
+                        <input type="hidden" id="id_to_publish" name="id_to_publish" value='${c.analysis.id}' />
+                         <input type="submit" class="btn btn-primary btn-large pull-right" name="submit" value="Publish" />
+                    </py:if>
+                </div>
+            </form>
+        </py:when>
+        <py:otherwise>
+            <div class="hero-unit">
+                <h1>Not done yet!</h1>
+
+                <p>${c.analysis.name} is currently being processed, please come back later</p>
+
+                <a href="${url(controller='analysis', action='test', id=str(c.analysis.id))}">View detailed progress</a>
+            </div>
+        </py:otherwise>
+    </py:choose>
+
+
 </body>
 </html>
