@@ -7,6 +7,7 @@ import datetime
 from threading import Thread
 import os
 import uuid
+import stat
 from ecomaps.analysis.code_root.ecomaps_analysis import EcomapsAnalysis
 from ecomaps.model import Dataset, session_scope, Analysis
 
@@ -67,6 +68,12 @@ def working_directory(root_dir):
 
         working_dir = EcomapsAnalysisWorkingDirectory(os.path.join(temp_dir, 'working'))
         shutil.copytree(root_dir, working_dir.root_folder)
+
+        for root, dirs, files in os.walk(working_dir.root_folder, topdown=False):
+            for dir in dirs:
+                os.chmod(os.path.join(root, dir), 0755)
+            for file in files:
+                os.chmod(os.path.join(root,file), 0755)
 
         yield working_dir
 
