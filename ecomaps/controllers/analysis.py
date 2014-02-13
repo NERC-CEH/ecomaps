@@ -38,7 +38,7 @@ class AnalysisController(BaseController):
         self._dataset_service = dataset_service
 
     def index(self):
-        """Default action for the analysis controller 123"""
+        """Default action for the analysis controller"""
 
         # Who am I?
         user = self._user_service.get_user_by_username(request.environ['REMOTE_USER'])
