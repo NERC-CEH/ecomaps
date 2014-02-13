@@ -118,11 +118,12 @@ class AnalysisController(BaseController):
         if request.POST:
             try:
                 c.form_result = request.params
-                id = int(c.form_result.get('id_to_publish'))
-                self._analysis_service.publish_analysis(id)
-                added_successfully = True
             except:
                 added_successfully = False
+            else:
+                id = int(c.form_result.get('analysis_id'))
+                self._analysis_service.publish_analysis(id)
+                added_successfully = True
 
         analysis = self._analysis_service.get_analysis_by_id(id, user_obj.id)
 
@@ -132,6 +133,28 @@ class AnalysisController(BaseController):
         else:
             c.object_type = 'analysis'
             return render('not_found.html')
+
+    def rerun(self, id):
+        """Action for re-running a particular analysis with same parameters as before
+            id - ID of the analysis to look at
+        """
+        user = request.environ.get('REMOTE_USER')
+        user_object = self._user_service.get_user_by_username(user)
+        user_id = user_object.id
+
+        current_analysis = self._analysis_service.get_analysis_by_id(id, user_id)
+        point_dataset_id = current_analysis.point_data_dataset_id
+        analysis_name = current_analysis.name
+
+        coverage_dataset_ids = []
+
+        for coverage_dataset in current_analysis.coverage_datasets:
+            coverage_dataset_ids.append(coverage_dataset.id)
+
+        return render('configure_analysis.html',
+                              extra_vars={'current_point_dataset_id': point_dataset_id,
+                                          'current_coverage_dataset_ids': coverage_dataset_ids,
+                                          'current_analysis_name': analysis_name})
 
     def test(self):
 
