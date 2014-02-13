@@ -85,7 +85,7 @@ def setup_app(command, conf, vars):
         a1.result_image = _get_result_image()
         a1.result_dataset = ds3
         a1.progress_message = "Testing the progress message"
-        a1.complete = False
+        a1.complete = True
 
 
         # Adding a coverage dataset

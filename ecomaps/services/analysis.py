@@ -100,16 +100,16 @@ class AnalysisService(DatabaseService):
             analysis.point_data_dataset_id = int(point_dataset_id)
 
             # Putting this in for testing purposes only!
-            analysis.run_date = datetime.datetime.now()
-            analysis.result_image = websetup._get_result_image()
+            # analysis.run_date = datetime.datetime.now()
+            # analysis.result_image = websetup._get_result_image()
             analysis.goodness_of_fit = randint(50, 100)
-
-            result_dataset = Dataset()
-            result_dataset.dataset_type_id = 3
-            result_dataset.name = "Results for %s" % analysis.name
-            result_dataset.viewable_by_user_id = user_id
-
-            analysis.result_dataset = result_dataset
+            #
+            # result_dataset = Dataset()
+            # result_dataset.dataset_type_id = 3
+            # result_dataset.name = "Results for %s" % analysis.name
+            # result_dataset.viewable_by_user_id = user_id
+            #
+            # analysis.result_dataset = result_dataset
 
             # End of temporary test code
 
