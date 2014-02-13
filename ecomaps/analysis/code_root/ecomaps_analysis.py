@@ -305,7 +305,7 @@ class EcomapsAnalysis(object):
 
         progress_fn("Running R code")
 
-        #r.run(CMDS="source('%s')" % r_script_full_path)
+        r.run(CMDS="source('%s')" % r_script_full_path)
 
         # Now to return the results - we're interested in where the netcdf results file
         # and the png image have been written to
