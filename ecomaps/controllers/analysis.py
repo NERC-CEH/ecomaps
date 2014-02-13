@@ -62,7 +62,6 @@ class AnalysisController(BaseController):
 
             c.point_datasets = self._dataset_service.get_datasets_for_user(user_id,'Point')
             c.coverage_datasets = self._dataset_service.get_datasets_for_user(user_id, 'Coverage')
-            msg = ''
 
             if not request.POST:
 
@@ -89,8 +88,7 @@ class AnalysisController(BaseController):
                     }.items())
 
                 if c.form_errors:
-                    html = render('configure_analysis.html',
-                                  extra_vars={'msg': msg})
+                    html = render('configure_analysis.html')
 
                     return htmlfill.render(html,
                                            defaults=c.form_result,
@@ -150,14 +148,14 @@ class AnalysisController(BaseController):
         user = request.environ.get('REMOTE_USER')
         user_object = self._user_service.get_user_by_username(user)
         user_id = user_object.id
+        c.point_datasets = self._dataset_service.get_datasets_for_user(user_id,'Point')
+        c.coverage_datasets = self._dataset_service.get_datasets_for_user(user_id, 'Coverage')
 
         current_analysis = self._analysis_service.get_analysis_by_id(id, user_id)
         point_dataset_id = current_analysis.point_data_dataset_id
 
-        coverage_dataset_ids = []
-
-        for coverage_dataset in current_analysis.coverage_datasets:
-            coverage_dataset_ids.append(coverage_dataset.id)
+        cds = current_analysis.coverage_datasets
+        coverage_dataset_ids = [a.dataset_id for a in cds]
 
         return render('configure_analysis.html',
                               extra_vars={'current_point_dataset_id': point_dataset_id,
