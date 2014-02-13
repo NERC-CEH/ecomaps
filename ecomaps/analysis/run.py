@@ -69,6 +69,8 @@ def working_directory(root_dir):
         working_dir = EcomapsAnalysisWorkingDirectory(os.path.join(temp_dir, 'working'))
         shutil.copytree(root_dir, working_dir.root_folder)
 
+        # copytree() doesn't set the permissions properly on the copied files
+        # so we'll have to do it manually instead
         for root, dirs, files in os.walk(working_dir.root_folder, topdown=False):
             for dir in dirs:
                 os.chmod(os.path.join(root, dir), 0755)
@@ -78,11 +80,9 @@ def working_directory(root_dir):
         yield working_dir
 
     finally:
+
+        # Clean up after ourselves
         shutil.rmtree(temp_dir)
-
-def report_progress(message):
-
-    print message
 
 class AnalysisRunner(object):
     """Utility to run an analysis within the context of a temporary directory"""
@@ -93,11 +93,14 @@ class AnalysisRunner(object):
     _open_ndap_format = None
     _analysis_obj = None
 
-    def __init__(self, source_dir, manager=None):
+    def __init__(self, source_dir):
+        """ Constructs our runner
+            Params:
+                source_dir: Directory containing the code we want to run
+        """
 
-        # Set up the temporary directory
-        # Move this out to a config.
-
+        # Set up the temporary directory based on the directory
+        # containing the analysis code
         self._source_dir = source_dir
 
         # Read the config
@@ -161,8 +164,8 @@ class AnalysisRunner(object):
             result_ds.wms_url = wms_url
             result_ds.netcdf_url = self._open_ndap_format % file_name
 
+            # Tidy up the analysis object
             self._save_analysis(self._analysis_obj, result_ds)
-
             self._update_progress('Complete', True)
 
 
@@ -185,12 +188,17 @@ class AnalysisRunner(object):
             session.add(a)
 
     def _save_analysis(self, analysis_obj, result_ds):
-
+        """ Saves the analysis to the database
+            Params:
+                analysis_obj: The analysis object containing the updated fields
+                result_ds: Dataset containing the results to associate with this analysis
+        """
         with session_scope() as session:
 
             a = session.query(Analysis).get(self._analysis_obj.id)
             a.result_dataset = result_ds
             a.run_date = datetime.datetime.now()
+            a.result_image = self._analysis_obj.result_image
             session.add(a)
 
 
