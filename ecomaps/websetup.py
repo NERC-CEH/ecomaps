@@ -72,6 +72,10 @@ def setup_app(command, conf, vars):
         ds2.name = 'Example CHESS dataset'
 
         session.add(ds2)
+
+        ds3 = Dataset()
+        ds3.dataset_type = resultDst
+        ds3.name = 'Results Dataset 1'
         
         a1 = Analysis()
         a1.name = "JENP's Analysis 1"
@@ -79,6 +83,9 @@ def setup_app(command, conf, vars):
         a1.run_by = user
         a1.run_date = datetime.datetime.now()
         a1.result_image = _get_result_image()
+        a1.result_dataset = ds3
+        a1.progress_message = "Testing the progress message"
+        a1.complete = False
 
 
         # Adding a coverage dataset
@@ -108,6 +115,7 @@ def setup_app(command, conf, vars):
         a2.coverage_datasets.append(cds)
         a2.goodness_of_fit = 60
         a2.point_dataset = ds2
+        a2.result_dataset = ds3
 
         session.add(a2)
 
@@ -119,6 +127,7 @@ def setup_app(command, conf, vars):
         a3.coverage_datasets.append(cds)
         a3.goodness_of_fit = 60
         a3.point_dataset = ds2
+        a3.result_dataset = ds3
 
         session.add(a3)
 
@@ -131,35 +140,36 @@ def setup_app(command, conf, vars):
         a4.coverage_datasets.append(cds)
         a4.goodness_of_fit = 60
         a4.point_dataset = ds2
+        a4.result_dataset = ds3
 
         session.add(a4)
 
 
         # Additional databases for the purpose of testing the analysis configuration page
-        ds1 = Dataset()
-        ds1.dataset_type = coverDst
-        ds1.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/cover1'
-        ds1.name = 'Land Cover Map 1'
-
-        session.add(ds1)
-
-        ds2 = Dataset()
-        ds2.dataset_type = coverDst
-        ds2.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/cover2'
-        ds2.name = 'Land Cover Map 2'
-
-        session.add(ds2)
-
-        ds3 = Dataset()
-        ds3.dataset_type = pointDst
-        ds3.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/point1'
-        ds3.name = 'Land Point Map 1'
-
-        session.add(ds3)
-
         ds4 = Dataset()
-        ds4.dataset_type = pointDst
-        ds4.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/point2'
-        ds4.name = 'Land Point Map 2'
+        ds4.dataset_type = coverDst
+        ds4.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/cover1'
+        ds4.name = 'Land Cover Map 1'
 
         session.add(ds4)
+
+        ds5 = Dataset()
+        ds5.dataset_type = coverDst
+        ds5.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/cover2'
+        ds5.name = 'Land Cover Map 2'
+
+        session.add(ds5)
+
+        ds6 = Dataset()
+        ds6.dataset_type = pointDst
+        ds6.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/point1'
+        ds6.name = 'Land Point Map 1'
+
+        session.add(ds6)
+
+        ds7 = Dataset()
+        ds7.dataset_type = pointDst
+        ds7.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/point2'
+        ds7.name = 'Land Point Map 2'
+
+        session.add(ds7)

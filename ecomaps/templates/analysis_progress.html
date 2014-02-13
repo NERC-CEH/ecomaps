@@ -6,6 +6,8 @@
 <xi:include href="layout.html" />
 <head>
     <title>Please wait</title>
+
+    <script type="text/javascript" language="JavaScript" src="/js/analysis_progress.js"></script>
 </head>
 <body>
     <div class="hero-unit">
@@ -18,19 +20,17 @@
     </div>
     <div class="row">
         <div class="span12">
-            <h4>Progress messages will appear here</h4>
-            <p>
-                This page is for testing purposes only. It will redirect after 5 seconds.
-            </p>
+            <h4>Progress:</h4>
+            <ul id="progress">
+                <li><i class="icon-tasks"></i>Setting up...</li>
+            </ul>
         </div>
     </div>
 
     <script py:if="c.analysis_id" type="text/javascript" language="JavaScript">
         $(function () {
 
-            window.setTimeout(function(){
-                window.location.href = 'view/${c.analysis_id}'
-            }, 5000)
+            ECOMAPS.ANALYSIS.getProgress(${c.analysis_id});
 
         });
     </script>
