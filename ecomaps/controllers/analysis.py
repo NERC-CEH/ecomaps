@@ -153,7 +153,6 @@ class AnalysisController(BaseController):
 
         current_analysis = self._analysis_service.get_analysis_by_id(id, user_id)
         point_dataset_id = current_analysis.point_data_dataset_id
-        analysis_name = current_analysis.name
 
         coverage_dataset_ids = []
 
@@ -162,8 +161,7 @@ class AnalysisController(BaseController):
 
         return render('configure_analysis.html',
                               extra_vars={'current_point_dataset_id': point_dataset_id,
-                                          'current_coverage_dataset_ids': coverage_dataset_ids,
-                                          'current_analysis_name': analysis_name})
+                                          'current_coverage_dataset_ids': coverage_dataset_ids})
 
     @jsonify
     def progress(self, id):

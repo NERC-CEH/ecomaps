@@ -13,13 +13,24 @@
     <form class="form-horizontal" method="POST">
 
         <div class="control-group">
-                <label for="point_dataset_id" class="control-label">Choose point data:</label>
+            <label for="point_dataset_id" class="control-label">Choose point data:</label>
 
-            <select name="point_dataset_id" id="point_dataset_id" class="controls">
-                <option py:for="dataset in c.point_datasets" value="${dataset.id}">
-                    ${dataset.name}
-                </option>
-            </select>
+            <py:choose>
+                <py:when test="current_point_dataset_id">
+                     <select name="point_dataset_id" id="point_dataset_id" class="controls">
+                        <option py:for="dataset in c.point_datasets" value="${dataset.id}" selected="current_point_dataset_id">
+                            ${dataset.name}
+                        </option>
+                    </select>
+                </py:when>
+                <py:otherwise>
+                    <select name="point_dataset_id" id="point_dataset_id" class="controls">
+                        <option py:for="dataset in c.point_datasets" value="${dataset.id}">
+                            ${dataset.name}
+                        </option>
+                    </select>
+                </py:otherwise>
+            </py:choose>
 
         </div>
 
