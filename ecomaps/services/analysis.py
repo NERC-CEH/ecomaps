@@ -67,10 +67,13 @@ class AnalysisService(DatabaseService):
 
             try:
 
-                return session.query(Analysis).filter(Analysis.id == analysis_id,
-                                              or_(or_(Analysis.viewable_by == user_id,
-                                                      Analysis.viewable_by == None),
-                                                  Analysis.run_by == user_id)).one()
+                return session.query(Analysis)\
+                    .options(subqueryload(Analysis.point_dataset)) \
+                    .options(subqueryload(Analysis.coverage_datasets)) \
+                    .filter(Analysis.id == analysis_id,
+                            or_(or_(Analysis.viewable_by == user_id,
+                            Analysis.viewable_by == None),
+                            Analysis.run_by == user_id)).one()
 
             except NoResultFound:
                 return None
