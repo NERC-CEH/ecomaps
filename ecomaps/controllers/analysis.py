@@ -1,6 +1,8 @@
 import logging
 from pylons.controllers.util import redirect
 import formencode
+from pylons.decorators import jsonify
+from ecomaps.analysis.run import AnalysisRunner
 
 from ecomaps.lib.base import BaseController, c, request, response, render, session, abort
 from ecomaps.services.analysis import AnalysisService
@@ -103,6 +105,13 @@ class AnalysisController(BaseController):
 
                     c.analysis_id = analysis_id
 
+                    analysis_to_run = self._analysis_service.get_analysis_by_id(analysis_id, user_id)
+
+                    # The path to the code may need to be made dynamic
+                    # if we start running multiple analyses
+                    runner = AnalysisRunner('code_root')
+                    runner.run_async(analysis_to_run)
+
                     return render('analysis_progress.html')
 
     def view(self, id):
@@ -156,8 +165,25 @@ class AnalysisController(BaseController):
                                           'current_coverage_dataset_ids': coverage_dataset_ids,
                                           'current_analysis_name': analysis_name})
 
-    def test(self):
+    @jsonify
+    def progress(self, id):
+        """Gets a progress message from the analysis with the supplied ID
+            Params:
+                id: ID of analysis to get progress message for
+        """
 
+        user = request.environ.get('REMOTE_USER')
+        user_obj = self._user_service.get_user_by_username(user)
+        analysis = self._analysis_service.get_analysis_by_id(id, user_obj.id)
+
+        return {
+            'complete': analysis.complete,
+            'message': analysis.progress_message
+        }
+
+    def test(self, id):
+
+        c.analysis_id = id
         return render('analysis_progress.html')
 
 

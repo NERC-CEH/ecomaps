@@ -1,10 +1,11 @@
+from _bisect import bisect_right
+from bisect import bisect_left
 import logging
 import os
 from pandas import DataFrame
 from pydap.client import open_url
 import time
 import pyper
-import sys
 
 __author__ = 'Phil Jenkins (Tessella)'
 
@@ -30,7 +31,6 @@ class EcomapsAnalysis(object):
             Params:
                 working_dir: The directory we're running the code from
         """
-
         self._working_dir = working_dir
 
     def _open_sample_opendap(self, url):
@@ -137,6 +137,23 @@ class EcomapsAnalysis(object):
         del aggregation
         return data
 
+    def _find_closest(self, list, value):
+
+        # Sort list
+        list = sorted(list)
+        pos = bisect_left(list, value)
+
+        if pos==0:
+            return list[0]
+        if pos == len(list):
+            return list[-1]
+        before = list[pos - 1]
+        after = list[pos]
+        if after - value < value - before:
+           return after
+        else:
+           return before
+
     def _sample_intersect(self, north_list, east_list, dataframe, array):
         messages = False
         if messages:
@@ -144,6 +161,7 @@ class EcomapsAnalysis(object):
             print east_list
             print dataframe
             print array
+
         # Add new column to data frame to store land cover
         dataframe['LandCover'] = -9999
         if messages:
@@ -180,14 +198,30 @@ class EcomapsAnalysis(object):
                 print '\t\tx:\t{0}'.format(northing)
                 print '\t\ty:\t{0}'.format(easting)
             #   Select closest grid point centre northing
-            closest_north = min(north_list, key=lambda x:abs(x - northing))
+
+            #cur_start = time.clock()
+
+            #closest_north = min(north_list, key=lambda x:abs(x - northing))
+
+            #cur_duration = (time.clock() - cur_start)
+
+            #new_start = time.clock()
+
+            closest_north = self._find_closest(north_list, northing)
+
+            #new_duration = (time.clock() - new_start)
+
             ypixel = north_list.index(closest_north)
             if messages:
                 print '\t\tclosest_north:\t{0}'.format(closest_north)
                 print '\t\typixel:\t\t\t{0}'.format(ypixel)
                 print '\t\tnorth_list[ypixel]:\t{0}'.format(north_list[ypixel])
             #  Select close grid point centre easting
-            closest_east = min(east_list, key=lambda x:abs(x - easting))
+
+            # closest_east_old = min(east_list, key=lambda x:abs(x - easting))
+
+            closest_east = self._find_closest(east_list, easting)
+
             xpixel = east_list.index(closest_east)
             if messages:
                 print '\t\tclosest_east:\t{0}'.format(closest_east)
@@ -221,37 +255,46 @@ class EcomapsAnalysis(object):
         if messages:
             print 'output:\t\t', output.replace('\n', '\n\t\t\t')
 
-    def run(self, point_url, aggregation_url):
+    def run(self, point_url, aggregation_url, progress_fn):
         """Runs the analysis
             Params;
                 point_url: Location of the point netCDF file
                 aggregation_url: Location of the coverage netCDF file
+                progress_fn: Function reference used for progress messages
         """
+
+        logging.getLogger("pydap").setLevel(logging.WARNING)
 
         start = time.time()
         #log.debug("Ecomaps analysis started at %s" % time)
 
-        # points_df = self._open_sample_opendap(point_url)
-        #
-        # northing_list, easting_list = self._get_coordinate_lists(aggregation_url)
-        # array = self._get_landcover_array(aggregation_url)
+        progress_fn("Opening point data")
+        points_df = self._open_sample_opendap(point_url)
 
+        progress_fn("Opening coverage data")
+        northing_list, easting_list = self._get_coordinate_lists(aggregation_url)
+        array = self._get_landcover_array(aggregation_url)
 
-        # array_intersect = self._sample_intersect(northing_list, easting_list, points_df, array)
-        #
+        progress_fn("Setting up the analysis")
+
+        array_intersect = self._sample_intersect(northing_list, easting_list, points_df, array)
+
         csv_folder = self._working_dir.csv_folder
         csv_file_name = 'InputRDataFile.csv'
         csv_full_path = os.path.normpath(
             os.path.join(csv_folder, csv_file_name)
         )
-        #
-        # self._data_frame_to_csv(array_intersect, csv_full_path)
+
+        progress_fn("Creating input files")
+        self._data_frame_to_csv(array_intersect, csv_full_path)
 
         r_code_folder = self._working_dir.r_script_folder
         r_script = 'LCM_thredds_model_ForSimon03.r'
         r_script_full_path = os.path.normpath(
             os.path.join(r_code_folder, r_script)
         )
+
+        progress_fn("Initialising R engine")
 
         r = pyper.R()
 
@@ -260,10 +303,11 @@ class EcomapsAnalysis(object):
         r["temp_netcdf_file"] = os.path.join(self._working_dir.netcdf_folder, 'temp.nc')
         r["output_netcdf_file"] = os.path.join(self._working_dir.netcdf_folder, 'output.nc')
 
+        progress_fn("Running R code")
+
         r.run(CMDS="source('%s')" % r_script_full_path)
 
         # Now to return the results - we're interested in where the netcdf results file
         # and the png image have been written to
 
         return r["output_netcdf_file"], r["image_file"]
-

@@ -87,6 +87,8 @@ class AnalysisService(DatabaseService):
                 coverage_dataset_ids - List of coverage dataset ids
                 user_id - Who is creating this analysis?
                 parameters - Extra parameters to pass to the model code
+            Returns:
+                ID of newly-inserted analysis
         """
 
         with self.transaction_scope() as session:
@@ -111,6 +113,7 @@ class AnalysisService(DatabaseService):
 
             # End of temporary test code
 
+            # Hook up the coverage datasets
             coverage_datasets = AnalysisCoverageDataset()
 
             for id in coverage_dataset_ids:
@@ -119,8 +122,8 @@ class AnalysisService(DatabaseService):
                 analysis.coverage_datasets.append(coverage_datasets)
 
             session.add(analysis)
+
+            # Flush and refresh to give us the generated ID for this new analysis
             session.flush([analysis])
             session.refresh(analysis)
-
-
             return analysis.id

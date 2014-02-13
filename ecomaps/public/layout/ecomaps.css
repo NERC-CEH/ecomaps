@@ -66,3 +66,16 @@ span.error-message
 a.brand > i.icon {
     margin: 5px 5px 5px 0;
 }
+
+ul#progress li
+{
+    list-style-type: none;
+}
+
+ul#progress li.done {
+    color: #999;
+}
+
+ul#progress li i {
+    margin-right: 5px;
+}

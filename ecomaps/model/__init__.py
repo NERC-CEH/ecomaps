@@ -1,4 +1,4 @@
-from sqlalchemy import engine_from_config, Column, Integer, String, ForeignKey, Table, DateTime, create_engine, Text
+from sqlalchemy import engine_from_config, Column, Integer, String, ForeignKey, Table, DateTime, create_engine, Text, Boolean
 from sqlalchemy.orm import relationship
 from ecomaps.model.meta import Session, Base
 from contextlib import contextmanager
@@ -20,7 +20,7 @@ def initialise_session(config, manual_connection_string=None):
     Session.configure(bind=engine)
 
 @contextmanager
-def session_scope(session_class):
+def session_scope(session_class=Session):
     """Provide a transactional scope that we can wrap around calls to the database"""
 
     session = session_class()
@@ -125,6 +125,8 @@ class Analysis(Base):
     model_id = Column(Integer, ForeignKey('models.id'))
     goodness_of_fit = Column(Integer)
     result_image = Column(Text)
+    progress_message = Column(String(255))
+    complete = Column(Boolean)
 
     # FK Relationships
     run_by_user = relationship("User", foreign_keys=[run_by])
