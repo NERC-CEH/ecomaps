@@ -43,7 +43,10 @@ class AnalysisServiceTest(BaseTest):
                                 self.sample_analysis.point_data_dataset_id,
                                 self.sample_analysis.coverage_dataset_ids,
                                 self.sample_analysis.user_id,
-                                self.sample_analysis.parameters)
+                                self.sample_analysis.year,
+                                self.sample_analysis.random_group,
+                                self.sample_analysis.model_variable,
+                                self.sample_analysis.data_type)
 
         self._mock_session.add.assert_called_once_with(ANY)
         self._mock_session.commit.assert_called_once_with()
