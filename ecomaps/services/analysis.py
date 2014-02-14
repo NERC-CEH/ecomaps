@@ -78,15 +78,42 @@ class AnalysisService(DatabaseService):
             except NoResultFound:
                 return None
 
+    def get_detailed_analysis_by_id(self, analysis_id, user_id):
+        """Returns a single analysis with the given ID
+            Params:
+                analysis_id - ID of the analysis to look for
+        """
 
-    def create(self, name, point_dataset_id, coverage_dataset_ids, user_id, parameters):
+        with self.readonly_scope() as session:
+
+            try:
+
+                return session.query(Analysis)\
+                    .options(subqueryload(Analysis.point_dataset)) \
+                    .options(subqueryload(Analysis.coverage_datasets)) \
+                    .options(subqueryload(Analysis.year)) \
+                    .options(subqueryload(Analysis.random_group)) \
+                    .options(subqueryload(Analysis.model_variable)) \
+                    .options(subqueryload(Analysis.data_type)) \
+                    .filter(Analysis.id == analysis_id,
+                            or_(or_(Analysis.viewable_by == user_id,
+                            Analysis.viewable_by == None),
+                            Analysis.run_by == user_id)).one()
+
+            except NoResultFound:
+                return None
+
+    def create(self, name, point_dataset_id, coverage_dataset_ids, user_id, year, random_group, model_variable, data_type):
         """Creates a new analysis object
             Params:
                 name - Friendly name for the analysis
                 point_dataset_id - Id of dataset containing point data
                 coverage_dataset_ids - List of coverage dataset ids
                 user_id - Who is creating this analysis?
-                parameters - Extra parameters to pass to the model code
+                year - year for which analysis is run
+                random_group - additional input into the model
+                model_variable - the variable that is being modelled
+                data_type - data type of the variable
             Returns:
                 ID of newly-inserted analysis
         """
@@ -120,6 +147,12 @@ class AnalysisService(DatabaseService):
                 id_as_int = int(id)
                 coverage_datasets.dataset_id = id_as_int
                 analysis.coverage_datasets.append(coverage_datasets)
+
+            # Parameters that are used in the analysis
+            analysis.year = year
+            analysis.random_group = random_group
+            analysis.model_variable = model_variable
+            analysis.data_type = data_type
 
             session.add(analysis)
 
