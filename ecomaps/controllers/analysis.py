@@ -154,7 +154,7 @@ class AnalysisController(BaseController):
         c.point_datasets = self._dataset_service.get_datasets_for_user(user_id,'Point')
         c.coverage_datasets = self._dataset_service.get_datasets_for_user(user_id, 'Coverage')
 
-        current_analysis = self._analysis_service.get_detailed_analysis_by_id(id, user_id)
+        current_analysis = self._analysis_service.get_analysis_by_id(id, user_id)
         point_dataset_id = current_analysis.point_data_dataset_id
 
         cds = current_analysis.coverage_datasets
