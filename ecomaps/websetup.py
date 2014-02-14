@@ -187,5 +187,6 @@ def setup_app(command, conf, vars):
         a5.goodness_of_fit = 81
         a5.point_dataset = ds7
         a5.result_dataset = ds3
+        a5.complete = True
 
         session.add(a5)
