@@ -56,16 +56,22 @@
                     <img class="img-polaroid" src="data:image/png;base64, ${c.analysis.result_image}" />
                 </div>
             </div>
+        </div>
+        <div class="span7">
+            <img class="img-polaroid" src="data:image/png;base64, ${c.analysis.result_image}" />
+        </div>
+    </div>
 
-            <form method="POST">
-                <div>
-                    <py:if test="c.analysis.viewable_by">
-                        <input type="hidden" id="id_to_publish" name="id_to_publish" value='${c.analysis.id}' />
-                         <input type="submit" class="btn btn-primary btn-large pull-right" name="submit" value="Publish" />
-                    </py:if>
-                </div>
-            </form>
-        </py:when>
+    <form method="POST" id="button_form">
+        <div>
+            <py:if test="c.analysis.viewable_by">
+                <input type="hidden" id="analysis_id" name="analysis_id" value='${c.analysis.id}' />
+                <input type="submit" class="btn btn-primary btn-large pull-right" id="submit" value="Publish" />
+                <input type="submit" class="btn btn-primary btn-large pull-right" id="rerun" value="Re-run Analysis" />
+            </py:if>
+        </div>
+    </form>
+    </py:when>
         <py:otherwise>
             <div class="hero-unit">
                 <h1>Not done yet!</h1>
@@ -76,7 +82,17 @@
             </div>
         </py:otherwise>
     </py:choose>
+        
 
+<script type="text/javascript" language="JavaScript">
+    $('#submit').click(function(){
+        $('#button_form').attr('action', '/analysis/view');
+    });
+    $('#rerun').click(function(){
+        $('#button_form').attr('action', '/analysis/rerun/' + $("#analysis_id").val());
+}   );
+
+</script>
 
 </body>
 </html>

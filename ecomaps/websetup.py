@@ -144,7 +144,6 @@ def setup_app(command, conf, vars):
 
         session.add(a4)
 
-
         # Additional databases for the purpose of testing the analysis configuration page
         ds4 = Dataset()
         ds4.dataset_type = coverDst
@@ -173,3 +172,20 @@ def setup_app(command, conf, vars):
         ds7.name = 'Land Point Map 2'
 
         session.add(ds7)
+
+        cds2 = AnalysisCoverageDataset()
+        cds2.dataset = ds4
+
+        a5 = Analysis()
+        a5.name = "Private Analysis - multiple coverage datasets"
+        a5.run_date = datetime.datetime.now()
+        a5.run_by_user = user
+        a5.viewable_by_user = user
+        a5.result_image = _get_result_image()
+        a5.coverage_datasets.append(cds)
+        a5.coverage_datasets.append(cds2)
+        a5.goodness_of_fit = 81
+        a5.point_dataset = ds7
+        a5.result_dataset = ds3
+
+        session.add(a5)
