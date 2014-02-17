@@ -63,9 +63,18 @@ class AnalysisController(BaseController):
             c.point_datasets = self._dataset_service.get_datasets_for_user(user_id,'Point')
             c.coverage_datasets = self._dataset_service.get_datasets_for_user(user_id, 'Coverage')
 
+            year = None
+            random_group = None
+            model_variable = None
+            data_type = None
+
             if not request.POST:
 
-                return render('configure_analysis.html')
+                return render('configure_analysis.html',
+                              extra_vars={'year': year,
+                                          'random_group': random_group,
+                                          'model_variable': model_variable,
+                                          'data_type': data_type})
 
             schema = ConfigureAnalysisForm()
             c.form_errors = {}
@@ -88,7 +97,11 @@ class AnalysisController(BaseController):
                     }.items())
 
                 if c.form_errors:
-                    html = render('configure_analysis.html')
+                    html = render('configure_analysis.html',
+                                  extra_vars={'year': year,
+                                              'random_group': random_group,
+                                              'model_variable': model_variable,
+                                              'data_type': data_type})
 
                     return htmlfill.render(html,
                                            defaults=c.form_result,
