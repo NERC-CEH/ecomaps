@@ -149,6 +149,9 @@ class ViewdataController(WmsvizController):
 
             dataset = self._dataset_service.get_dataset_by_id(ds_id)
 
+            layer_list = self.datasetManager.get_ecomaps_layer_data(dataset)
+
+            return [layer.entity.getAsDict() for layer in layer_list[0]]
             return self.datasetManager.get_ecomaps_layer_data(dataset).entity.getAsDict()
 
         else:

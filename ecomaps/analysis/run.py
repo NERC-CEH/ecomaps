@@ -139,7 +139,7 @@ class AnalysisRunner(object):
             #RUN
             analysis = EcomapsAnalysis(dir)
 
-            file_name = "%s_%s.nc" % (self._analysis_obj.name, uuid.uuid4())
+            file_name = "%s_%s.nc" % (self._analysis_obj.name.replace(' ', '-'), str(datetime.datetime.now().isoformat()))
 
             # Swap the urls out for the coverage and point datasets in the analysis object
             output_file_loc, image_file_loc = analysis.run('http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/ECOMAPSDetail/ECOMAPSInputLOI01.nc',

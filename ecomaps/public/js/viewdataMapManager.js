@@ -241,8 +241,11 @@ function ViewdataMapManager(eventsManager, mapPlaceholderId, loadErrors) {
     this.getOpenLayerLayersInOrder = function() {
         var olLayers = [];
         for (var i = 0; i < this.layerIds.length; ++i) {
-            this.openLayersLayers[this.layerIds[i]].visibility = this.layerVisibilities[i];
-            olLayers.push(this.openLayersLayers[this.layerIds[i]]);
+
+            if(this.openLayersLayers[this.layerIds[i]]) {
+                this.openLayersLayers[this.layerIds[i]].visibility = this.layerVisibilities[i];
+                olLayers.push(this.openLayersLayers[this.layerIds[i]]);
+            }
         }
         return olLayers;
     };
