@@ -57,18 +57,33 @@
                 </div>
             </div>
 
-            <form method="POST" id="button_form">
-                <div>
-                    <py:if test="c.analysis.viewable_by">
-                        <input type="hidden" id="analysis_id" name="analysis_id" value='${c.analysis.id}' />
-                        <input type="submit" class="btn btn-primary btn-large pull-right" id="submit" value="Publish" />
-                        <input type="submit" class="btn btn-primary btn-large pull-right" id="rerun" value="Re-run Analysis" />
-                    </py:if>
-                </div>
-            </form>
-            <form action="${url(controller='analysis', action='download', id=str(c.analysis.id))}">
-                <input type="submit" class="btn btn-primary btn-large pull-right" id="download" value="Download" />
-            </form>
+            <table border="0">
+                <form method="POST" id="button_form">
+                    <div>
+                        <py:if test="c.analysis.viewable_by">
+                            <input type="hidden" id="analysis_id" name="analysis_id" value='${c.analysis.id}' />
+                            <tr>
+                                <div class="btn-group pull-right">
+                                    <input type="submit" class="btn btn-primary btn-large" id="submit" value="Publish" />
+                                </div>
+                            </tr>
+                            <tr>
+                                <div class="btn-group pull-right">
+                                    <input type="submit" class="btn btn-primary btn-large" id="rerun" value="Re-run Analysis" />
+                                </div>
+                            </tr>
+                        </py:if>
+                    </div>
+                </form>
+                <form action="${url(controller='analysis', action='download', id=str(c.analysis.id))}">
+                    <tr>
+                        <div class="btn-group pull-right">
+                            <input type="submit" class="btn btn-primary btn-large" id="download" value="Download" />
+                        </div>
+                    </tr>
+                </form>
+            </table>
+
         </py:when>
         <py:otherwise>
             <div class="hero-unit">
