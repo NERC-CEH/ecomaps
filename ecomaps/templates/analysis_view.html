@@ -58,13 +58,16 @@
             </div>
 
             <form method="POST" id="button_form">
-            <div>
-                <py:if test="c.analysis.viewable_by">
-                    <input type="hidden" id="analysis_id" name="analysis_id" value='${c.analysis.id}' />
-                    <input type="submit" class="btn btn-primary btn-large pull-right" id="submit" value="Publish" />
-                    <input type="submit" class="btn btn-primary btn-large pull-right" id="rerun" value="Re-run Analysis" />
-                </py:if>
-            </div>
+                <div>
+                    <py:if test="c.analysis.viewable_by">
+                        <input type="hidden" id="analysis_id" name="analysis_id" value='${c.analysis.id}' />
+                        <input type="submit" class="btn btn-primary btn-large pull-right" id="submit" value="Publish" />
+                        <input type="submit" class="btn btn-primary btn-large pull-right" id="rerun" value="Re-run Analysis" />
+                    </py:if>
+                </div>
+            </form>
+            <form action="${url(controller='analysis', action='download', id=str(c.analysis.id))}">
+                <input type="submit" class="btn btn-primary btn-large pull-right" id="download" value="Download" />
             </form>
         </py:when>
         <py:otherwise>
@@ -85,7 +88,10 @@
     });
     $('#rerun').click(function(){
         $('#button_form').attr('action', '/analysis/rerun/' + $("#analysis_id").val());
-}   );
+    });
+    $('#download').click(function(){
+        $('#button_form').attr('action', '/analysis/download/' + $("#analysis_id").val());
+    });
 
 </script>
 

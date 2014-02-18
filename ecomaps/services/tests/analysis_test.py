@@ -3,6 +3,7 @@ from ecomaps.model import Analysis
 from ecomaps.services.tests.base import BaseTest
 from ecomaps.services.analysis import AnalysisService
 from ecomaps.model import Dataset
+import os
 
 __author__ = 'Chirag Mistry (Tessella)'
 
@@ -68,3 +69,13 @@ class AnalysisServiceTest(BaseTest):
 
         self.assertEqual(self.sample_analysis.viewable_by, None)
         self.assertEqual(self.sample_analysis.result_dataset.viewable_by_user_id, None)
+
+    def test_get_ncdf_file(self):
+
+        url = 'http://localhost:8080/thredds/dodsC/testAll/LCM2007_GB_1K_DOM_TAR.nc'
+        analysis_service = AnalysisService()
+        results_file = analysis_service.get_netcdf_file(url)
+
+        # Check HTTP status code of the object returned:
+        #    200 indicates a successful request.
+        self.assertEqual(results_file.getcode(), 200)

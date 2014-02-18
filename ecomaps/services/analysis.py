@@ -7,6 +7,7 @@ from ecomaps import websetup
 from ecomaps.model import Dataset, Analysis
 from ecomaps.services.general import DatabaseService
 from ecomaps.model import AnalysisCoverageDataset
+import urllib2
 
 __author__ = 'Phil Jenkins (Tessella)'
 
@@ -135,3 +136,10 @@ class AnalysisService(DatabaseService):
             session.flush([analysis])
             session.refresh(analysis)
             return analysis.id
+
+    def get_netcdf_file(self, url):
+        ''' Gets the file with results data in
+        '''
+
+        file_name = url + ".dods"
+        return urllib2.urlopen(file_name)

@@ -11,6 +11,9 @@ from ecomaps.services.dataset import DatasetService
 from pylons import tmpl_context as c, url
 from ecomaps.model.configure_analysis_form import ConfigureAnalysisForm
 from formencode import htmlfill
+import tempfile
+from paste.fileapp import FileApp
+import os
 
 #from pylons import request, response, session, tmpl_context as c, url
 #from pylons.controllers.util import abort, redirect
@@ -207,6 +210,33 @@ class AnalysisController(BaseController):
         c.analysis_id = id
         return render('analysis_progress.html')
 
+    def download(self,id):
+        '''Action that allows the user to download a results dataset
+        '''
+
+        user = request.environ.get('REMOTE_USER')
+        user_object = self._user_service.get_user_by_username(user)
+        user_id = user_object.id
+
+        current_analysis = self._analysis_service.get_analysis_by_id(id, user_id)
+        result_dataset_id = current_analysis.result_dataset_id
+        result_dataset = self._dataset_service.get_dataset_by_id(result_dataset_id)
+        url = result_dataset.netcdf_url
+
+        data_file = self._analysis_service.get_netcdf_file(url)
+        with tempfile.NamedTemporaryFile(suffix=".ncdf") as temp_file:
+            temp_file.write(data_file.read())
+
+            file_size = os.path.getsize(temp_file.name)
+
+            headers = [('Content-Disposition', 'attachment; '
+                       'filename=\"' + temp_file.name + '\"'),
+                        ('Content-Type', 'text/plain'),
+                        ('Content-Length', str(file_size))]
+
+            fapp = FileApp(temp_file.name, headers=headers)
+
+            return fapp(request.environ, self.start_response)
 
 def custom_formatter(error):
     """Custom error formatter"""
