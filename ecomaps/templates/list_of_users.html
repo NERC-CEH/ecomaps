@@ -8,6 +8,8 @@
     <title>Users List</title>
 </head>
 <body>
+    <h1>All Users</h1>
+
     <div>
         <table class="table">
             <thead>
@@ -26,11 +28,16 @@
                     <td>
                         ${user.email}
                     </td>
-
                 </tr>
             </tbody>
         </table>
     </div>
+
+    <form action="${url(controller='user', action='create')}">
+        <div class="controls">
+            <input type="submit" class="btn btn-primary pull-right control-group" value="Create New User" />
+        </div>
+    </form>
 </body>
 </html>
 
