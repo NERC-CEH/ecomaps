@@ -53,18 +53,12 @@ class UserServiceTest(BaseTest):
 
     def test_get_all_users(self):
 
-        user_service = UserService()
-        user_service.create('User1', 'Test User1', 'testuser1@test.com')
-        user_service.create('User2', 'Test User2', 'testuser2@test.com')
+        mock_query = MagicMock()
 
-        all_users = user_service.get_all_users()
+        self._mock_session.query = MagicMock()
+        self._mock_session.query.return_value = mock_query
 
-        self.assertEqual(len(all_users),2)
+        user_service = UserService(self._mock_session)
+        user_service.get_all_users()
 
-        self.assertEqual(all_users[0].username, 'User1')
-        self.assertEqual(all_users[0].name, 'Test User1')
-        self.assertEqual(all_users[0].email, 'testuser1@test.com')
-
-        self.assertEqual(all_users[1].username, 'User2')
-        self.assertEqual(all_users[1].name, 'Test User2')
-        self.assertEqual(all_users[1].email, 'testuser2@test.com')
+        self._mock_session.query.assert_called_once_with(User)
