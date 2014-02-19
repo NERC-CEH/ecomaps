@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:py="http://genshi.edgewall.org/"
+      xmlns:xi="http://www.w3.org/2001/XInclude">
+
+<xi:include href="layout.html" />
+<head>
+    <title>Users List</title>
+</head>
+<body>
+    <div>
+        <table class="table">
+            <thead>
+                <th>Name</th>
+                <th>Username</th>
+                <th>Email</th>
+            </thead>
+            <tbody>
+                <tr py:for="user in c.all_users">
+                    <td>
+                        ${user.name}
+                    </td>
+                    <td>
+                        ${user.username}
+                    </td>
+                    <td>
+                        ${user.email}
+                    </td>
+
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
+

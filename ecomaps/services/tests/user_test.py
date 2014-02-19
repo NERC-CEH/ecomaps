@@ -50,3 +50,21 @@ class UserServiceTest(BaseTest):
         self._mock_session.query.assert_called_once_with(User)
         mock_query.filter.assert_called_once_with(ANY)
         mock_query_result.one.assert_called_once_with()
+
+    def test_get_all_users(self):
+
+        user_service = UserService()
+        user_service.create('User1', 'Test User1', 'testuser1@test.com')
+        user_service.create('User2', 'Test User2', 'testuser2@test.com')
+
+        all_users = user_service.get_all_users()
+
+        self.assertEqual(len(all_users),2)
+
+        self.assertEqual(all_users[0].username, 'User1')
+        self.assertEqual(all_users[0].name, 'Test User1')
+        self.assertEqual(all_users[0].email, 'testuser1@test.com')
+
+        self.assertEqual(all_users[1].username, 'User2')
+        self.assertEqual(all_users[1].name, 'Test User2')
+        self.assertEqual(all_users[1].email, 'testuser2@test.com')
