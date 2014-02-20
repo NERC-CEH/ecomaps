@@ -89,7 +89,23 @@
     </form>
 
 <script type="text/javascript" language="JavaScript">
+//<![CDATA[
             $(function () {
+
+            var populateVariableList = function(listId, options, defaultValue) {
+
+                listId = "#" + listId;
+
+                $(listId).attr("disabled", false);
+                $(listId).empty();
+
+                for(var i=0; i<options.length; i++) {
+                    console.log(listId);
+                    $(listId).append($("<option></option>").text(options[i])
+                        .attr("selected", options[i] === defaultValue ? 'selected' : undefined));
+                }
+
+            };
 
             /* updatePointDatasetColumns
             *
@@ -104,6 +120,21 @@
                     $(this).append($("<option></option>").text("Loading..."));
                     $(this).attr("disabled", true);
                 });
+
+                $.getJSON("/dataset/columns/" + dataset_id,
+                    function(data) {
+
+                        // Populate each list we know of
+
+                        // Year
+                        populateVariableList("year", data, "year");
+
+                        // Group by
+                        populateVariableList("random_group", data, "SERIES_NUM");
+
+                        // Model Var
+                        populateVariableList("model_variable", data, "loi");
+                    });
             };
 
             // Error span swap
@@ -120,7 +151,11 @@
 
                 updatePointDatasetColumns($(this).val());
             });
+
+            // Populate the lists based on the currently-selected point dataset
+            updatePointDatasetColumns($("select#point_dataset_id option:selected").val());
         })
+//]]>
 </script>
 
 </body>
