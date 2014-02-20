@@ -133,6 +133,11 @@ class Analysis(Base):
     progress_message = Column(String(255))
     complete = Column(Boolean)
 
+    year = Column(String(255))
+    random_group = Column(String(255))
+    model_variable = Column(String(255))
+    data_type = Column(String(255))
+
     # FK Relationships
     run_by_user = relationship("User", foreign_keys=[run_by])
     point_dataset = relationship("Dataset", foreign_keys=[point_data_dataset_id])

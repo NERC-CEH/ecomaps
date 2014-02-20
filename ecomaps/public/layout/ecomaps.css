@@ -84,3 +84,13 @@ select.multiselect {
     min-height: 150px;
 
 }
+
+form.inline_buttons{
+    margin:0;
+}
+
+form.inline_buttons input
+{
+    margin-top: 10px;
+    margin-left: 5px;
+}

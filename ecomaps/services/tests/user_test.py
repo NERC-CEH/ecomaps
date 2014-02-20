@@ -50,3 +50,15 @@ class UserServiceTest(BaseTest):
         self._mock_session.query.assert_called_once_with(User)
         mock_query.filter.assert_called_once_with(ANY)
         mock_query_result.one.assert_called_once_with()
+
+    def test_get_all_users(self):
+
+        mock_query = MagicMock()
+
+        self._mock_session.query = MagicMock()
+        self._mock_session.query.return_value = mock_query
+
+        user_service = UserService(self._mock_session)
+        user_service.get_all_users()
+
+        self._mock_session.query.assert_called_once_with(User)

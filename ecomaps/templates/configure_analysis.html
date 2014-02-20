@@ -21,7 +21,7 @@
         </div>
     </div>
 
-    <form class="form-horizontal" method="POST">
+    <form class="form-horizontal" method="POST" action="${url(controller='analysis', action='create')}">
 
         <div class="control-group">
             <label for="analysis_name" class="control-label">Name of Analysis:</label>
@@ -52,8 +52,59 @@
         </div>
 
         <div class="control-group">
-            <label for="parameter1" class="control-label">Parameter 1:</label>
-            ${h.html_tags.text('parameter1', class_='controls')}
+            <label for="Year" class="control-label">Year:</label>
+
+            <py:choose>
+                <py:when test="year">
+                    ${h.html_tags.text('year', class_='controls', value=year)}
+                </py:when>
+                <py:otherwise>
+                    ${h.html_tags.text('year', class_='controls')}
+             </py:otherwise>
+            </py:choose>
+
+        </div>
+
+        <div class="control-group">
+            <label for="Random Group" class="control-label">Random Group:</label>
+
+            <py:choose>
+                <py:when test="random_group">
+                    ${h.html_tags.text('random_group', class_='controls', value=random_group)}
+                </py:when>
+                <py:otherwise>
+                   ${h.html_tags.text('random_group', class_='controls')}
+                </py:otherwise>
+            </py:choose>
+
+        </div>
+
+        <div class="control-group">
+            <label for="Model Variable" class="control-label">Model Variable:</label>
+
+            <py:choose>
+                <py:when test="model_variable">
+                    ${h.html_tags.text('model_variable', class_='controls', value=model_variable)}
+                </py:when>
+                <py:otherwise>
+                   ${h.html_tags.text('model_variable', class_='controls')}
+                </py:otherwise>
+            </py:choose>
+
+        </div>
+
+        <div class="control-group">
+            <label for="Data Type" class="control-label">Data Type:</label>
+
+            <py:choose>
+                <py:when test="data_type">
+                    ${h.html_tags.text('data_type', class_='controls', value=data_type)}
+                </py:when>
+                <py:otherwise>
+                   ${h.html_tags.text('data_type', class_='controls')}
+                </py:otherwise>
+            </py:choose>
+
         </div>
 
         <div class="controls">

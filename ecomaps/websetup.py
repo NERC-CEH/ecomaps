@@ -77,6 +77,7 @@ def setup_app(command, conf, vars):
         ds3 = Dataset()
         ds3.dataset_type = resultDst
         ds3.name = 'Results Dataset 1'
+        ds3.netcdf_url = 'http://localhost:8080/thredds/dodsC/testAll/LCM2007_GB_1K_DOM_TAR.nc'
         
         a1 = Analysis()
         a1.name = "JENP's Analysis 1"
@@ -191,5 +192,10 @@ def setup_app(command, conf, vars):
         a5.goodness_of_fit = 81
         a5.point_dataset = ds7
         a5.result_dataset = ds3
+        a5.complete = True
+        a5.year = '1997'
+        a5.random_group = 'SERIES_NUM'
+        a5.model_variable = 'loi'
+        a5.data_type = 'CONT'
 
         session.add(a5)

@@ -12,6 +12,9 @@ from ecomaps.services.dataset import DatasetService
 from pylons import tmpl_context as c, url
 from ecomaps.model.configure_analysis_form import ConfigureAnalysisForm
 from formencode import htmlfill
+import tempfile
+from paste.fileapp import FileApp
+import os
 
 #from pylons import request, response, session, tmpl_context as c, url
 #from pylons.controllers.util import abort, redirect
@@ -74,9 +77,18 @@ class AnalysisController(BaseController):
 
             c.coverage_datasets = coverage_datasets
 
+            year = None
+            random_group = None
+            model_variable = None
+            data_type = None
+
             if not request.POST:
 
-                return render('configure_analysis.html')
+                return render('configure_analysis.html',
+                              extra_vars={'year': year,
+                                          'random_group': random_group,
+                                          'model_variable': model_variable,
+                                          'data_type': data_type})
 
             schema = ConfigureAnalysisForm()
             c.form_errors = {}
@@ -99,7 +111,11 @@ class AnalysisController(BaseController):
                     }.items())
 
                 if c.form_errors:
-                    html = render('configure_analysis.html')
+                    html = render('configure_analysis.html',
+                                  extra_vars={'year': year,
+                                              'random_group': random_group,
+                                              'model_variable': model_variable,
+                                              'data_type': data_type})
 
                     return htmlfill.render(html,
                                            defaults=c.form_result,
@@ -110,7 +126,10 @@ class AnalysisController(BaseController):
                                 c.form_result.get('point_dataset_id'),
                                 c.form_result.get('coverage_dataset_ids'),
                                 user_id,
-                                c.form_result.get('parameter1'))
+                                c.form_result.get('year'),
+                                c.form_result.get('random_group'),
+                                c.form_result.get('model_variable'),
+                                c.form_result.get('data_type'))
 
                     c.analysis_id = analysis_id
 
@@ -172,9 +191,18 @@ class AnalysisController(BaseController):
         cds = current_analysis.coverage_datasets
         coverage_dataset_ids = [a.dataset_id for a in cds]
 
+        year = current_analysis.year
+        random_group = current_analysis.random_group
+        model_variable = current_analysis.model_variable
+        data_type = current_analysis.data_type
+
         return render('configure_analysis.html',
                               extra_vars={'current_point_dataset_id': point_dataset_id,
-                                          'current_coverage_dataset_ids': coverage_dataset_ids})
+                                          'current_coverage_dataset_ids': coverage_dataset_ids,
+                                          'year': year,
+                                          'random_group': random_group,
+                                          'model_variable': model_variable,
+                                          'data_type': data_type})
 
     @jsonify
     def progress(self, id):
@@ -197,6 +225,33 @@ class AnalysisController(BaseController):
         c.analysis_id = id
         return render('analysis_progress.html')
 
+    def download(self,id):
+        '''Action that allows the user to download a results dataset
+        '''
+
+        user = request.environ.get('REMOTE_USER')
+        user_object = self._user_service.get_user_by_username(user)
+        user_id = user_object.id
+
+        current_analysis = self._analysis_service.get_analysis_by_id(id, user_id)
+        result_dataset_id = current_analysis.result_dataset_id
+        result_dataset = self._dataset_service.get_dataset_by_id(result_dataset_id)
+        url = result_dataset.netcdf_url
+
+        data_file = self._analysis_service.get_netcdf_file(url)
+        with tempfile.NamedTemporaryFile(suffix=".ncdf") as temp_file:
+            temp_file.write(data_file.read())
+
+            file_size = os.path.getsize(temp_file.name)
+
+            headers = [('Content-Disposition', 'attachment; '
+                       'filename=\"' + temp_file.name + '\"'),
+                        ('Content-Type', 'text/plain'),
+                        ('Content-Length', str(file_size))]
+
+            fapp = FileApp(temp_file.name, headers=headers)
+
+            return fapp(request.environ, self.start_response)
 
 def custom_formatter(error):
     """Custom error formatter"""

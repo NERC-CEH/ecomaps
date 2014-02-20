@@ -7,6 +7,7 @@ from ecomaps import websetup
 from ecomaps.model import Dataset, Analysis
 from ecomaps.services.general import DatabaseService
 from ecomaps.model import AnalysisCoverageDataset
+import urllib2
 
 __author__ = 'Phil Jenkins (Tessella)'
 
@@ -79,15 +80,17 @@ class AnalysisService(DatabaseService):
             except NoResultFound:
                 return None
 
-
-    def create(self, name, point_dataset_id, coverage_dataset_ids, user_id, parameters):
+    def create(self, name, point_dataset_id, coverage_dataset_ids, user_id, year, random_group, model_variable, data_type):
         """Creates a new analysis object
             Params:
                 name - Friendly name for the analysis
                 point_dataset_id - Id of dataset containing point data
                 coverage_dataset_ids - List of coverage dataset ids
                 user_id - Who is creating this analysis?
-                parameters - Extra parameters to pass to the model code
+                year - year for which analysis is run
+                random_group - additional input into the model
+                model_variable - the variable that is being modelled
+                data_type - data type of the variable
             Returns:
                 ID of newly-inserted analysis
         """
@@ -122,9 +125,22 @@ class AnalysisService(DatabaseService):
                 coverage_datasets.dataset_id = id_as_int
                 analysis.coverage_datasets.append(coverage_datasets)
 
+            # Parameters that are used in the analysis
+            analysis.year = year
+            analysis.random_group = random_group
+            analysis.model_variable = model_variable
+            analysis.data_type = data_type
+
             session.add(analysis)
 
             # Flush and refresh to give us the generated ID for this new analysis
             session.flush([analysis])
             session.refresh(analysis)
             return analysis.id
+
+    def get_netcdf_file(self, url):
+        ''' Gets the file with results data in
+        '''
+
+        file_name = url + ".dods"
+        return urllib2.urlopen(file_name)
