@@ -24,6 +24,24 @@
     <form class="form-horizontal" method="POST">
 
         <div class="control-group">
+            <label for="analysis_name" class="control-label">Name of Analysis:</label>
+            ${h.html_tags.text('analysis_name', class_='controls')}
+        </div>
+
+        <div class="control-group">
+            <label for="coverage_dataset_ids" class="control-label">Choose coverage data:</label>
+
+            <select multiple="true" id="coverage_dataset_ids" name="coverage_dataset_ids" class="controls multiselect">
+                <optgroup py:for="dataset in c.coverage_datasets" label="${dataset.name}">
+                    <option py:for="column in dataset.column_names" value="${dataset.id}_${column}">
+                        ${column}
+                    </option>
+                </optgroup>
+            </select>
+
+        </div>
+
+        <div class="control-group">
             <label for="point_dataset_id" class="control-label">Choose point data:</label>
 
                 <select name="point_dataset_id" id="point_dataset_id" class="controls">
@@ -31,23 +49,6 @@
                         ${dataset.name}
                     </option>
                 </select>
-
-        </div>
-
-        <div class="control-group">
-            <label for="coverage_dataset_ids" class="control-label">Choose coverage data:</label>
-
-            <select multiple="true" id="coverage_dataset_ids" name="coverage_dataset_ids" class="controls">
-                <option py:for="dataset in c.coverage_datasets" value="${dataset.id}" py:attrs="{'selected':'True'} if defined('current_coverage_dataset_ids') and dataset.id in current_coverage_dataset_ids else {}">
-                    ${dataset.name}
-                </option>
-            </select>
-
-        </div>
-
-        <div class="control-group">
-            <label for="analysis_name" class="control-label">Name of Analysis:</label>
-            ${h.html_tags.text('analysis_name', class_='controls')}
         </div>
 
         <div class="control-group">

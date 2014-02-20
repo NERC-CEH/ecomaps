@@ -167,6 +167,8 @@ class AnalysisRunner(object):
             result_ds.dataset_type_id = 3
             result_ds.netcdf_url = self._open_ndap_format % file_name
 
+            # TODO: Open NDCF file here, add extra info to analysis? Or just pull out when viewing analysis?
+
             # Tidy up the analysis object
             self._save_analysis(result_ds)
             self._update_progress('Complete', True)

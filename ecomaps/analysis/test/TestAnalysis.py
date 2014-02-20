@@ -12,7 +12,7 @@ class TestEcomapsAnalysis(unittest.TestCase):
     def test_analysis_run(self):
 
         # Remove me to test analysis code
-        #return
+        return
 
         test_analysis = Analysis()
         test_analysis.name = "Testing times"

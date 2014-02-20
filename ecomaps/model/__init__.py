@@ -71,10 +71,13 @@ class Dataset(Base):
 
     __tablename__ = 'datasets'
 
+    column_names = []
+
     id = Column(Integer, primary_key=True)
     name = Column(String(100))
     wms_url = Column(String(255))
     netcdf_url = Column(String(255))
+    hi_res_url = Column(String(255))
     dataset_type_id = Column(Integer, ForeignKey('dataset_types.id'))
     viewable_by_user_id = Column(Integer, ForeignKey('users.id'), nullable=True)
 
@@ -114,6 +117,8 @@ class Analysis(Base):
     """A running of the model, stores setup and result information in the same entity"""
 
     __tablename__ = 'analyses'
+
+    attributes = {}
 
     id = Column(Integer, primary_key=True)
     name = Column(String(255))

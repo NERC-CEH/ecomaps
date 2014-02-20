@@ -28,31 +28,62 @@
     <py:choose>
         <py:when test="c.analysis.complete">
             <div class="row">
-                <div class="span5">
+                <div class="span7">
                     <h1>${c.analysis.name}</h1>
 
                     <div class="row">
-                        <div class="span6">
+                        <div class="span7">
+                            <h4>NetCDF Attributes</h4>
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th>Result</th>
+                                        <th>Attribute</th>
                                         <th>Value</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
                                         <td>
-                                            Goodness of fit
+                                            Title
                                         </td>
-                                        <td>${c.analysis.goodness_of_fit}</td>
+                                        <td>${c.analysis.attributes['title']}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Date Created
+                                        </td>
+                                        <td>${c.analysis.attributes['date_created']}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Geospatial Longitude Min
+                                        </td>
+                                        <td>${c.analysis.attributes['geospatial_lon_min']}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Geospatial Longitude Max
+                                        </td>
+                                        <td>${c.analysis.attributes['geospatial_lon_max']} </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Geospatial Latitude Min
+                                        </td>
+                                        <td>${c.analysis.attributes['geospatial_lat_min']}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Geospatial Latitude Max
+                                        </td>
+                                        <td>${c.analysis.attributes['geospatial_lat_max']} </td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
-                <div class="span7">
+                <div class="span5">
                     <img class="img-polaroid" src="data:image/png;base64, ${c.analysis.result_image}" />
                 </div>
             </div>

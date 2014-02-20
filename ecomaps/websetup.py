@@ -62,14 +62,15 @@ def setup_app(command, conf, vars):
         ds.dataset_type = coverDst
         ds.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/wms/LCM2007_1kmDetail/LCM2007_GB_1K_DOM_TAR.nc?service=WMS&version=1.3.0&request=GetCapabilities'
         ds.name = 'Land Cover Map 2007'
-        ds.netcdf_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/testAll/LCM2007_GB_1K_DOM_TAR.nc'
+        ds.netcdf_url = 'http://localhost:8080/thredds/dodsC/testAll/LCM2007_GB_1K_DOM_TAR.nc'
 
         session.add(ds)
         
         ds2 = Dataset()
         ds2.dataset_type = pointDst
-        ds2.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/wms/CHESSModel001Run001OutputAggregation/DetailWholeDataset.ncml?service=WMS&version=1.3.0&request=GetCapabilities'
-        ds2.name = 'Example CHESS dataset'
+        ds2.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/ECOMAPSDetail/ECOMAPSInputLOI01.nc?service=WMS&version=1.3.0&request=GetCapabilities'
+        ds2.netcdf_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/ECOMAPSDetail/ECOMAPSInputLOI01.nc'
+        ds2.name = 'Example Point dataset'
 
         session.add(ds2)
 
@@ -148,7 +149,8 @@ def setup_app(command, conf, vars):
         ds4 = Dataset()
         ds4.dataset_type = coverDst
         ds4.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/cover1'
-        ds4.name = 'Land Cover Map 1'
+        ds4.name = 'Chess Example'
+        ds4.netcdf_url = 'http://localhost:8080/thredds/dodsC/testAll/CHESS_MODEL001_RUN001_OUT_precip_1971-01.nc'
 
         session.add(ds4)
 
@@ -156,13 +158,15 @@ def setup_app(command, conf, vars):
         ds5.dataset_type = coverDst
         ds5.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/cover2'
         ds5.name = 'Land Cover Map 2'
+        ds5.netcdf_url = 'http://localhost:8080/thredds/dodsC/testAll/LCM2007_GB_1K_DOM_TAR.nc'
 
         session.add(ds5)
 
         ds6 = Dataset()
         ds6.dataset_type = pointDst
-        ds6.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/point1'
-        ds6.name = 'Land Point Map 1'
+        ds6.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/ECOMAPSDetail/ECOMAPSInputLOI01.nc?service=WMS&version=1.3.0&request=GetCapabilities'
+        ds6.netcdf_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/ECOMAPSDetail/ECOMAPSInputLOI01.nc'
+        ds6.name = 'Example Point dataset 2'
 
         session.add(ds6)
 
