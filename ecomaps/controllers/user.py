@@ -1,9 +1,10 @@
 import logging
+from pylons.controllers.util import redirect
 
 from ecomaps.lib.base import BaseController, c, request, response, render, session, abort
 from ecomaps.services.user import UserService
 from ecomaps.services.dataset import DatasetService
-from pylons import tmpl_context as c
+from pylons import tmpl_context as c, url
 from formencode import htmlfill
 import formencode
 from ecomaps.model.create_new_user_form import CreateUserForm
@@ -54,18 +55,27 @@ class UserController(BaseController):
 
                 c.form_result = error.value
                 c.form_errors = error.error_dict or {}
+
+            user_email = str(c.form_result.get('email'))
+
+            # Username of the user will be set as the user's email address
+            # Generate an error if the email address (and hence username) is already taken
+            if self._user_service.get_user_by_username(user_email):
+                c.form_errors = dict(c.form_errors.items() + {
+                    'email': 'Email address is already taken - please choose another.'
+                }.items())
+
+            if c.form_errors:
                 html = render('new_user.html')
                 return htmlfill.render(html,
                                        defaults=c.form_result,
                                        errors=c.form_errors,
                                        auto_error_formatter=custom_formatter)
             else:
-
-                self._user_service.create(c.form_result.get('name'),
-                                          c.form_result.get('username'),
-                                          c.form_result.get('email'),)
-                c.all_users = self._user_service.get_all_users()
-                return render('list_of_users.html')
+                self._user_service.create(user_email,
+                                          c.form_result.get('name'),
+                                          user_email)
+                return redirect(url(controller="user", action="view_users"))
 
 
 def custom_formatter(error):

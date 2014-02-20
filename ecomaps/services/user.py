@@ -37,7 +37,7 @@ class UserService(DatabaseService):
 
             except:
                 # We'll get an exception if the user can't be found
-                raise ServiceException()
+                return None
 
     def get_all_users(self):
         """Returns an array containing all the users"""

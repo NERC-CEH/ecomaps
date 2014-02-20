@@ -33,7 +33,7 @@ def setup_app(command, conf, vars):
 
         user = User()
         user.name = 'Phil Jenkins'
-        user.username = 'philip.jenkins@tessella.com'
+        user.username = 'phil.jenkins@tessella.com'
         user.email = 'phil.jenkins@tessella.com'
 
         user2 = User()
