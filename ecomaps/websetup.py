@@ -2,7 +2,8 @@ import datetime
 import os
 import pylons.test
 from ecomaps.config.environment import load_environment
-from ecomaps.model import session_scope, DatasetType, Dataset, Analysis, User, AnalysisCoverageDataset
+from ecomaps.model import session_scope, DatasetType, Dataset, Analysis, User, AnalysisCoverageDataset, \
+    AnalysisCoverageDatasetColumn
 from ecomaps.model.meta import Base, Session
 
 __author__ = 'Phil Jenkins (Tessella)'
@@ -98,6 +99,10 @@ def setup_app(command, conf, vars):
         # 2. Either assign the dataset directly
         cds.dataset = ds
 
+        col = AnalysisCoverageDatasetColumn()
+        col.column = 'LandCover'
+        cds.columns.append(col)
+
         # 3. Or just use the dataset ID
         # cds.dataset_id = 1
 
@@ -109,29 +114,45 @@ def setup_app(command, conf, vars):
 
         session.add(a1)
 
+        cds_a2 = AnalysisCoverageDataset()
+
+        # 2. Either assign the dataset directly
+        cds_a2.dataset = ds
+
+
         a2 = Analysis()
         a2.name = "Example public analysis"
         a2.run_date = datetime.datetime.now()
         a2.run_by_user = user
         a2.result_image = _get_result_image()
-        a2.coverage_datasets.append(cds)
+        a2.coverage_datasets.append(cds_a2)
         a2.goodness_of_fit = 60
         a2.point_dataset = ds2
         a2.result_dataset = ds3
 
         session.add(a2)
 
+        cds_a3 = AnalysisCoverageDataset()
+
+        # 2. Either assign the dataset directly
+        cds_a3.dataset = ds
+
         a3 = Analysis()
         a3.name = "Example public analysis 2"
         a3.run_date = datetime.datetime.now()
         a3.run_by_user = user2
         a3.result_image = _get_result_image()
-        a3.coverage_datasets.append(cds)
+        a3.coverage_datasets.append(cds_a3)
         a3.goodness_of_fit = 60
         a3.point_dataset = ds2
         a3.result_dataset = ds3
 
         session.add(a3)
+
+        cds_a4 = AnalysisCoverageDataset()
+
+        # 2. Either assign the dataset directly
+        cds_a4.dataset = ds
 
         a4 = Analysis()
         a4.name = "Example private analysis - someone else"
@@ -139,7 +160,7 @@ def setup_app(command, conf, vars):
         a4.run_by_user = user2
         a4.viewable_by_user = user2
         a4.result_image = _get_result_image()
-        a4.coverage_datasets.append(cds)
+        a4.coverage_datasets.append(cds_a4)
         a4.goodness_of_fit = 60
         a4.point_dataset = ds2
         a4.result_dataset = ds3
@@ -181,14 +202,17 @@ def setup_app(command, conf, vars):
         cds2 = AnalysisCoverageDataset()
         cds2.dataset = ds4
 
+        cds3 = AnalysisCoverageDataset()
+        cds3.dataset = ds5
+
         a5 = Analysis()
         a5.name = "Private Analysis - multiple coverage datasets"
         a5.run_date = datetime.datetime.now()
         a5.run_by_user = user
         a5.viewable_by_user = user
         a5.result_image = _get_result_image()
-        a5.coverage_datasets.append(cds)
         a5.coverage_datasets.append(cds2)
+        a5.coverage_datasets.append(cds3)
         a5.goodness_of_fit = 81
         a5.point_dataset = ds7
         a5.result_dataset = ds3

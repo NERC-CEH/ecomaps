@@ -33,7 +33,7 @@
 
             <select multiple="true" id="coverage_dataset_ids" name="coverage_dataset_ids" class="controls multiselect">
                 <optgroup py:for="dataset in c.coverage_datasets" label="${dataset.name}">
-                    <option py:for="column in dataset.column_names" value="${dataset.id}_${column}">
+                    <option py:for="column in dataset.column_names" value="${dataset.id}_${column}" py:attrs="{'selected':'True'} if defined('current_coverage_dataset_ids') and '%s_%s' % (dataset.id, column) in current_coverage_dataset_ids else {}">
                         ${column}
                     </option>
                 </optgroup>
@@ -54,56 +54,32 @@
         <div class="control-group">
             <label for="Year" class="control-label">Year:</label>
 
-            <py:choose>
-                <py:when test="year">
-                    ${h.html_tags.text('year', class_='controls', value=year)}
-                </py:when>
-                <py:otherwise>
-                    ${h.html_tags.text('year', class_='controls')}
-             </py:otherwise>
-            </py:choose>
+            <select id="year" class="controls model-param"></select>
 
         </div>
 
         <div class="control-group">
             <label for="Random Group" class="control-label">Random Group:</label>
 
-            <py:choose>
-                <py:when test="random_group">
-                    ${h.html_tags.text('random_group', class_='controls', value=random_group)}
-                </py:when>
-                <py:otherwise>
-                   ${h.html_tags.text('random_group', class_='controls')}
-                </py:otherwise>
-            </py:choose>
+            <select id="random_group" class="controls model-param"></select>
 
         </div>
 
         <div class="control-group">
             <label for="Model Variable" class="control-label">Model Variable:</label>
 
-            <py:choose>
-                <py:when test="model_variable">
-                    ${h.html_tags.text('model_variable', class_='controls', value=model_variable)}
-                </py:when>
-                <py:otherwise>
-                   ${h.html_tags.text('model_variable', class_='controls')}
-                </py:otherwise>
-            </py:choose>
+            <select id="model_variable" class="controls model-param"></select>
 
         </div>
 
         <div class="control-group">
             <label for="Data Type" class="control-label">Data Type:</label>
 
-            <py:choose>
-                <py:when test="data_type">
-                    ${h.html_tags.text('data_type', class_='controls', value=data_type)}
-                </py:when>
-                <py:otherwise>
-                   ${h.html_tags.text('data_type', class_='controls')}
-                </py:otherwise>
-            </py:choose>
+            <select class="controls">
+                <option value="cont">Continuous</option>
+                <option value="count">Count</option>
+                <option value="binary">Binary</option>
+            </select>
 
         </div>
 
@@ -115,6 +91,21 @@
 <script type="text/javascript" language="JavaScript">
             $(function () {
 
+            /* updatePointDatasetColumns
+            *
+            *   Provides a facility for populating the model parameter dropdowns
+            *   based on the point dataset chosen
+            *
+            */
+            var updatePointDatasetColumns = function(dataset_id) {
+
+                $("select.model-param").each(function(index){
+                    $(this).empty();
+                    $(this).append($("<option></option>").text("Loading..."));
+                    $(this).attr("disabled", true);
+                });
+            };
+
             // Error span swap
             $("span.help-inline").each(function(index, el){
 
@@ -122,6 +113,12 @@
                 // Swap the message with the input
                 $(el).insertAfter($(el).next());
                 $(el).closest("div.control-group").addClass("error");
+            });
+
+            // Set up handler for changing point dataset value
+            $("select#point_dataset_id").change(function(){
+
+                updatePointDatasetColumns($(this).val());
             });
         })
 </script>

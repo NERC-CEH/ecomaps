@@ -1,10 +1,10 @@
 import datetime
 from random import randint
-from sqlalchemy.orm import subqueryload
+from sqlalchemy.orm import subqueryload, subqueryload_all, aliased, contains_eager
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.sql import Alias, or_
 from ecomaps import websetup
-from ecomaps.model import Dataset, Analysis
+from ecomaps.model import Dataset, Analysis, AnalysisCoverageDatasetColumn
 from ecomaps.services.general import DatabaseService
 from ecomaps.model import AnalysisCoverageDataset
 import urllib2
@@ -68,14 +68,31 @@ class AnalysisService(DatabaseService):
 
             try:
 
-                return session.query(Analysis)\
-                    .options(subqueryload(Analysis.point_dataset)) \
-                    .options(subqueryload(Analysis.coverage_datasets)) \
-                    .options(subqueryload(Analysis.result_dataset)) \
+                point_alias = aliased(Dataset)
+                result_alias = aliased(Dataset)
+
+                return session.query(Analysis, AnalysisCoverageDataset)\
+                    .join(point_alias, Analysis.point_dataset) \
+                    .join(Analysis.coverage_datasets) \
+                    .join(AnalysisCoverageDataset.columns) \
+                    .join(result_alias, Analysis.result_dataset) \
+                    .options(contains_eager(Analysis.point_dataset)) \
+                    .options(contains_eager(Analysis.result_dataset)) \
+                    .options(contains_eager(Analysis.coverage_datasets)) \
+                    .options(contains_eager(AnalysisCoverageDataset.columns)) \
                     .filter(Analysis.id == analysis_id,
                             or_(or_(Analysis.viewable_by == user_id,
                             Analysis.viewable_by == None),
-                            Analysis.run_by == user_id)).one()
+                            Analysis.run_by == user_id)).one()[0]
+
+                # return session.query(Analysis, AnalysisCoverageDataset)\
+                #     .options(subqueryload(Analysis.point_dataset)) \
+                #     .options(subqueryload_all(Analysis.coverage_datasets.columns)) \
+                #     .options(subqueryload(Analysis.result_dataset)) \
+                #     .filter(Analysis.id == analysis_id,
+                #             or_(or_(Analysis.viewable_by == user_id,
+                #             Analysis.viewable_by == None),
+                #             Analysis.run_by == user_id)).one()
 
             except NoResultFound:
                 return None
@@ -85,7 +102,8 @@ class AnalysisService(DatabaseService):
             Params:
                 name - Friendly name for the analysis
                 point_dataset_id - Id of dataset containing point data
-                coverage_dataset_ids - List of coverage dataset ids
+                coverage_dataset_ids - List of coverage dataset ids, which should be
+                    in the format <id>_<column_name>
                 user_id - Who is creating this analysis?
                 year - year for which analysis is run
                 random_group - additional input into the model
@@ -118,12 +136,19 @@ class AnalysisService(DatabaseService):
             # End of temporary test code
 
             # Hook up the coverage datasets
-            coverage_datasets = AnalysisCoverageDataset()
 
             for id in coverage_dataset_ids:
+
+                coverage_ds = AnalysisCoverageDataset()
+                # The coverage dataset 'ID' is actually a
+                # composite in the form <id>_<column-name>
+                id, column_name = id.split('_')
                 id_as_int = int(id)
-                coverage_datasets.dataset_id = id_as_int
-                analysis.coverage_datasets.append(coverage_datasets)
+                coverage_ds.dataset_id = id_as_int
+                col = AnalysisCoverageDatasetColumn()
+                col.column = column_name
+                coverage_ds.columns.append(col)
+                analysis.coverage_datasets.append(coverage_ds)
 
             # Parameters that are used in the analysis
             analysis.year = year

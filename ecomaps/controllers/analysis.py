@@ -183,13 +183,27 @@ class AnalysisController(BaseController):
         user_object = self._user_service.get_user_by_username(user)
         user_id = user_object.id
         c.point_datasets = self._dataset_service.get_datasets_for_user(user_id,'Point')
-        c.coverage_datasets = self._dataset_service.get_datasets_for_user(user_id, 'Coverage')
+        coverage_datasets = self._dataset_service.get_datasets_for_user(user_id, 'Coverage')
+
+        # Be sure to populate the column names for each coverage dataset, this
+        # will populate the list correctly
+        for ds in coverage_datasets:
+            ds.column_names = self._netcdf_service.get_variable_column_names(ds.netcdf_url)
+
+        c.coverage_datasets = coverage_datasets
 
         current_analysis = self._analysis_service.get_analysis_by_id(id, user_id)
         point_dataset_id = current_analysis.point_data_dataset_id
 
+        # For each coverage dataset that was linked to the original analysis, there
+        # will be a number of column names chosen...
         cds = current_analysis.coverage_datasets
-        coverage_dataset_ids = [a.dataset_id for a in cds]
+        coverage_dataset_ids = []
+
+        # So create the right type of "ID" based on the convention we're using
+        # which is <id>_<column-name>
+        for dataset in cds:
+            coverage_dataset_ids.extend(["%s_%s" % (dataset.dataset_id, col.column) for col in dataset.columns])
 
         year = current_analysis.year
         random_group = current_analysis.random_group
