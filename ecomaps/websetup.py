@@ -2,7 +2,8 @@ import datetime
 import os
 import pylons.test
 from ecomaps.config.environment import load_environment
-from ecomaps.model import session_scope, DatasetType, Dataset, Analysis, User, AnalysisCoverageDataset
+from ecomaps.model import session_scope, DatasetType, Dataset, Analysis, User, AnalysisCoverageDataset, \
+    AnalysisCoverageDatasetColumn
 from ecomaps.model.meta import Base, Session
 
 __author__ = 'Phil Jenkins (Tessella)'
@@ -62,14 +63,15 @@ def setup_app(command, conf, vars):
         ds.dataset_type = coverDst
         ds.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/wms/LCM2007_1kmDetail/LCM2007_GB_1K_DOM_TAR.nc?service=WMS&version=1.3.0&request=GetCapabilities'
         ds.name = 'Land Cover Map 2007'
-        ds.netcdf_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/testAll/LCM2007_GB_1K_DOM_TAR.nc'
+        ds.netcdf_url = 'http://localhost:8080/thredds/dodsC/testAll/LCM2007_GB_1K_DOM_TAR.nc'
 
         session.add(ds)
         
         ds2 = Dataset()
         ds2.dataset_type = pointDst
-        ds2.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/wms/CHESSModel001Run001OutputAggregation/DetailWholeDataset.ncml?service=WMS&version=1.3.0&request=GetCapabilities'
-        ds2.name = 'Example CHESS dataset'
+        ds2.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/ECOMAPSDetail/ECOMAPSInputLOI01.nc?service=WMS&version=1.3.0&request=GetCapabilities'
+        ds2.netcdf_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/ECOMAPSDetail/ECOMAPSInputLOI01.nc'
+        ds2.name = 'Example Point dataset'
 
         session.add(ds2)
 
@@ -97,6 +99,10 @@ def setup_app(command, conf, vars):
         # 2. Either assign the dataset directly
         cds.dataset = ds
 
+        col = AnalysisCoverageDatasetColumn()
+        col.column = 'LandCover'
+        cds.columns.append(col)
+
         # 3. Or just use the dataset ID
         # cds.dataset_id = 1
 
@@ -108,29 +114,45 @@ def setup_app(command, conf, vars):
 
         session.add(a1)
 
+        cds_a2 = AnalysisCoverageDataset()
+
+        # 2. Either assign the dataset directly
+        cds_a2.dataset = ds
+
+
         a2 = Analysis()
         a2.name = "Example public analysis"
         a2.run_date = datetime.datetime.now()
         a2.run_by_user = user
         a2.result_image = _get_result_image()
-        a2.coverage_datasets.append(cds)
+        a2.coverage_datasets.append(cds_a2)
         a2.goodness_of_fit = 60
         a2.point_dataset = ds2
         a2.result_dataset = ds3
 
         session.add(a2)
 
+        cds_a3 = AnalysisCoverageDataset()
+
+        # 2. Either assign the dataset directly
+        cds_a3.dataset = ds
+
         a3 = Analysis()
         a3.name = "Example public analysis 2"
         a3.run_date = datetime.datetime.now()
         a3.run_by_user = user2
         a3.result_image = _get_result_image()
-        a3.coverage_datasets.append(cds)
+        a3.coverage_datasets.append(cds_a3)
         a3.goodness_of_fit = 60
         a3.point_dataset = ds2
         a3.result_dataset = ds3
 
         session.add(a3)
+
+        cds_a4 = AnalysisCoverageDataset()
+
+        # 2. Either assign the dataset directly
+        cds_a4.dataset = ds
 
         a4 = Analysis()
         a4.name = "Example private analysis - someone else"
@@ -138,7 +160,7 @@ def setup_app(command, conf, vars):
         a4.run_by_user = user2
         a4.viewable_by_user = user2
         a4.result_image = _get_result_image()
-        a4.coverage_datasets.append(cds)
+        a4.coverage_datasets.append(cds_a4)
         a4.goodness_of_fit = 60
         a4.point_dataset = ds2
         a4.result_dataset = ds3
@@ -149,7 +171,8 @@ def setup_app(command, conf, vars):
         ds4 = Dataset()
         ds4.dataset_type = coverDst
         ds4.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/cover1'
-        ds4.name = 'Land Cover Map 1'
+        ds4.name = 'Chess Example'
+        ds4.netcdf_url = 'http://localhost:8080/thredds/dodsC/testAll/CHESS_MODEL001_RUN001_OUT_precip_1971-01.nc'
 
         session.add(ds4)
 
@@ -157,13 +180,15 @@ def setup_app(command, conf, vars):
         ds5.dataset_type = coverDst
         ds5.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/cover2'
         ds5.name = 'Land Cover Map 2'
+        ds5.netcdf_url = 'http://localhost:8080/thredds/dodsC/testAll/LCM2007_GB_1K_DOM_TAR.nc'
 
         session.add(ds5)
 
         ds6 = Dataset()
         ds6.dataset_type = pointDst
-        ds6.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/point1'
-        ds6.name = 'Land Point Map 1'
+        ds6.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/ECOMAPSDetail/ECOMAPSInputLOI01.nc?service=WMS&version=1.3.0&request=GetCapabilities'
+        ds6.netcdf_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/ECOMAPSDetail/ECOMAPSInputLOI01.nc'
+        ds6.name = 'Example Point dataset 2'
 
         session.add(ds6)
 
@@ -177,14 +202,17 @@ def setup_app(command, conf, vars):
         cds2 = AnalysisCoverageDataset()
         cds2.dataset = ds4
 
+        cds3 = AnalysisCoverageDataset()
+        cds3.dataset = ds5
+
         a5 = Analysis()
         a5.name = "Private Analysis - multiple coverage datasets"
         a5.run_date = datetime.datetime.now()
         a5.run_by_user = user
         a5.viewable_by_user = user
         a5.result_image = _get_result_image()
-        a5.coverage_datasets.append(cds)
         a5.coverage_datasets.append(cds2)
+        a5.coverage_datasets.append(cds3)
         a5.goodness_of_fit = 81
         a5.point_dataset = ds7
         a5.result_dataset = ds3

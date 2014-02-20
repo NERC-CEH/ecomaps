@@ -80,6 +80,11 @@ ul#progress li i {
     margin-right: 5px;
 }
 
+select.multiselect {
+    min-height: 150px;
+
+}
+
 form.inline_buttons{
     margin:0;
 }

@@ -396,15 +396,21 @@ class Datasets:
         # The returned structure will have numerous child layers, however we're only interested in the
         # very last one, as that contains the map data
 
-        def inspect_children(layer_obj):
+        def inspect_children(layer_col):
 
-            if len(layer_obj.children) == 0:
+            layers = []
 
-                return layer_obj
-            else:
-                return inspect_children(layer_obj.children[0])
+            for layer_obj in layer_col:
 
-        return inspect_children(layer_info[0])
+                if len(layer_obj.children) == 0:
+
+                    layers.append(layer_obj)
+                else:
+                    layers.append(inspect_children(layer_obj.children))
+
+            return layers
+
+        return inspect_children(layer_info[0].children)
 
 
     def getLayerData(self, layerId, sessionEndpointData):

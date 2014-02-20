@@ -139,7 +139,7 @@ class AnalysisRunner(object):
             #RUN
             analysis = EcomapsAnalysis(dir)
 
-            file_name = "%s_%s.nc" % (self._analysis_obj.name, uuid.uuid4())
+            file_name = "%s_%s.nc" % (self._analysis_obj.name.replace(' ', '-'), str(datetime.datetime.now().isoformat()))
 
             # Swap the urls out for the coverage and point datasets in the analysis object
             output_file_loc, image_file_loc = analysis.run('http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/ECOMAPSDetail/ECOMAPSInputLOI01.nc',
@@ -166,6 +166,8 @@ class AnalysisRunner(object):
             # TODO: Can we do something nicer than the ID?
             result_ds.dataset_type_id = 3
             result_ds.netcdf_url = self._open_ndap_format % file_name
+
+            # TODO: Open NDCF file here, add extra info to analysis? Or just pull out when viewing analysis?
 
             # Tidy up the analysis object
             self._save_analysis(result_ds)

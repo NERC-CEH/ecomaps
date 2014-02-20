@@ -1,4 +1,5 @@
-from sqlalchemy import engine_from_config, Column, Integer, String, ForeignKey, Table, DateTime, create_engine, Text, Boolean
+from sqlalchemy import engine_from_config, Column, Integer, String, ForeignKey, Table, DateTime, create_engine, Text, Boolean, \
+    ForeignKeyConstraint
 from sqlalchemy.orm import relationship
 from ecomaps.model.meta import Session, Base
 from contextlib import contextmanager
@@ -71,10 +72,13 @@ class Dataset(Base):
 
     __tablename__ = 'datasets'
 
+    column_names = []
+
     id = Column(Integer, primary_key=True)
     name = Column(String(100))
     wms_url = Column(String(255))
     netcdf_url = Column(String(255))
+    hi_res_url = Column(String(255))
     dataset_type_id = Column(Integer, ForeignKey('dataset_types.id'))
     viewable_by_user_id = Column(Integer, ForeignKey('users.id'), nullable=True)
 
@@ -115,6 +119,8 @@ class Analysis(Base):
 
     __tablename__ = 'analyses'
 
+    attributes = {}
+
     id = Column(Integer, primary_key=True)
     name = Column(String(255))
     point_data_dataset_id = Column(Integer, ForeignKey('datasets.id'))
@@ -148,6 +154,20 @@ class Analysis(Base):
 
         return "<Analysis(name=%s, run_date=%s, run_by=%s)>" % (self.name, self.run_date, self.run_by)
 
+class AnalysisCoverageDatasetColumn(Base):
+
+    __tablename__ = 'analysis_coverage_dataset_columns'
+
+    id = Column(Integer, primary_key=True)
+    analysis_id = Column(Integer)
+    dataset_id = Column(Integer)
+    column = Column(String(255))
+
+    #analysis_coverage_dataset = relationship('AnalysisCoverageDataset', foreign_keys=[analysis_id, dataset_id])
+
+    __table_args__ = (ForeignKeyConstraint([analysis_id, dataset_id],
+                                           ['analysis_coverage_datasets.analysis_id', 'analysis_coverage_datasets.dataset_id']),
+                      {})
 
 class AnalysisCoverageDataset(Base):
     """Provides a link between an analysis and a coverage dataset"""
@@ -156,6 +176,8 @@ class AnalysisCoverageDataset(Base):
 
     analysis_id = Column(Integer, ForeignKey('analyses.id'), primary_key=True)
     dataset_id = Column(Integer, ForeignKey('datasets.id'), primary_key=True)
+
+    columns = relationship('AnalysisCoverageDatasetColumn')
 
     dataset = relationship('Dataset')
 

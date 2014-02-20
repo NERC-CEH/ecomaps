@@ -6,6 +6,7 @@ from ecomaps.analysis.run import AnalysisRunner
 
 from ecomaps.lib.base import BaseController, c, request, response, render, session, abort
 from ecomaps.services.analysis import AnalysisService
+from ecomaps.services.netcdf import NetCdfService
 from ecomaps.services.user import UserService
 from ecomaps.services.dataset import DatasetService
 from pylons import tmpl_context as c, url
@@ -28,8 +29,10 @@ class AnalysisController(BaseController):
     _user_service = None
     _analysis_service = None
     _dataset_service = None
+    _netcdf_service = None
 
-    def __init__(self, user_service=UserService(), analysis_service=AnalysisService(), dataset_service=DatasetService()):
+    def __init__(self, user_service=UserService(), analysis_service=AnalysisService(),
+                 dataset_service=DatasetService(), netcdf_service=NetCdfService()):
         """Constructor for the user controller, takes in any services required
             Params:
                 user_service: User service to use within the controller
@@ -39,6 +42,7 @@ class AnalysisController(BaseController):
         self._user_service = user_service
         self._analysis_service = analysis_service
         self._dataset_service = dataset_service
+        self._netcdf_service = netcdf_service
 
     def index(self):
         """Default action for the analysis controller"""
@@ -64,7 +68,14 @@ class AnalysisController(BaseController):
             user_id = user.id
 
             c.point_datasets = self._dataset_service.get_datasets_for_user(user_id,'Point')
-            c.coverage_datasets = self._dataset_service.get_datasets_for_user(user_id, 'Coverage')
+
+            coverage_datasets = self._dataset_service.get_datasets_for_user(user_id, 'Coverage')
+
+            for ds in coverage_datasets:
+
+                ds.column_names = self._netcdf_service.get_variable_column_names(ds.netcdf_url)
+
+            c.coverage_datasets = coverage_datasets
 
             year = None
             random_group = None
@@ -154,6 +165,10 @@ class AnalysisController(BaseController):
         analysis = self._analysis_service.get_analysis_by_id(id, user_obj.id)
 
         if analysis:
+
+            # Get the result attributes from the NetCDF file associated with the result dataset
+            analysis.attributes = self._netcdf_service.get_attributes(analysis.result_dataset.netcdf_url)
+
             c.analysis = analysis
             return render('analysis_view.html', extra_vars={'added_successfully': added_successfully})
         else:
@@ -168,13 +183,27 @@ class AnalysisController(BaseController):
         user_object = self._user_service.get_user_by_username(user)
         user_id = user_object.id
         c.point_datasets = self._dataset_service.get_datasets_for_user(user_id,'Point')
-        c.coverage_datasets = self._dataset_service.get_datasets_for_user(user_id, 'Coverage')
+        coverage_datasets = self._dataset_service.get_datasets_for_user(user_id, 'Coverage')
+
+        # Be sure to populate the column names for each coverage dataset, this
+        # will populate the list correctly
+        for ds in coverage_datasets:
+            ds.column_names = self._netcdf_service.get_variable_column_names(ds.netcdf_url)
+
+        c.coverage_datasets = coverage_datasets
 
         current_analysis = self._analysis_service.get_analysis_by_id(id, user_id)
         point_dataset_id = current_analysis.point_data_dataset_id
 
+        # For each coverage dataset that was linked to the original analysis, there
+        # will be a number of column names chosen...
         cds = current_analysis.coverage_datasets
-        coverage_dataset_ids = [a.dataset_id for a in cds]
+        coverage_dataset_ids = []
+
+        # So create the right type of "ID" based on the convention we're using
+        # which is <id>_<column-name>
+        for dataset in cds:
+            coverage_dataset_ids.extend(["%s_%s" % (dataset.dataset_id, col.column) for col in dataset.columns])
 
         year = current_analysis.year
         random_group = current_analysis.random_group

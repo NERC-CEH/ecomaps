@@ -2,10 +2,11 @@ from _bisect import bisect_right
 from bisect import bisect_left
 import logging
 import os
-from pandas import DataFrame
-from pydap.client import open_url
 import time
 import pyper
+from pydap.client import open_url
+from geopandas import GeoDataFrame, GeoSeries
+from shapely.geometry import Point
 
 __author__ = 'Phil Jenkins (Tessella)'
 
@@ -34,7 +35,7 @@ class EcomapsAnalysis(object):
         self._working_dir = working_dir
 
     def _open_sample_opendap(self, url):
-        print '\n\nurl:\t{0}'.format(url)
+        print '\n\nurl:\t\t\t\t\t{0}'.format(url)
         messages = False
         #  Create points OPeNDAP object
         points = open_url(url)
@@ -61,27 +62,25 @@ class EcomapsAnalysis(object):
                 # Series/DataFrame/Panel constructor.
                 # see:  http://pandas.pydata.org/pandas-docs/dev/gotchas.html#byte-ordering-issues
                 column_dictionary[column] = points[column][:].byteswap().newbyteorder()
-        #  Create pandas data frame from dictionary
-        df = DataFrame(column_dictionary)
-        print df
-        print type(df)
-        #  Re-order column order of data frame using column list generated when points OPeNDAP accessed
-        df = df[column_list]
-        if messages:
-            print '\n'
-            print df
-            print
-            print df.info()
-            print
-            print df.describe()
-            print
-            ##print df.to_string()
-            ##print df.iloc[:10].to_string()
-            ##print df.iloc[-10:].to_string()
-            print df.head(10)
-            print
-            print df.tail(10)
-        return df
+        #  Create GeoPandas GeoDataFrame from column dictionary
+        ##  See 'GeoPandas - Geospatial Data in Python Made Easy' by Kelsey Jordahl
+        ##  at:  http://vimeo.com/79535664.
+        ##  Basic GeoPandas documentation at:  http://geopandas.org/index.html
+        gdf = GeoDataFrame(column_dictionary)
+        ##print 'gdf:\t', gdf
+        ##print 'type(gdf):\t', type(gdf)
+        #  Re-order column order of GeoDataFrame using column list generated when points OPeNDAP accessed
+        gdf = GeoDataFrame(gdf[column_list])
+        ##print 'gdf:\t', gdf
+        ##print 'type(gdf):\t', type(gdf)
+        #  Create geometry column in GeoDataFrame
+        s = GeoSeries([Point(x, y) for x, y in zip(gdf['easting'], gdf['northing'])])
+        gdf['geometry'] = s
+        #  Set CRS for GeoDataFrame
+        gdf.crs = {'init': 'epsg:27700', 'no_defs': True}
+
+        del points
+        return gdf
 
     def _get_coordinate_lists(self, url):
         print '\n\naggregationurl:\t{0}'.format(url)
@@ -120,7 +119,7 @@ class EcomapsAnalysis(object):
         return north_list, east_list
 
     def _get_landcover_array(self, url):
-        print '\n\naggregationurl:\t{0}'.format(url)
+        print '\n\naggregationurl:\t\t\t{0}'.format(url)
         messages = False
         # Create aggregation OPeNDAP object
         aggregation = open_url(url)
@@ -136,6 +135,68 @@ class EcomapsAnalysis(object):
         #  Delete aggregation object
         del aggregation
         return data
+
+# ======================================================================================================================
+##  mapToPixel function, and associated functions, plus approach bastardised from:
+##  http://gis-lab.info/qa/extract-values-rasters-eng.html.  For EcoMaps both the
+##  sample vector points and Land Cover Map raster are in British National Grid
+##  (EPSG 27700) projection so don't need to worry about re-projecting between
+##  different projection systems.
+
+    def _mapToPixel(self, mX, mY, geoTransform):
+        """Convert map coordinates to pixel coordinates.
+
+        ##  Function and approach bastardised from http://gis-lab.info/qa/extract-values-rasters-eng.html
+
+        @param mX              Input map X coordinate (double)
+        @param mY              Input map Y coordinate (double)
+        @param geoTransform    Input geotransform (six doubles)
+        @return pX, pY         Output coordinates (two doubles)
+        """
+
+        if geoTransform[2] + geoTransform[4] == 0:
+            pX = (mX - geoTransform[0] ) / geoTransform[1]
+            pY = (mY - geoTransform[3] ) / geoTransform[5]
+        else:
+            pX, pY = self._applyGeoTransform(mX, mY, self._invertGeoTransform(geoTransform))
+        ##return int(pX + 0.5), int(pY + 0.5)
+        ##return int(round(pX + 0.5)), int(round(pY + 0.5))
+        return int(pX + 0.0), int(pY + 0.0)
+
+    def _applyGeoTransform(self, inX, inY, geoTransform):
+        """Apply a geotransform to coordinates.
+
+        @param inX             Input coordinate (double)
+        @param inY             Input coordinate (double)
+        @param geoTransform    Input geotransform (six doubles)
+        @return outX, outY     Output coordinates (two doubles)
+        """
+        outX = geoTransform[0] + inX * geoTransform[1] + inY * geoTransform[2]
+        outY = geoTransform[3] + inX * geoTransform[4] + inY * geoTransform[5]
+        return outX, outY
+
+    def _invertGeoTransform(self, geoTransform):
+        """Invert standard 3x2 set of geotransform coefficients.
+
+        @param geoTransform        Input GeoTransform (six doubles - unaltered)
+        @return outGeoTransform    Output GeoTransform ( six doubles - updated )
+                                   on success, None if the equation is uninvertable
+        """
+        # we assume a 3rd row that is [ 1 0 0 ]
+        # compute determinate
+        det = geoTransform[1] * geoTransform[5] - geoTransform[2] * geoTransform[4]
+        if abs(det) < 0.000000000000001:
+            return
+        invDet = 1.0 / det
+        # compute adjoint and divide by determinate
+        outGeoTransform = [0, 0, 0, 0, 0, 0]
+        outGeoTransform[1] = geoTransform[5] * invDet
+        outGeoTransform[4] = -geoTransform[4] * invDet
+        outGeoTransform[2] = -geoTransform[2] * invDet
+        outGeoTransform[5] = geoTransform[1] * invDet
+        outGeoTransform[0] = (geoTransform[2] * geoTransform[3] - geoTransform[0] * geoTransform[5] ) * invDet
+        outGeoTransform[3] = (-geoTransform[1] * geoTransform[3] + geoTransform[0] * geoTransform[4] ) * invDet
+        return outGeoTransform
 
     def _find_closest(self, list, value):
 
@@ -153,6 +214,20 @@ class EcomapsAnalysis(object):
            return after
         else:
            return before
+
+    def _geodataframe_intersect(self, north_list, east_list, dataframe, array, geotransform):
+
+        for count, row in dataframe.iterrows():
+
+            northing = row['northing']
+            easting = row['easting']
+
+            xpixel, ypixel = self._mapToPixel(easting, northing, geotransform)
+
+            dataframe.loc[count, 'LandCover'] = int(array.LandCover[ypixel, xpixel])
+
+        return dataframe
+
 
     def _sample_intersect(self, north_list, east_list, dataframe, array):
         messages = False
@@ -269,15 +344,28 @@ class EcomapsAnalysis(object):
         #log.debug("Ecomaps analysis started at %s" % time)
 
         progress_fn("Opening point data")
-        points_df = self._open_sample_opendap(point_url)
+        points_gdf = self._open_sample_opendap(point_url)
 
         progress_fn("Opening coverage data")
         northing_list, easting_list = self._get_coordinate_lists(aggregation_url)
         array = self._get_landcover_array(aggregation_url)
 
+        #  Set array 'geotransform' properties, similar to world file (eg .tfw)
+        pixelxsize, pixelysize = 25, -25
+        arrayxorigin, arrayyorigin = 0.0, 1300000.0
+        arrayxrotation, arrayyrotation = 0.0, 0.0
+
+        #  Set array 'geotransform' list
+        gt = (arrayxorigin, pixelxsize, arrayxrotation, arrayyorigin, arrayyrotation, pixelysize)
+
+        #  Add new column to data frame to store land cover class
+        points_gdf['LandCover'] = -9999
+
         progress_fn("Setting up the analysis")
 
-        array_intersect = self._sample_intersect(northing_list, easting_list, points_df, array)
+        array_intersect = self._geodataframe_intersect(northing_list, easting_list, points_gdf, array, gt)
+
+        # array_intersect = self._sample_intersect(northing_list, easting_list, points_df, array)
 
         csv_folder = self._working_dir.csv_folder
         csv_file_name = 'InputRDataFile.csv'
@@ -289,7 +377,7 @@ class EcomapsAnalysis(object):
         self._data_frame_to_csv(array_intersect, csv_full_path)
 
         r_code_folder = self._working_dir.r_script_folder
-        r_script = 'LCM_thredds_model_ForSimon03.r'
+        r_script = 'LCM_thredds_model.r'
         r_script_full_path = os.path.normpath(
             os.path.join(r_code_folder, r_script)
         )
