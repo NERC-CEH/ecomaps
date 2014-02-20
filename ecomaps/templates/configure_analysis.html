@@ -52,30 +52,30 @@
         </div>
 
         <div class="control-group">
-            <label for="Year" class="control-label">Year:</label>
+            <label for="Year" class="control-label">Year Column:</label>
 
-            <select id="year" class="controls model-param"></select>
-
-        </div>
-
-        <div class="control-group">
-            <label for="Random Group" class="control-label">Random Group:</label>
-
-            <select id="random_group" class="controls model-param"></select>
+            <select id="year" name="year" class="controls model-param"></select>
 
         </div>
 
         <div class="control-group">
-            <label for="Model Variable" class="control-label">Model Variable:</label>
+            <label for="Random Group" class="control-label">Grouping Column:</label>
 
-            <select id="model_variable" class="controls model-param"></select>
+            <select id="random_group" name="random_group" class="controls model-param"></select>
+
+        </div>
+
+        <div class="control-group">
+            <label for="Model Variable" class="control-label">Model Variable Column:</label>
+
+            <select id="model_variable" name="model_variable" class="controls model-param"></select>
 
         </div>
 
         <div class="control-group">
             <label for="Data Type" class="control-label">Data Type:</label>
 
-            <select class="controls">
+            <select class="controls" name="data_type" id="data_type">
                 <option value="cont">Continuous</option>
                 <option value="count">Count</option>
                 <option value="binary">Binary</option>
@@ -101,7 +101,9 @@
 
                 for(var i=0; i<options.length; i++) {
                     console.log(listId);
-                    $(listId).append($("<option></option>").text(options[i])
+                    $(listId).append($("<option></option>")
+                        .val(options[i])
+                        .text(options[i])
                         .attr("selected", options[i] === defaultValue ? 'selected' : undefined));
                 }
 

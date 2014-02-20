@@ -75,7 +75,7 @@ class AnalysisService(DatabaseService):
                     .join(point_alias, Analysis.point_dataset) \
                     .join(Analysis.coverage_datasets) \
                     .join(AnalysisCoverageDataset.columns) \
-                    .join(result_alias, Analysis.result_dataset) \
+                    .outerjoin(result_alias, Analysis.result_dataset) \
                     .options(contains_eager(Analysis.point_dataset)) \
                     .options(contains_eager(Analysis.result_dataset)) \
                     .options(contains_eager(Analysis.coverage_datasets)) \
