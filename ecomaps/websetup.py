@@ -35,6 +35,7 @@ def setup_app(command, conf, vars):
         user.name = 'Phil Jenkins'
         user.username = 'philip.jenkins@tessella.com'
         user.email = 'philip.jenkins@tessella.com'
+        user.access_level = "Admin"
 
         user2 = User()
         user2.name = 'Someone else'

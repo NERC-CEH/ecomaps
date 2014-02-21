@@ -48,6 +48,7 @@ class User(Base):
     username = Column(String(50))
     email = Column(String(255))
     name = Column(String(50))
+    access_level = Column(String(10))
 
     def __repr__(self):
         """String representation of the user"""

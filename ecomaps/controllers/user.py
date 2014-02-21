@@ -24,9 +24,8 @@ class UserController(BaseController):
             Params:
                 user_service: User service to use within the controller
         """
-        super(BaseController, self).__init__()
+        super(UserController, self).__init__(user_service)
 
-        self._user_service = user_service
         self._dataset_service = dataset_service
 
     def view_users(self):
@@ -72,9 +71,11 @@ class UserController(BaseController):
                                        errors=c.form_errors,
                                        auto_error_formatter=custom_formatter)
             else:
+                # By default a user will be an external user
                 self._user_service.create(user_email,
                                           c.form_result.get('name'),
-                                          user_email)
+                                          user_email,
+                                          "External")
                 return redirect(url(controller="user", action="view_users"))
 
 

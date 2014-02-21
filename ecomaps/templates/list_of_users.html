@@ -16,6 +16,7 @@
                 <th>Name</th>
                 <th>Username</th>
                 <th>Email</th>
+                <th>Access Level</th>
             </thead>
             <tbody>
                 <tr py:for="user in c.all_users">
@@ -27,6 +28,9 @@
                     </td>
                     <td>
                         ${user.email}
+                    </td>
+                    <td>
+                        ${user.access_level}
                     </td>
                 </tr>
             </tbody>
