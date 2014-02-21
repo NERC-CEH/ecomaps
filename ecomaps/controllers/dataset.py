@@ -1,11 +1,13 @@
+import logging
+import urllib2
 from pylons.decorators import jsonify
-from ecomaps.lib.base import BaseController
+from ecomaps.lib.base import BaseController, request, redirect
 from ecomaps.services.dataset import DatasetService
 from ecomaps.services.netcdf import NetCdfService
 
 __author__ = 'Phil Jenkins (Tessella)'
 
-
+log = logging.getLogger(__name__)
 
 class DatasetController(BaseController):
 
@@ -35,3 +37,18 @@ class DatasetController(BaseController):
             return self._netcdf_service.get_variable_column_names(ds.netcdf_url)
         else:
             return None
+
+    def wms(self, id):
+        """ Indirection layer between ecomaps and the underlying dataset mapping
+        server (currently THREDDS)
+            @param id - ID of the dataset containing the real URL to the data
+        """
+
+        log.debug("Request for %s" % request.query_string)
+
+        ds = self._dataset_service.get_dataset_by_id(id)
+
+        redirect_url = "%s?%s" % (ds.wms_url.split('?')[0], request.query_string)
+
+        log.debug("Redirecting to %s" % redirect_url)
+        return urllib2.urlopen(redirect_url).read()
