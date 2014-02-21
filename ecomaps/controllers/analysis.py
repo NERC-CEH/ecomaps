@@ -111,11 +111,7 @@ class AnalysisController(BaseController):
                     }.items())
 
                 if c.form_errors:
-                    html = render('configure_analysis.html',
-                                  extra_vars={'year': year,
-                                              'random_group': random_group,
-                                              'model_variable': model_variable,
-                                              'data_type': data_type})
+                    html = render('configure_analysis.html')
 
                     return htmlfill.render(html,
                                            defaults=c.form_result,

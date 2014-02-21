@@ -141,9 +141,14 @@ class AnalysisRunner(object):
 
             file_name = "%s_%s.nc" % (self._analysis_obj.name.replace(' ', '-'), str(datetime.datetime.now().isoformat()))
 
-            # Swap the urls out for the coverage and point datasets in the analysis object
-            output_file_loc, image_file_loc = analysis.run('http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/ECOMAPSDetail/ECOMAPSInputLOI01.nc',
-                         'http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/LCM2007_25mAggregation/DetailWholeDataset.ncml', self._update_progress)
+            coverage_dict = {}
+
+            for ds in analysis_obj.coverage_datasets:
+                coverage_dict[ds.dataset] = [c.column for c in ds.columns]
+
+            # Now we have enough information to kick the analysis off
+            output_file_loc, image_file_loc = analysis.run(analysis_obj.point_dataset.netcdf_url,
+                                                           coverage_dict, self._update_progress)
 
             # Write the result image to
             with open(image_file_loc, "rb") as img:
@@ -166,8 +171,6 @@ class AnalysisRunner(object):
             # TODO: Can we do something nicer than the ID?
             result_ds.dataset_type_id = 3
             result_ds.netcdf_url = self._open_ndap_format % file_name
-
-            # TODO: Open NDCF file here, add extra info to analysis? Or just pull out when viewing analysis?
 
             # Tidy up the analysis object
             self._save_analysis(result_ds)

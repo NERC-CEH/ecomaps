@@ -1,4 +1,5 @@
 """Pylons environment configuration"""
+from formencode.htmlfill import FillingParser
 import os
 
 from genshi.template import TemplateLoader
@@ -39,5 +40,13 @@ def load_environment(global_conf, app_conf):
 
     # Setting up SQLAlchemy here
     initialise_session(config)
+
+    # Hackery alert - the htmlfill function of formencode
+    # fails when parsing html markup inside a CDATA section
+    # which is bad for any JS that adds elements for example
+    # Found a workaround here:
+    # http://osdir.com/ml/python.formencode/2006-10/msg00019.html
+    #
+    FillingParser.CDATA_CONTENT_ELEMENTS = ()
 
     return config

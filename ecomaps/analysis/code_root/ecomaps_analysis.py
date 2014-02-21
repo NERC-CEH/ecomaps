@@ -118,7 +118,7 @@ class EcomapsAnalysis(object):
         del aggregation
         return north_list, east_list
 
-    def _get_landcover_array(self, url):
+    def _get_landcover_array(self, url, column_name):
         print '\n\naggregationurl:\t\t\t{0}'.format(url)
         messages = False
         # Create aggregation OPeNDAP object
@@ -126,8 +126,8 @@ class EcomapsAnalysis(object):
         if messages:
             print type(aggregation)
             print aggregation.keys()
-        #  Get Land Cover data as numpy array
-        data = aggregation['LandCover']
+        #  Get data as numpy array
+        data = aggregation[column_name]
         if messages:
             print type(data)
             print data.dimensions
@@ -215,7 +215,7 @@ class EcomapsAnalysis(object):
         else:
            return before
 
-    def _geodataframe_intersect(self, north_list, east_list, dataframe, array, geotransform):
+    def _geodataframe_intersect(self, north_list, east_list, dataframe, array, geotransform, column_name):
 
         for count, row in dataframe.iterrows():
 
@@ -224,7 +224,7 @@ class EcomapsAnalysis(object):
 
             xpixel, ypixel = self._mapToPixel(easting, northing, geotransform)
 
-            dataframe.loc[count, 'LandCover'] = int(array.LandCover[ypixel, xpixel])
+            dataframe.loc[count, column_name] = int(array[column_name][ypixel, xpixel])
 
         return dataframe
 
@@ -330,42 +330,50 @@ class EcomapsAnalysis(object):
         if messages:
             print 'output:\t\t', output.replace('\n', '\n\t\t\t')
 
-    def run(self, point_url, aggregation_url, progress_fn):
+    def run(self, point_url, coverage_dict, progress_fn):
         """Runs the analysis
             Params;
                 point_url: Location of the point netCDF file
-                aggregation_url: Location of the coverage netCDF file
+                coverage_dict: Multiple coverage datasets, each containing a list of columns
                 progress_fn: Function reference used for progress messages
         """
 
+        # pydap is a noisy library, quieten it
         logging.getLogger("pydap").setLevel(logging.WARNING)
-
-        start = time.time()
-        #log.debug("Ecomaps analysis started at %s" % time)
 
         progress_fn("Opening point data")
         points_gdf = self._open_sample_opendap(point_url)
 
         progress_fn("Opening coverage data")
-        northing_list, easting_list = self._get_coordinate_lists(aggregation_url)
-        array = self._get_landcover_array(aggregation_url)
 
-        #  Set array 'geotransform' properties, similar to world file (eg .tfw)
-        pixelxsize, pixelysize = 25, -25
-        arrayxorigin, arrayyorigin = 0.0, 1300000.0
-        arrayxrotation, arrayyrotation = 0.0, 0.0
+        array_intersect = None
 
-        #  Set array 'geotransform' list
-        gt = (arrayxorigin, pixelxsize, arrayxrotation, arrayyorigin, arrayyrotation, pixelysize)
+        for coverage_ds in coverage_dict.keys():
 
-        #  Add new column to data frame to store land cover class
-        points_gdf['LandCover'] = -9999
+            northing_list, easting_list = self._get_coordinate_lists(coverage_ds.netcdf_url)
 
-        progress_fn("Setting up the analysis")
+            #  Set array 'geotransform' properties, similar to world file (eg .tfw)
+            pixelxsize, pixelysize = 25, -25
+            arrayxorigin, arrayyorigin = 0.0, 1300000.0
+            arrayxrotation, arrayyrotation = 0.0, 0.0
 
-        array_intersect = self._geodataframe_intersect(northing_list, easting_list, points_gdf, array, gt)
+            #  Set array 'geotransform' list
+            gt = (arrayxorigin, pixelxsize, arrayxrotation, arrayyorigin, arrayyrotation, pixelysize)
 
-        # array_intersect = self._sample_intersect(northing_list, easting_list, points_df, array)
+            # We may have multiple columns that we want to add
+            # to the data frame, so perform an intersect for each
+            for column_name in coverage_dict[coverage_ds]:
+
+                array = self._get_landcover_array(coverage_ds.netcdf_url, column_name)
+
+                #  Add new column to data frame to store data from coverage ds
+                points_gdf[column_name] = -9999
+
+                progress_fn("Setting up the analysis: %s" % column_name)
+
+                array_intersect = self._geodataframe_intersect(northing_list, easting_list, points_gdf, array, gt, column_name)
+
+            # array_intersect = self._sample_intersect(northing_list, easting_list, points_df, array)
 
         csv_folder = self._working_dir.csv_folder
         csv_file_name = 'InputRDataFile.csv'
@@ -385,6 +393,14 @@ class EcomapsAnalysis(object):
         progress_fn("Initialising R engine")
 
         r = pyper.R()
+
+        # TODO: Construct a dictionary containing
+        # {
+        #   hi_res_url1: [column name 1, column name 2],
+        #   hi_res_url2: [column name 3]
+        # }
+        #
+        # to pass to the R env
 
         r["csv_file"] = csv_full_path
         r["image_file"] = os.path.join(self._working_dir.image_folder, 'map_output.png')
