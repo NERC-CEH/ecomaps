@@ -18,7 +18,6 @@ def _get_result_image():
         return image_file.read()
 
 
-
 def setup_app(command, conf, vars):
     """Place any commands to setup ecomaps here - currently creating db tables"""
 
@@ -59,19 +58,38 @@ def setup_app(command, conf, vars):
         session.add(resultDst)
 
         # Sample land coverage map
+
+        # CEH
         ds = Dataset()
         ds.dataset_type = coverDst
         ds.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/wms/LCM2007_1kmDetail/LCM2007_GB_1K_DOM_TAR.nc?service=WMS&version=1.3.0&request=GetCapabilities'
         ds.name = 'Land Cover Map 2007'
-        ds.netcdf_url = 'http://localhost:8080/thredds/dodsC/testAll/LCM2007_GB_1K_DOM_TAR.nc'
+        ds.netcdf_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/LCM2007_25mAggregation/DetailWholeDataset.ncml'
+        ds.low_res_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/fileServer/LCM2007_1kmDetail/LCM2007_GB_1K_DOM_TAR.nc'
+
+        # LOCAL
+        # ds = Dataset()
+        # ds.dataset_type = coverDst
+        # ds.wms_url = 'http://localhost:8080/thredds/dodsC/testAll/LCM2007_GB_1K_DOM_TAR.nc?service=WMS&version=1.3.0&request=GetCapabilities'
+        # ds.name = 'Land Cover Map 2007'
+        # ds.netcdf_url = 'http://localhost:8080/thredds/dodsC/testAll/LCM2007_GB_1K_DOM_TAR.nc'
+        # ds.low_res_url = 'http://localhost:8080/thredds/dodsC/testAll/LCM2007_GB_1K_DOM_TAR.nc'
 
         session.add(ds)
-        
+
+        # CEH
         ds2 = Dataset()
         ds2.dataset_type = pointDst
         ds2.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/ECOMAPSDetail/ECOMAPSInputLOI01.nc?service=WMS&version=1.3.0&request=GetCapabilities'
         ds2.netcdf_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/ECOMAPSDetail/ECOMAPSInputLOI01.nc'
         ds2.name = 'Example Point dataset'
+
+        # LOCAL
+        # ds2 = Dataset()
+        # ds2.dataset_type = pointDst
+        # ds2.wms_url = 'http://localhost:8080/thredds/dodsC/testAll/ECOMAPSInputLOI01.nc?service=WMS&version=1.3.0&request=GetCapabilities'
+        # ds2.netcdf_url = 'http://localhost:8080/thredds/dodsC/testAll/ECOMAPSInputLOI01.nc'
+        # ds2.name = 'Example Point dataset'
 
         session.add(ds2)
 
@@ -118,7 +136,6 @@ def setup_app(command, conf, vars):
 
         # 2. Either assign the dataset directly
         cds_a2.dataset = ds
-
 
         a2 = Analysis()
         a2.name = "Example public analysis"

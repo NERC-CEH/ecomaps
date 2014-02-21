@@ -68,31 +68,10 @@ class AnalysisService(DatabaseService):
 
             try:
 
-                point_alias = aliased(Dataset)
-                result_alias = aliased(Dataset)
-
-                return session.query(Analysis, AnalysisCoverageDataset)\
-                    .join(point_alias, Analysis.point_dataset) \
-                    .join(Analysis.coverage_datasets) \
-                    .join(AnalysisCoverageDataset.columns) \
-                    .outerjoin(result_alias, Analysis.result_dataset) \
-                    .options(contains_eager(Analysis.point_dataset)) \
-                    .options(contains_eager(Analysis.result_dataset)) \
-                    .options(contains_eager(Analysis.coverage_datasets)) \
-                    .options(contains_eager(AnalysisCoverageDataset.columns)) \
-                    .filter(Analysis.id == analysis_id,
+                return session.query(Analysis).filter(Analysis.id == analysis_id,
                             or_(or_(Analysis.viewable_by == user_id,
                             Analysis.viewable_by == None),
-                            Analysis.run_by == user_id)).one()[0]
-
-                # return session.query(Analysis, AnalysisCoverageDataset)\
-                #     .options(subqueryload(Analysis.point_dataset)) \
-                #     .options(subqueryload_all(Analysis.coverage_datasets.columns)) \
-                #     .options(subqueryload(Analysis.result_dataset)) \
-                #     .filter(Analysis.id == analysis_id,
-                #             or_(or_(Analysis.viewable_by == user_id,
-                #             Analysis.viewable_by == None),
-                #             Analysis.run_by == user_id)).one()
+                            Analysis.run_by == user_id)).one()
 
             except NoResultFound:
                 return None

@@ -78,7 +78,7 @@ class Dataset(Base):
     name = Column(String(100))
     wms_url = Column(String(255))
     netcdf_url = Column(String(255))
-    hi_res_url = Column(String(255))
+    low_res_url = Column(String(255))
     dataset_type_id = Column(Integer, ForeignKey('dataset_types.id'))
     viewable_by_user_id = Column(Integer, ForeignKey('users.id'), nullable=True)
 
@@ -141,13 +141,13 @@ class Analysis(Base):
 
     # FK Relationships
     run_by_user = relationship("User", foreign_keys=[run_by])
-    point_dataset = relationship("Dataset", foreign_keys=[point_data_dataset_id])
-    result_dataset = relationship("Dataset", foreign_keys=[result_dataset_id])
+    point_dataset = relationship("Dataset", foreign_keys=[point_data_dataset_id], lazy='joined', innerjoin=True)
+    result_dataset = relationship("Dataset", foreign_keys=[result_dataset_id], lazy='joined')
     viewable_by_user = relationship("User", foreign_keys=[viewable_by])
     model = relationship("Model")
 
     # M2M for coverage datasets
-    coverage_datasets = relationship("AnalysisCoverageDataset")
+    coverage_datasets = relationship("AnalysisCoverageDataset", lazy='joined')
 
     def __repr__(self):
         """String representation of the analysis"""
@@ -177,9 +177,9 @@ class AnalysisCoverageDataset(Base):
     analysis_id = Column(Integer, ForeignKey('analyses.id'), primary_key=True)
     dataset_id = Column(Integer, ForeignKey('datasets.id'), primary_key=True)
 
-    columns = relationship('AnalysisCoverageDatasetColumn')
+    columns = relationship('AnalysisCoverageDatasetColumn', lazy='joined')
 
-    dataset = relationship('Dataset')
+    dataset = relationship('Dataset', lazy='joined')
 
     def __init__(self, dataset=None, dataset_id=None):
         """Convenience, lets you pass in a dataset or an id"""
