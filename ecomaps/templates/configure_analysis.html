@@ -10,29 +10,18 @@
 <body>
     <h1>Create Analysis</h1>
 
-    <form class="form-horizontal" method="POST">
-
-        <div class="control-group">
-                <label for="point_dataset_id" class="control-label">Choose point data:</label>
-
-            <select name="point_dataset_id" id="point_dataset_id" class="controls">
-                <option py:for="dataset in c.point_datasets" value="${dataset.id}">
-                    ${dataset.name}
-                </option>
-            </select>
-
+    <div class="row">
+        <div class="span12">
+            <div class="alert alert-block alert-warning">
+                <h4>Be aware!</h4>
+                <p>
+                    This is some health warning text
+                </p>
+            </div>
         </div>
+    </div>
 
-        <div class="control-group">
-            <label for="coverage_dataset_ids" class="control-label">Choose coverage data:</label>
-
-            <select multiple="true" id="coverage_dataset_ids" name="coverage_dataset_ids" class="controls">
-                <option py:for="dataset in c.coverage_datasets" value="${dataset.id}">
-                    ${dataset.name}
-                </option>
-            </select>
-
-        </div>
+    <form class="form-horizontal" method="POST" action="${url(controller='analysis', action='create')}">
 
         <div class="control-group">
             <label for="analysis_name" class="control-label">Name of Analysis:</label>
@@ -40,8 +29,58 @@
         </div>
 
         <div class="control-group">
-            <label for="parameter1" class="control-label">Parameter 1:</label>
-            ${h.html_tags.text('parameter1', class_='controls')}
+            <label for="coverage_dataset_ids" class="control-label">Choose coverage data:</label>
+
+            <select multiple="true" id="coverage_dataset_ids" name="coverage_dataset_ids" class="controls multiselect">
+                <optgroup py:for="dataset in c.coverage_datasets" label="${dataset.name}">
+                    <option py:for="column in dataset.column_names" value="${dataset.id}_${column}" py:attrs="{'selected':'True'} if defined('current_coverage_dataset_ids') and '%s_%s' % (dataset.id, column) in current_coverage_dataset_ids else {}">
+                        ${column}
+                    </option>
+                </optgroup>
+            </select>
+
+        </div>
+
+        <div class="control-group">
+            <label for="point_dataset_id" class="control-label">Choose point data:</label>
+
+                <select name="point_dataset_id" id="point_dataset_id" class="controls">
+                    <option py:for="dataset in c.point_datasets" value="${dataset.id}" py:attrs="{'selected':'True'} if defined('current_point_dataset_id') and dataset.id is current_point_dataset_id else {}">
+                        ${dataset.name}
+                    </option>
+                </select>
+        </div>
+
+        <div class="control-group">
+            <label for="Year" class="control-label">Year Column:</label>
+
+            <select id="year" name="year" class="controls model-param"></select>
+
+        </div>
+
+        <div class="control-group">
+            <label for="Random Group" class="control-label">Grouping Column:</label>
+
+            <select id="random_group" name="random_group" class="controls model-param"></select>
+
+        </div>
+
+        <div class="control-group">
+            <label for="Model Variable" class="control-label">Model Variable Column:</label>
+
+            <select id="model_variable" name="model_variable" class="controls model-param"></select>
+
+        </div>
+
+        <div class="control-group">
+            <label for="Data Type" class="control-label">Data Type:</label>
+
+            <select class="controls" name="data_type" id="data_type">
+                <option value="cont">Continuous</option>
+                <option value="count">Count</option>
+                <option value="binary">Binary</option>
+            </select>
+
         </div>
 
         <div class="controls">
@@ -50,7 +89,55 @@
     </form>
 
 <script type="text/javascript" language="JavaScript">
+//<![CDATA[
             $(function () {
+
+            var populateVariableList = function(listId, options, defaultValue) {
+
+                listId = "#" + listId;
+
+                $(listId).attr("disabled", false);
+                $(listId).empty();
+
+                for(var i=0; i<options.length; i++) {
+                    console.log(listId);
+                    $(listId).append($("<option></option>")
+                        .val(options[i])
+                        .text(options[i])
+                        .attr("selected", options[i] === defaultValue ? 'selected' : undefined));
+                }
+
+            };
+
+            /* updatePointDatasetColumns
+            *
+            *   Provides a facility for populating the model parameter dropdowns
+            *   based on the point dataset chosen
+            *
+            */
+            var updatePointDatasetColumns = function(dataset_id) {
+
+                $("select.model-param").each(function(index){
+                    $(this).empty();
+                    $(this).append($("<option></option>").text("Loading..."));
+                    $(this).attr("disabled", true);
+                });
+
+                $.getJSON("/dataset/columns/" + dataset_id,
+                    function(data) {
+
+                        // Populate each list we know of
+
+                        // Year
+                        populateVariableList("year", data, "year");
+
+                        // Group by
+                        populateVariableList("random_group", data, "SERIES_NUM");
+
+                        // Model Var
+                        populateVariableList("model_variable", data, "loi");
+                    });
+            };
 
             // Error span swap
             $("span.help-inline").each(function(index, el){
@@ -60,7 +147,17 @@
                 $(el).insertAfter($(el).next());
                 $(el).closest("div.control-group").addClass("error");
             });
+
+            // Set up handler for changing point dataset value
+            $("select#point_dataset_id").change(function(){
+
+                updatePointDatasetColumns($(this).val());
+            });
+
+            // Populate the lists based on the currently-selected point dataset
+            updatePointDatasetColumns($("select#point_dataset_id option:selected").val());
         })
+//]]>
 </script>
 
 </body>

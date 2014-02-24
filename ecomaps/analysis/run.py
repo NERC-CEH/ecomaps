@@ -139,11 +139,16 @@ class AnalysisRunner(object):
             #RUN
             analysis = EcomapsAnalysis(dir)
 
-            file_name = "%s_%s.nc" % (self._analysis_obj.name, uuid.uuid4())
+            file_name = "%s_%s.nc" % (self._analysis_obj.name.replace(' ', '-'), str(datetime.datetime.now().isoformat()))
 
-            # Swap the urls out for the coverage and point datasets in the analysis object
-            output_file_loc, image_file_loc = analysis.run('http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/ECOMAPSDetail/ECOMAPSInputLOI01.nc',
-                         'http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/LCM2007_25mAggregation/DetailWholeDataset.ncml', self._update_progress)
+            coverage_dict = {}
+
+            for ds in analysis_obj.coverage_datasets:
+                coverage_dict[ds.dataset] = [c.column for c in ds.columns]
+
+            # Now we have enough information to kick the analysis off
+            output_file_loc, image_file_loc = analysis.run(analysis_obj.point_dataset.netcdf_url,
+                                                           coverage_dict, self._update_progress)
 
             # Write the result image to
             with open(image_file_loc, "rb") as img:
@@ -162,10 +167,13 @@ class AnalysisRunner(object):
             result_ds = Dataset()
             result_ds.name = 'Results for %s' % self._analysis_obj.name
             result_ds.wms_url = wms_url
+
+            # TODO: Can we do something nicer than the ID?
+            result_ds.dataset_type_id = 3
             result_ds.netcdf_url = self._open_ndap_format % file_name
 
             # Tidy up the analysis object
-            self._save_analysis(self._analysis_obj, result_ds)
+            self._save_analysis(result_ds)
             self._update_progress('Complete', True)
 
 
@@ -187,7 +195,7 @@ class AnalysisRunner(object):
             a.complete = complete
             session.add(a)
 
-    def _save_analysis(self, analysis_obj, result_ds):
+    def _save_analysis(self, result_ds):
         """ Saves the analysis to the database
             Params:
                 analysis_obj: The analysis object containing the updated fields
@@ -199,6 +207,5 @@ class AnalysisRunner(object):
             a.result_dataset = result_ds
             a.run_date = datetime.datetime.now()
             a.result_image = self._analysis_obj.result_image
+            session.add(result_ds)
             session.add(a)
-
-

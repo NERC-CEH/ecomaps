@@ -7,7 +7,7 @@ __author__ = 'Phil Jenkins (Tessella)'
 class UserService(DatabaseService):
     """Provides operations on User objects"""
 
-    def create(self, username, fullname, email):
+    def create(self, username, fullname, email, access_level):
         """Creates a user (if the user doesn't already exist)
             Params:
                 username: The login name of the user
@@ -21,6 +21,7 @@ class UserService(DatabaseService):
             user.username = username
             user.name = fullname
             user.email = email
+            user.access_level = access_level
 
             session.add(user)
 
@@ -37,4 +38,14 @@ class UserService(DatabaseService):
 
             except:
                 # We'll get an exception if the user can't be found
-                raise ServiceException()
+                return None
+
+    def get_all_users(self):
+        """Returns an array containing all the users"""
+
+        with self.readonly_scope() as session:
+
+            return session.query(User)
+
+
+

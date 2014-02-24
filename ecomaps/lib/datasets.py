@@ -7,6 +7,7 @@ endpoints to be added and removed.
 
 import copy
 import logging
+from pylons import url
 import re
 import urllib
 import urllib2
@@ -376,6 +377,11 @@ class Datasets:
         else:
             return
 
+    def create_ecomaps_data_url(self, dataset_id, query_string=''):
+
+        return "%s?%s" % (url(controller='dataset', action='wms', id=dataset_id, qualified=True),
+                                  query_string)
+
     def get_ecomaps_layer_data(self, dataset):
         """Looks up layer data in the given WMS url, and returns a layer entity object
             suitable for the map viewer
@@ -383,11 +389,15 @@ class Datasets:
                 wms_url: URL to the descriptor service
         """
 
-        (wcs_url, numRepl) = WMS_REGEX.subn('wcs', dataset.wms_url)
+        qs = dataset.wms_url.split('?')[1]
+
+        indirect_url = self.create_ecomaps_data_url(dataset.id, qs)
+
+        (wcs_url, numRepl) = WMS_REGEX.subn('wcs', indirect_url)
         log.debug("Trying WCS URL %s", wcs_url)
 
         endpoint = {
-            'wmsurl': dataset.wms_url,
+            'wmsurl': indirect_url,
             'wcsurl': wcs_url
         }
 
@@ -396,15 +406,27 @@ class Datasets:
         # The returned structure will have numerous child layers, however we're only interested in the
         # very last one, as that contains the map data
 
-        def inspect_children(layer_obj):
+        def inspect_children(layer_col):
 
-            if len(layer_obj.children) == 0:
+            layers = []
 
-                return layer_obj
-            else:
-                return inspect_children(layer_obj.children[0])
+            for layer_obj in layer_col:
 
-        return inspect_children(layer_info[0])
+                if len(layer_obj.children) == 0:
+
+                    cap_qs = layer_obj.entity.getCapabilitiesUrl.split('?')[1]
+
+                    layer_obj.entity.getMapUrl = self.create_ecomaps_data_url(dataset.id)
+                    layer_obj.entity.getCapabilitiesUrl = self.create_ecomaps_data_url(dataset.id, cap_qs)
+                    layer_obj.entity.getFeatureInfoUrl = self.create_ecomaps_data_url(dataset.id)
+
+                    layers.append(layer_obj)
+                else:
+                    layers.append(inspect_children(layer_obj.children))
+
+            return layers
+
+        return inspect_children(layer_info[0].children)
 
 
     def getLayerData(self, layerId, sessionEndpointData):

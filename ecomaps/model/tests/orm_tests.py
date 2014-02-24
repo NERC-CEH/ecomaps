@@ -10,7 +10,7 @@ __author__ = 'Phil Jenkins (Tessella)'
 class ORMTests(unittest.TestCase):
     """Verifies that the ORM definitions work correctly on a fresh database"""
 
-    _connectionstring = 'mysql+mysqlconnector://ecomaps-admin:ecomaps@localhost/ecomaps_test'
+    _connectionstring = 'mysql+mysqlconnector://ecomaps-admin:U7gb1HmW@localhost/ecomaps_test'
     #_app_user_connectionstring = 'mysql+mysqlconnector://ecomaps-app:ecomapsx@localhost/ecomaps_test'
 
     def __init__(self, *args, **kwargs):

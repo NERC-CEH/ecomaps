@@ -61,7 +61,7 @@ class WmsCapabilityReader():
         log.debug("getLayers called for %s", endpoint['wmsurl'])
         log.debug("  keywordData: %s" % keywordData)
         wmsUrl = self.makeProxiedUrl(endpoint['wmsurl'])
-        wmcDoc = self.wmsCapabilityCache.getWmsCapabilities(wmsUrl, forceRefresh)
+        wmcDoc = self.wmsCapabilityCache.getWmsCapabilities(wmsUrl, True)
 
         dom = xml.dom.minidom.parseString(wmcDoc)
         # Get the namespace URI for the document root element.

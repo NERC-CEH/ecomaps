@@ -26,6 +26,12 @@ class AuthenticationFailedException(ClientException):
     def __init__(self):
         pass
 
+class UserException(ClientException):
+    """ Raised if a user already exists on create"""
+
+    def __init__(self):
+        pass
+
 
 class CrowdClient(object):
     """Provides a simple interface to a crowd server"""
@@ -34,7 +40,8 @@ class CrowdClient(object):
     # to an exception type we want to raise
     _errorMap = {
         'INVALID_SSO_TOKEN': SessionNotFoundException,
-        'INVALID_USER_AUTHENTICATION': AuthenticationFailedException
+        'INVALID_USER_AUTHENTICATION': AuthenticationFailedException,
+        'INVALID_USER': UserException
     }
 
     def __init__(self, api_url=None, app_name=None, app_pwd=None):
@@ -126,6 +133,35 @@ class CrowdClient(object):
 
         return self._make_request('user?username=%s' % username)
 
+    def create_user(self, username, first_name, last_name,
+                    email, password):
+        """Asks the client to create a user with the given information
+            Params:
+                username - login name for the user
+                first_name - The name given to the user for use in an informal setting
+                last_name - The name of the user's family
+                email - Email address
+                password - User's desired password
+        """
+
+        req = UserRequest()
+        req.username = username
+        req.first_name = first_name
+        req.last_name = last_name
+        req.email = email
+        req.password = password
+
+        return self._make_request('user', data=req.new_user_json())
+
+
+    def delete_user(self, username):
+        """ Performs a delete on a user
+            Params:
+                username: The login name of the user to delete
+        """
+
+        self._make_request('user?username=%s' % username, method='DELETE')
+
     def _make_request(self, resource, data=None, method=None):
         """Helper function for making requests to the Crowd REST API
             Params:
@@ -172,7 +208,9 @@ class CrowdClient(object):
             # operations for example
             if f.code != 204:
                 response = f.read()
-                response_object = simplejson.loads(response)
+
+                response_object = simplejson.loads(response) if response else None
+
                 f.close()
             else:
                 response_object = None

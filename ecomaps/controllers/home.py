@@ -15,16 +15,6 @@ class HomeController(BaseController):
 
     _user_service = None
 
-    def __init__(self, user_service=UserService()):
-        """Constructor for the user controller, takes in any services required
-            Params:
-                user_service: User service to use within the controller
-        """
-        super(BaseController, self).__init__()
-
-        self._user_service = user_service
-
-
     def index(self):
         """Default action, shows the home page"""
 

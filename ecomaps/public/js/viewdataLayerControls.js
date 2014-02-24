@@ -460,18 +460,40 @@ function ViewdataLayerControls(eventsManager, maxLayers, loginDialog) {
     this.displayLayer = function(nodeId, mergeResult) {
         this.updateLayerList(mergeResult);
 
-        var layerData = viewdataLayerData.getProperty(nodeId, 'layerData');
+        var layerDataResult = viewdataLayerData.getProperty(nodeId, 'layerData');
 
-        this.eventsManager.triggerEvent("LEGEND_LAYER_INVALID");
-        if (!mergeResult.reorder) {
-            this.eventsManager.triggerEvent("LAYER_ADDED", {id: nodeId, layerData: layerData});
+        if (layerDataResult instanceof Array) {
+
+            for(var i=0; i <layerDataResult.length;i++) {
+                layerData = layerDataResult[i];
+                var newId = nodeId + '_' + i;
+                var result = this.mergeLayer(newId, [newId, layerData.title + '\f' + layerData.title, true]);
+                this.updateLayerList(result);
+                this.eventsManager.triggerEvent("LEGEND_LAYER_INVALID");
+                if (!mergeResult.reorder) {
+                    this.eventsManager.triggerEvent("LAYER_ADDED", {id: newId, layerData: layerData});
+                }
+
+                this.eventsManager.triggerEvent("LAYER_SELECTED",
+                                                {id: newId, layerData: layerData, eventToPropagate: "SELECTED_LAYER_CHANGED"});
+                //this.getLayerDisplayOptions(nodeId, layerData);
+
+                this.handleLayersReordered();
+            }
         }
+        else {
 
-        this.eventsManager.triggerEvent("LAYER_SELECTED",
-                                        {id: nodeId, layerData: layerData, eventToPropagate: "SELECTED_LAYER_CHANGED"});
-        this.getLayerDisplayOptions(nodeId, layerData);
+            this.eventsManager.triggerEvent("LEGEND_LAYER_INVALID");
+            if (!mergeResult.reorder) {
+                this.eventsManager.triggerEvent("LAYER_ADDED", {id: nodeId, layerData: layerDataResult});
+            }
 
-        this.handleLayersReordered();
+            this.eventsManager.triggerEvent("LAYER_SELECTED",
+                                            {id: nodeId, layerData: layerDataResult, eventToPropagate: "SELECTED_LAYER_CHANGED"});
+            this.getLayerDisplayOptions(nodeId, layerDataResult);
+
+            this.handleLayersReordered();
+        }
     };
 
     /**

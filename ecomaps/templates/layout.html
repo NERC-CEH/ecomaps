@@ -11,7 +11,7 @@
         <link href="/layout/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen" />
         <link href="/layout/ecomaps.css" rel="stylesheet" media="screen" />
 
-        <script src="http://code.jquery.com/jquery.js"></script>
+        <script src="/js/jquery.js"></script>
         <script type="text/javascript" src="/layout/bootstrap/js/bootstrap.js"></script>
 
         <!--Page-specific styles and script tags in here...-->
@@ -42,6 +42,11 @@
                             <li>
                                 <a href="${h.url(controller='analysis')}">My Ecomaps</a>
                             </li>
+                            <py:if test="c.admin_user">
+                                <li>
+                                    <a href="${h.url(controller='user', action='view_users')}">Users</a>
+                                </li>
+                            </py:if>
                         </ul>
                     </div>
                 </div>

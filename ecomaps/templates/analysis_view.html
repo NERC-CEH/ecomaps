@@ -47,6 +47,36 @@
                                         </td>
                                         <td>${c.analysis.goodness_of_fit}</td>
                                     </tr>
+                                    <tr>
+                                        <td>
+                                            Date Created
+                                        </td>
+                                        <td>${c.analysis.attributes['date_created']}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Geospatial Longitude Min
+                                        </td>
+                                        <td>${c.analysis.attributes['geospatial_lon_min']}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Geospatial Longitude Max
+                                        </td>
+                                        <td>${c.analysis.attributes['geospatial_lon_max']} </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Geospatial Latitude Min
+                                        </td>
+                                        <td>${c.analysis.attributes['geospatial_lat_min']}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Geospatial Latitude Max
+                                        </td>
+                                        <td>${c.analysis.attributes['geospatial_lat_max']} </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -57,14 +87,19 @@
                 </div>
             </div>
 
-            <form method="POST">
-                <div>
+            <div class="row">
+                <form class="inline_buttons" method="POST" id="button_form">
                     <py:if test="c.analysis.viewable_by">
-                        <input type="hidden" id="id_to_publish" name="id_to_publish" value='${c.analysis.id}' />
-                         <input type="submit" class="btn btn-primary btn-large pull-right" name="submit" value="Publish" />
+                        <input type="hidden" id="analysis_id" name="analysis_id" value='${c.analysis.id}' />
+                        <input type="submit" class="btn btn-primary btn-large pull-right" id="submit" value="Publish" />
+                        <input type="submit" class="btn btn-primary btn-large pull-right" id="rerun" value="Re-run Analysis" />
                     </py:if>
-                </div>
-            </form>
+                </form>
+                <form class="inline_buttons" action="${url(controller='analysis', action='download', id=str(c.analysis.id))}">
+                    <input type="submit" class="btn btn-primary btn-large pull-right" id="download" value="Download" />
+                </form>
+            </div>
+
         </py:when>
         <py:otherwise>
             <div class="hero-unit">
@@ -76,7 +111,20 @@
             </div>
         </py:otherwise>
     </py:choose>
+        
 
+<script type="text/javascript" language="JavaScript">
+    $('#submit').click(function(){
+        $('#button_form').attr('action', '/analysis/view');
+    });
+    $('#rerun').click(function(){
+        $('#button_form').attr('action', '/analysis/rerun/' + $("#analysis_id").val());
+    });
+    $('#download').click(function(){
+        $('#button_form').attr('action', '/analysis/download/' + $("#analysis_id").val());
+    });
+
+</script>
 
 </body>
 </html>
