@@ -29,11 +29,21 @@ class UserController(BaseController):
         self._dataset_service = dataset_service
 
     def view_users(self):
-        """Allow user to see all users of the system
+        """Allow and admin-user to see all users of the system, otherwise redirect to page not found
         """
-        c.all_users = self._user_service.get_all_users()
+        identity = request.environ.get('REMOTE_USER')
 
-        return render('list_of_users.html')
+        user = self._user_service.get_user_by_username(identity)
+
+        if user.access_level == "Admin":
+
+            c.all_users = self._user_service.get_all_users()
+
+            return render('list_of_users.html')
+
+        else:
+
+            return render('not_found.html')
 
     def create(self):
         """Create a new user
