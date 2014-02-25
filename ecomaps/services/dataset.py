@@ -1,4 +1,5 @@
 from sqlalchemy import or_
+from sqlalchemy.orm import joinedload
 from ecomaps.model import Dataset, DatasetType
 from ecomaps.services.general import DatabaseService
 
@@ -23,8 +24,12 @@ class DatasetService(DatabaseService):
             # Find all datasets that are viewable by this user (private)
             # or are public (null viewable_by)
             # Note SQLAlchemy wants '== None' not 'is None'
-
-            if dataset_type_id is None:
+            if dataset_type_id is None and dataset_type is None:
+                return session.query(DatasetType).join(DatasetType.datasets) \
+                                                .options(joinedload(DatasetType.datasets)) \
+                                                .filter(or_(Dataset.viewable_by_user_id == user_id,
+                                                 Dataset.viewable_by_user_id == None)).all()
+            elif dataset_type_id is None:
                 return session.query(Dataset).join(DatasetType).filter(DatasetType.type == dataset_type, or_(Dataset.viewable_by_user_id == user_id,
                                                  Dataset.viewable_by_user_id == None)).all()
             else:

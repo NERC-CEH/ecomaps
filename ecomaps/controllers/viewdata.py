@@ -142,10 +142,13 @@ class ViewdataController(WmsvizController):
         """
 
         # Is this a new-style request for a dataset?
-        if request.params['layerid'].startswith("ds"):
+        if 'dsid' in request.params or request.params['layerid'].startswith("ds"):
 
             # Extract the dataset ID
-            ds_id = request.params['layerid'][len('ds_'):]
+            if 'dsid' in request.params:
+                ds_id = request.params['dsid']
+            else:
+                ds_id = request.params['layerid'][len('ds_'):]
 
             dataset = self._dataset_service.get_dataset_by_id(ds_id)
 

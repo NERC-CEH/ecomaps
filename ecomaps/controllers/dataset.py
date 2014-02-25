@@ -4,6 +4,7 @@ from pylons.decorators import jsonify
 from ecomaps.lib.base import BaseController, request, redirect
 from ecomaps.services.dataset import DatasetService
 from ecomaps.services.netcdf import NetCdfService
+from ecomaps.services.user import UserService
 
 __author__ = 'Phil Jenkins (Tessella)'
 
@@ -15,14 +16,17 @@ class DatasetController(BaseController):
     _netcdf_service = None
 
 
-    def __init__(self, dataset_service=DatasetService(), netcdf_service=NetCdfService()):
+    def __init__(self, dataset_service=DatasetService(), netcdf_service=NetCdfService(),
+                 user_service=UserService()):
         """ Constructs a new dataset controller
         @param dataset_service: The dataset service to use with this controller
         @param netcdf_service: The NetCDF service to use with this controller
+        @param user_service: The user service we're going to use
         """
 
-        super(BaseController, self).__init__()
+        super(DatasetController, self).__init__()
 
+        self._user_service = user_service
         self._dataset_service = dataset_service
         self._netcdf_service = netcdf_service
 
@@ -37,6 +41,14 @@ class DatasetController(BaseController):
             return self._netcdf_service.get_variable_column_names(ds.netcdf_url)
         else:
             return None
+
+    @jsonify
+    def list(self):
+
+        user = self._user_service.get_user_by_username(request.environ['REMOTE_USER'])
+
+        return self._dataset_service.get_datasets_for_user(user.id)
+
 
     def wms(self, id):
         """ Indirection layer between ecomaps and the underlying dataset mapping
