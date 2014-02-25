@@ -412,13 +412,25 @@ class Datasets:
 
             for layer_obj in layer_col:
 
+                # We need to swap out the 'internal' URLs attached
+                # to each dataset with oens through our WMS proxy instead
                 if len(layer_obj.children) == 0:
 
+                    # The capability URL will have a query string that we want
+                    # to transfer across
                     cap_qs = layer_obj.entity.getCapabilitiesUrl.split('?')[1]
 
                     layer_obj.entity.getMapUrl = self.create_ecomaps_data_url(dataset.id)
                     layer_obj.entity.getCapabilitiesUrl = self.create_ecomaps_data_url(dataset.id, cap_qs)
                     layer_obj.entity.getFeatureInfoUrl = self.create_ecomaps_data_url(dataset.id)
+
+                    # Each layer may also have a number of 'styles', which have their
+                    # own URL to a legend graphic
+                    for style in layer_obj.entity.styles:
+                        if 'legendURL' in style:
+                            url_obj = style['legendURL']
+                            style_qs = url_obj['onlineResource'].split('?')[1]
+                            url_obj['onlineResource'] = self.create_ecomaps_data_url(dataset.id, style_qs)
 
                     layers.append(layer_obj)
                 else:
