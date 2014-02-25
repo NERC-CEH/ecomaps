@@ -33,13 +33,12 @@ class AnalysisController(BaseController):
 
     def __init__(self, user_service=UserService(), analysis_service=AnalysisService(),
                  dataset_service=DatasetService(), netcdf_service=NetCdfService()):
-        """Constructor for the user controller, takes in any services required
+        """Constructor for the analysis controller, takes in any services required
             Params:
                 user_service: User service to use within the controller
         """
-        super(BaseController, self).__init__()
+        super(AnalysisController, self).__init__(user_service)
 
-        self._user_service = user_service
         self._analysis_service = analysis_service
         self._dataset_service = dataset_service
         self._netcdf_service = netcdf_service

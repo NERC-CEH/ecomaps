@@ -7,7 +7,7 @@ __author__ = 'Phil Jenkins (Tessella)'
 class UserService(DatabaseService):
     """Provides operations on User objects"""
 
-    def create(self, username, fullname, email):
+    def create(self, username, fullname, email, access_level):
         """Creates a user (if the user doesn't already exist)
             Params:
                 username: The login name of the user
@@ -21,6 +21,7 @@ class UserService(DatabaseService):
             user.username = username
             user.name = fullname
             user.email = email
+            user.access_level = access_level
 
             session.add(user)
 

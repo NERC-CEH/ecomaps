@@ -24,17 +24,26 @@ class UserController(BaseController):
             Params:
                 user_service: User service to use within the controller
         """
-        super(BaseController, self).__init__()
+        super(UserController, self).__init__(user_service)
 
-        self._user_service = user_service
         self._dataset_service = dataset_service
 
     def view_users(self):
-        """Allow user to see all users of the system
+        """Allow and admin-user to see all users of the system, otherwise redirect to page not found
         """
-        c.all_users = self._user_service.get_all_users()
+        identity = request.environ.get('REMOTE_USER')
 
-        return render('list_of_users.html')
+        user = self._user_service.get_user_by_username(identity)
+
+        if user.access_level == "Admin":
+
+            c.all_users = self._user_service.get_all_users()
+
+            return render('list_of_users.html')
+
+        else:
+
+            return render('not_found.html')
 
     def create(self):
         """Create a new user
@@ -72,9 +81,11 @@ class UserController(BaseController):
                                        errors=c.form_errors,
                                        auto_error_formatter=custom_formatter)
             else:
+                # By default a user will be an external user
                 self._user_service.create(user_email,
                                           c.form_result.get('name'),
-                                          user_email)
+                                          user_email,
+                                          "External")
                 return redirect(url(controller="user", action="view_users"))
 
 

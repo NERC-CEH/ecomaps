@@ -17,9 +17,21 @@ import ecomaps.lib.helpers as h
 import ecomaps.model as model
 
 # To simplify upgrading to Pylons-1.0
+from ecomaps.services.user import UserService
+
 app_globals = config['pylons.app_globals']
 
 class BaseController(WSGIController):
+
+    _user_service = None
+
+    def __init__(self, user_service=UserService()):
+        """Constructor for the base controller, takes in a user services
+            Params:
+                user_service: User service to use within the controller
+        """
+        self._user_service = user_service
+
 
     def __call__(self, environ, start_response):
         """Invoke the Controller"""
@@ -34,7 +46,14 @@ class BaseController(WSGIController):
 
         # WSGIController.__call__ dispatches to the Controller method
         # the request is routed to. This routing information is
-        # available in environ['pylons.routes_dict']
+        # available in environ['pylons.routes_dict'
+
+        if 'login' not in environ.get('PATH_INFO'):
+            user = self._user_service.get_user_by_username(request.environ['REMOTE_USER'])
+            if user.access_level == "Admin":
+                c.admin_user = True
+            else:
+                c.admin_user = False
 
         return WSGIController.__call__(self, environ, start_response)
 
