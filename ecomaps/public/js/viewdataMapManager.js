@@ -194,9 +194,12 @@ function ViewdataMapManager(eventsManager, mapPlaceholderId, loadErrors) {
         } else {
             this.selectedLayerData = e.layerData;
             this.selectedOpenLayersLayer = this.openLayersLayers[e.id];
-            eventsManager.triggerEvent(e.eventToPropagate, {id: e.id,
-                                                            layerData: e.layerData,
-                                                            olLayer: this.selectedOpenLayersLayer});
+
+            if(this.selectedOpenLayersLayer){
+                eventsManager.triggerEvent(e.eventToPropagate, {id: e.id,
+                                                                layerData: e.layerData,
+                                                                olLayer: this.selectedOpenLayersLayer});
+            }
         }
     };
 

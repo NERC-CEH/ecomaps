@@ -160,9 +160,9 @@ class AnalysisController(BaseController):
         analysis = self._analysis_service.get_analysis_by_id(id, user_obj.id)
 
         if analysis:
-
-            # Get the result attributes from the NetCDF file associated with the result dataset
-            analysis.attributes = self._netcdf_service.get_attributes(analysis.result_dataset.netcdf_url)
+            if analysis.result_dataset:
+                # Get the result attributes from the NetCDF file associated with the result dataset
+                analysis.attributes = self._netcdf_service.get_attributes(analysis.result_dataset.netcdf_url)
 
             c.analysis = analysis
             return render('analysis_view.html', extra_vars={'added_successfully': added_successfully})

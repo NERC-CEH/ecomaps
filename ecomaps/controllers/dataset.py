@@ -21,7 +21,7 @@ class DatasetController(BaseController):
         @param netcdf_service: The NetCDF service to use with this controller
         """
 
-        super(BaseController, self).__init__()
+        super(DatasetController, self).__init__()
 
         self._dataset_service = dataset_service
         self._netcdf_service = netcdf_service
