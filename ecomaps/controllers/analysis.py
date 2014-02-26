@@ -165,7 +165,11 @@ class AnalysisController(BaseController):
                 analysis.attributes = self._netcdf_service.get_attributes(analysis.result_dataset.netcdf_url)
 
             c.analysis = analysis
-            return render('analysis_view.html', extra_vars={'added_successfully': added_successfully})
+
+            if 'compact' in request.params:
+                return render('analysis_compact.html')
+            else:
+                return render('analysis_view.html', extra_vars={'added_successfully': added_successfully})
         else:
             c.object_type = 'analysis'
             return render('not_found.html')

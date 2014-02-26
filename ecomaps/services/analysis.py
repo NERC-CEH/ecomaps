@@ -148,3 +148,12 @@ class AnalysisService(DatabaseService):
 
         file_name = url + ".dods"
         return urllib2.urlopen(file_name)
+
+    def get_analysis_for_result_dataset(self, dataset_id):
+        """ Gets the analysis ID with the given result dataset ID
+            @param dataset_id: ID of the (result) dataset contained within the analysis
+        """
+
+        with self.readonly_scope() as session:
+
+            return session.query(Analysis.id).filter(Analysis.result_dataset_id == dataset_id).one()[0]

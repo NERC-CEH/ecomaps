@@ -8,7 +8,7 @@ html, body {
     min-height: 100%;
 }
 
-#wrap > .container {
+#wrap > .container, #wrap > .container-fluid {
     padding-top: 60px;
     padding-bottom: 40px;
 }
@@ -97,4 +97,14 @@ form.inline_buttons input
 
 div.arrow {
     background: url(/layout/images/arrow.png) no-repeat center;
+}
+
+.container-fluid .olMap
+{
+    margin-left: 2.12766% !important;
+}
+
+.hidden
+{
+    display: none;
 }

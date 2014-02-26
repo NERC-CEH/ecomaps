@@ -477,7 +477,7 @@ function ViewdataLayerControls(eventsManager, maxLayers, loginDialog) {
                 this.eventsManager.triggerEvent("LAYER_SELECTED",
                                                 {id: newId, layerData: layerData, eventToPropagate: "SELECTED_LAYER_CHANGED"});
 
-                //this.getLayerDisplayOptions(newId, layerData);
+                //this.getLayerDisplayOptcheckions(newId, layerData);
 
                 this.handleLayersReordered();
             }

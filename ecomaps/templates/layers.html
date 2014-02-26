@@ -1,0 +1,31 @@
+
+<div
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:py="http://genshi.edgewall.org/"
+        class="well sidebar-nav">
+    <h5 id="map-title">${c.dataset.name}</h5>
+
+    <div class="alert alert-info" py:if="c.analysis_id">
+        <i class="icon-list-alt"></i> <a href="#analysis-detail" data-toggle="modal" class="view-analysis" data-analysisid="${c.analysis_id}">Analysis Quick View</a>
+    </div>
+
+    <ul id="layer-list" class="nav nav-list">
+        <li py:for="layer in reversed(c.layers)" class="layer nav-header">
+            ${layer.title}
+
+            <ul class="layer-controls">
+                <li><i class="icon-eye-open"></i><input type="checkbox" value="Display" checked="checked" class="layer-toggle" data-layerid="${c.dataset.id}${layer.name}" /></li>
+                <li class="control-label">Style: </li>
+                <li>
+                        <select class="style-list" data-layerid="${c.dataset.id}${layer.name}">
+                            <option py:for="style in layer.styles" value="${style.name}">
+                                ${style.name}
+                            </option>
+                        </select>
+                </li>
+                <div class="clearfix"></div>
+            </ul>
+        </li>
+    </ul>
+</div>
