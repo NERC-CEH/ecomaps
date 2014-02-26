@@ -308,7 +308,7 @@ function ViewdataFigureControls(eventsManager, initialBounds, figureOptions) {
      */
     this.onMakeFigure = function(btn, e) {
         var tempInputs = [];
-        var layerParams = viewdataMapManager.makeLayerParameters(this.oneLayerOnly);
+        var layerParams = [];// viewdataMapManager.makeLayerParameters(this.oneLayerOnly);
         for (var i = 0; i < layerParams.length; ++i) {
             tempInputs.push(new Ext.form.Hidden({id: layerParams[i].name, name: layerParams[i].name, value: layerParams[i].value}));
         }

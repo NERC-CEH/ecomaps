@@ -264,17 +264,20 @@ function ViewdataMapManager(eventsManager, mapPlaceholderId, loadErrors) {
         for (var i = 0; i < this.layerIds.length; ++i) {
             if (this.layerVisibilities[i]) {
                 var layer = this.openLayersLayers[this.layerIds[i]];
-                var layerData = viewdataLayerData.getProperty(this.layerIds[i], 'layerData');
-                var paramName = layerNumber + '_ENDPOINT';
-                retValues.push({name: paramName, value: layer.url});
-                for (var p in layer.params) {
-                    if (!this.EXCLUDED_LAYER_PARAMS[p]) {
-                        paramName = layerNumber + '_' + p;
-                        retValues.push({name: paramName, value: layer.params[p]});
+
+                if(layer != null){
+                    var layerData = viewdataLayerData.getProperty(this.layerIds[i], 'layerData');
+                    var paramName = layerNumber + '_ENDPOINT';
+                    retValues.push({name: paramName, value: layer.url});
+                    for (var p in layer.params) {
+                        if (!this.EXCLUDED_LAYER_PARAMS[p]) {
+                            paramName = layerNumber + '_' + p;
+                            retValues.push({name: paramName, value: layer.params[p]});
+                        }
                     }
+                    paramName = layerNumber + '_LAYER_ID';
+                    retValues.push({name: paramName, value: this.layerIds[i]});
                 }
-                paramName = layerNumber + '_LAYER_ID';
-                retValues.push({name: paramName, value: this.layerIds[i]});
 
                 ++layerNumber;
 
