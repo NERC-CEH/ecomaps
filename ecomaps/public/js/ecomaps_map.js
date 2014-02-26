@@ -89,6 +89,7 @@ var EcomapsMap = (function() {
     var initMap = function() {
 
         map = new OpenLayers.Map('map');
+        map.addControl(new OpenLayers.Control.LoadingPanel());
         var lat = 54;
         var lon = -2;
         var zoom = 0;

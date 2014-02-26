@@ -79,14 +79,15 @@ class AccountController(BaseController):
                     if request.environ['user.username']:
                         log.debug("Looking for %s in Ecomaps DB" % request.environ['user.username'])
 
-                        try:
-                            u = self._user_service.get_user_by_username(request.environ['user.username'])
-                            log.debug("%s = user %s in database" % (u.username,u.name))
-                        except ServiceException:
-                            # User doesn't exist in our database, so add
+
+                        u = self._user_service.get_user_by_username(request.environ['user.username'])
+
+                        if not u:
                             self._user_service.create(request.environ['user.username'],
-                                                      request.environ['user.name'],
-                                                      request.environ['user.email'])
+                                                  request.environ['user.name'],
+                                                  request.environ['user.email'],
+                                                  None)
+
 
                     return HTTPFound(location=came_from, headers=headers)
 
