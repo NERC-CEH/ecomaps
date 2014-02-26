@@ -139,7 +139,7 @@ class AnalysisRunner(object):
             #RUN
             analysis = EcomapsAnalysis(dir)
 
-            file_name = "%s_%s.nc" % (self._analysis_obj.name.replace(' ', '-'), str(datetime.datetime.now().isoformat()))
+            file_name = "%s_%s.nc" % (self._analysis_obj.name.replace(' ', '-'), str(datetime.datetime.now().isoformat()).replace(':', '-'))
 
             coverage_dict = {}
 
