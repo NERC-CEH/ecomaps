@@ -44,6 +44,36 @@
             opacity: 0.9;
             z-index: 999;
         }
+        ul.layer-controls {
+            text-transform: none;
+            list-style-type: none;
+            padding: 0.5em;
+            color: #666666;
+        }
+
+        ul.layer-controls li {
+            float:left;
+            margin-right: 1em;
+        }
+
+        ul.layer-controls li.control-label {
+            margin-right: 2px;
+            margin-top: 2px;
+        }
+
+        ul.layer-controls  li  input
+        {
+            margin-bottom: 2px;
+            margin-left: 5px;
+        }
+        ul.layer-controls  li  select
+        {
+            font-size: 90%;
+            height: 22px;
+            width: 150px;
+            padding: 2px;
+        }
+
         li.style {
             margin-left: 2em;
         }
@@ -58,6 +88,12 @@
             background-image:url(/layout/images/loading7.gif);
             background-position:center;
             background-repeat:no-repeat;
+        }
+        div#analysis-detail img {
+            height: 250px;
+        }
+        div#image {
+            text-align: center;
         }
     </style>
 </head>
@@ -120,5 +156,7 @@
         </div>
     </div>
     </div>
+
+    <div class="modal fade hide" id="analysis-detail"></div>
 </body>
 </html>

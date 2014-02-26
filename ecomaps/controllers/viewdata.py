@@ -20,6 +20,7 @@ from ecomaps.lib.status_builder import StatusBuilder
 import ecomaps.lib.usage_logger as usage_logger
 import ecomaps.lib.viewdataExport as viewdataExport
 from ecomaps.controllers.wmsviz import WmsvizController
+from ecomaps.services.analysis import AnalysisService
 from ecomaps.services.dataset import DatasetService
 from ecomaps.services.user import UserService
 
@@ -34,14 +35,17 @@ class ViewdataController(WmsvizController):
 
     _user_service = None
     _dataset_service = None
+    _analysis_service = None
 
     def __init__(self,
                  user_service=UserService(),
-                 dataset_service=DatasetService()):
+                 dataset_service=DatasetService(),
+                 analysis_service=AnalysisService()):
 
         super(WmsvizController, self).__init__()
         self._user_service = user_service
         self._dataset_service = dataset_service
+        self._analysis_service = analysis_service
 
     def _getConfiguration():
         """ Reads the configuration values.
@@ -151,11 +155,7 @@ class ViewdataController(WmsvizController):
                 ds_id = request.params['layerid'][len('ds_'):]
 
             dataset = self._dataset_service.get_dataset_by_id(ds_id)
-
-            layer_list = self.datasetManager.get_ecomaps_layer_data(dataset)
-
-            return [layer.entity.getAsDict() for layer in layer_list[0]]
-            return self.datasetManager.get_ecomaps_layer_data(dataset).entity.getAsDict()
+            return self.get_layers_for_dataset(dataset)
 
         else:
             # Use the old-style approach
@@ -164,6 +164,30 @@ class ViewdataController(WmsvizController):
                 usage_logger.getUsageLogger(request).info('Get WMS capabilities: endpoint "%s" layer "%s"' %
                                                           (wmsCapabilities['getMapUrl'], wmsCapabilities['name']))
             return wmsCapabilities
+
+    def get_layers_for_dataset(self, dataset):
+        """ Gets a list of layer information for the given dataset
+            @param: dataset- The ecomaps model dataset to get WMS layers for
+
+        """
+        layer_list = self.datasetManager.get_ecomaps_layer_data(dataset)
+
+        return [layer.entity.getAsDict() for layer in layer_list[0]]
+
+    def layers(self, id):
+        """ Returns a view on a dataset's map layers
+            @param dataset_id: The ID of the dataset to get the layer data for
+        """
+        dataset = self._dataset_service.get_dataset_by_id(id)
+
+        c.dataset = dataset
+
+        if dataset.dataset_type.type == 'Result':
+            c.analysis_id = self._analysis_service.get_analysis_for_result_dataset(dataset.id)
+
+        c.layers = self.get_layers_for_dataset(dataset)
+
+        return render('layers.html')
 
     @jsonify
     def add_session_endpoint(self):

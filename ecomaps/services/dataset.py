@@ -1,6 +1,6 @@
 from sqlalchemy import or_
 from sqlalchemy.orm import joinedload
-from ecomaps.model import Dataset, DatasetType
+from ecomaps.model import Dataset, DatasetType, Analysis
 from ecomaps.services.general import DatabaseService
 
 __author__ = 'Phil Jenkins (Tessella)'
@@ -52,4 +52,6 @@ class DatasetService(DatabaseService):
         """
 
         with self.readonly_scope() as session:
-                return session.query(Dataset).filter(Dataset.id == dataset_id).one()
+                return session.query(Dataset)\
+                            .options(joinedload(Dataset.dataset_type)) \
+                            .filter(Dataset.id == dataset_id).one()

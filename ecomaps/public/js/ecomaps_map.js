@@ -17,12 +17,20 @@ var EcomapsMap = (function() {
 
         $("a.dataset").click(loadDataset);
 
-        $("ul#layer-list").on("click", "input.layer-toggle", function(){
+        var layerContainer = $("div#options-panel");
+
+        layerContainer.on("click", "input.layer-toggle", function(){
            toggleLayerDisplay($(this).data("layerid"));
         });
 
-        $("ul#layer-list").on("change", "select.style-list", function(){
+        layerContainer.on("change", "select.style-list", function(){
+
            setLayerStyle($(this).data("layerid"), $(this).val());
+        });
+
+        layerContainer.on("click", "a.view-analysis", function(){
+
+            $("div#analysis-detail").load( '/analysis/view/' + $(this).data("analysisid") + '?compact' );
         });
     };
 
@@ -31,7 +39,6 @@ var EcomapsMap = (function() {
         $("li.active").removeClass("active");
         $(this).closest("li").toggleClass("active");
 
-        $("#map-title").text($(this).html());
         setLoadingState(true);
 
         for(var l in layerDict) {
@@ -40,33 +47,35 @@ var EcomapsMap = (function() {
 
         // Let's get some layers!
         var datasetId = $(this).data("dsid");
+
+        $("div#options-panel").load('/viewdata/layers/' + datasetId + '?' + new Date().getTime(), function() {
+                $("div#options-panel").show();
+            }
+        );
+
         $.getJSON('/viewdata/get_layer_data?dsid=' + datasetId,
             function(data){
-
-                var layerList = $("ul#layer-list");
-
-                layerList.find(".layer").remove();
 
                 for(var i=0; i< data.length; i++){
 
                     var layerId = "" + datasetId + data[i].name;
 
-                    var layerName = data[i].title;
-                    layerList.append($("<li class='layer'>" +
-                                            "<label class='checkbox'>" +
-                                            "<input type='checkbox' checked='checked' data-layerid='" + layerId + "' class='layer-toggle' />" + layerName +
-                                        "</label></li>"));
-
-
-                    // Now add the styles for this layer...
-                    var styleList = $("<select class='style-list input-medium' data-layerid='"+ layerId +"'></select>");
-
-                    for(var j=0; j< data[i].styles.length;j++){
-
-                        styleList.append($("<option value='" + data[i].styles[j].name + "'>" + data[i].styles[j].name + "</option>"));
-                    }
-
-                    layerList.append($("<li class='layer style'>Style: </li>").append(styleList));
+//                    var layerName = data[i].title;
+//                    layerList.append($("<li class='layer'>" +
+//                                            "<label class='checkbox'>" +
+//                                            "<input type='checkbox' checked='checked' data-layerid='" + layerId + "' class='layer-toggle' />" + layerName +
+//                                        "</label></li>"));
+//
+//
+//                    // Now add the styles for this layer...
+//                    var styleList = $("<select class='style-list input-medium' data-layerid='"+ layerId +"'></select>");
+//
+//                    for(var j=0; j< data[i].styles.length;j++){
+//
+//                        styleList.append($("<option value='" + data[i].styles[j].name + "'>" + data[i].styles[j].name + "</option>"));
+//                    }
+//
+//                    layerList.append($("<li class='layer style'>Style: </li>").append(styleList));
 
                     layerDict[layerId] = {
                         index: currentLayerIndex,
@@ -76,8 +85,8 @@ var EcomapsMap = (function() {
                     };
 
                     addLayerToMap(layerId);
+                    setLayerStyle(layerId, data[i].styles[0].name);
                 }
-                $("div#options-panel").show();
                 setLoadingState(false);
             }
         ) .fail(function() {
@@ -103,7 +112,7 @@ var EcomapsMap = (function() {
 
         map.setCenter(position, 6);
 
-        $("#map").height($("#wrap").height() - 60);
+        $("#map").height($("#wrap").height());
     };
 
     var setLoadingState = function(isLoading) {
