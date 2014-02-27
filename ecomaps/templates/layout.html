@@ -14,6 +14,8 @@
         <script src="/js/jquery.js"></script>
         <script type="text/javascript" src="/layout/bootstrap/js/bootstrap.js"></script>
 
+        <script type="text/javascript" src="/js/ecomaps_general.js"></script>
+
         <!--Page-specific styles and script tags in here...-->
         ${select('style')}
         ${select('link')}
@@ -27,9 +29,11 @@
             <div class="navbar navbar-inverse navbar-fixed-top">
                 <div class="navbar-inner">
                     <div class="container">
-                        <div class="pull-right">
-                            <a class="btn" href="${h.url(controller='account', action='logout')}">Log out</a>
-                        </div>
+
+                            <a class="btn pull-right" href="${h.url(controller='account', action='logout')}">Log out</a>
+                            <p id="status" class="navbar-text pull-right">
+                                Map server status <span id="status-message" class="label">Testing...</span>
+                            </p>
                         <a class="brand" href="${h.url(controller='home')}">EcoMaps</a>
 
                         <ul class="nav">
@@ -58,9 +62,7 @@
         </div>
         <div id="footer">
                 <a class="pull-left" href="http://www.ceh.ac.uk" target="_blank"><img src="/layout/images/ceh_transparent.gif" /></a>
-
                 <a class="pull-right" href="http://www.tessella.co.uk" target="_blank"><img src="/layout/images/tessella.png" /></a>
-
         </div>
     </body>
 </py:match>

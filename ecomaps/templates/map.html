@@ -13,6 +13,7 @@
     <script type="text/javascript" src="http://openlayers.org/api/OpenLayers.js"></script>
     <script type="text/javascript" src="/js/LoadingPanel.js"></script>
     <script type="text/javascript" src="/js/ecomaps_map.js"></script>
+    <script type="text/javascript" src="/js/ecomaps_general.js"></script>
 
     <style type="text/css">
         div#map {
@@ -102,6 +103,10 @@
         <div class="navbar navbar-inverse navbar-fixed-top">
             <div class="navbar-inner">
                 <div class="container">
+                    <a class="btn pull-right" href="${h.url(controller='account', action='logout')}">Log out</a>
+                    <p id="status" class="navbar-text pull-right">
+                        Map server status <span id="status-message" class="label">Testing...</span>
+                    </p>
                     <a class="brand" href="${h.url(controller='home')}">EcoMaps</a>
 
                     <ul class="nav">
@@ -115,11 +120,6 @@
                             <a href="${h.url(controller='analysis')}">My Ecomaps</a>
                         </li>
                     </ul>
-                    <div class="nav-collapse collapse">
-                        <div class="pull-right">
-                            <a class="btn" href="${h.url(controller='account', action='logout')}">Log out</a>
-                        </div>
-                    </div>
                 </div>
 
             </div>

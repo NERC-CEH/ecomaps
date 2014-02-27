@@ -28,6 +28,12 @@ html, body {
     height: 99px;
 }
 
+#status {
+    margin-right: 1em;
+    color: #FFFFFF;
+    font-size: 85%;
+}
+
 .hero-unit h1
 {
     font-size: 200%;
