@@ -1,4 +1,6 @@
 import logging
+import urllib2
+from pylons.decorators import jsonify
 from ecomaps.lib.base import BaseController, render, request, c
 from ecomaps.services.dataset import DatasetService
 from ecomaps.services.user import UserService
@@ -29,3 +31,15 @@ class MapController(BaseController):
 
 
         return render('map.html')
+
+    @jsonify
+    def test(self):
+        """
+            Tests the connection to the map server
+        """
+        try:
+            response = urllib2.urlopen("http://thredds-prod.nerc-lancaster.ac.uk/thredds/", timeout=10).read()
+
+            return True
+        except:
+            return False
