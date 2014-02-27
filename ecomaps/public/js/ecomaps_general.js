@@ -34,10 +34,12 @@ var EcomapsGeneral = (function() {
             if(serverOK) {
                 message = "OK";
                 cls= 'success';
+                $("#server-offline").hide();
             }
             else {
                 message = "Offline";
                 cls = 'important';
+                $("#server-offline").show("fast");
             }
 
             window.clearInterval(loaderId);
