@@ -29,7 +29,7 @@ class UserController(BaseController):
         self._dataset_service = dataset_service
 
     def view_users(self):
-        """Allow and admin-user to see all users of the system, otherwise redirect to page not found
+        """Allow admin-user to see all users of the system. If user is non-admin, redirect to page not found.
         """
         identity = request.environ.get('REMOTE_USER')
 

@@ -19,7 +19,7 @@ class AnalysisServiceTest(BaseTest):
         self.sample_analysis.name = 'Test User'
         self.sample_analysis.user_id  = 1
         self.sample_analysis.point_data_dataset_id = 2
-        self.sample_analysis.coverage_dataset_ids = [1,3]
+        self.sample_analysis.coverage_dataset_ids = ['1_LandCover','3_LandCover']
         self.sample_analysis.parameters = []
         self.sample_analysis.id = 12
 
