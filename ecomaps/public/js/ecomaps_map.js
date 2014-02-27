@@ -1,9 +1,13 @@
 /**
  * Created by Phil Jenkins (Tessella) on 2/25/14.
+ *
+ * Simplified map viewer suitable for the EcoMaps application
+ *
  */
 
 var EcomapsMap = (function() {
 
+    // Module-level variables
     var map = null;
     var layerDict = new Object();
     var defaultLayerOptions = {
@@ -13,34 +17,56 @@ var EcomapsMap = (function() {
 
     var currentLayerIndex = 1;
 
+    /*
+     * initHandlers
+     *
+     * Sets up any event handlers in this module
+     *
+     */
     var initHandlers = function(){
 
+        // Each dataset link in the menu...
         $("a.dataset").click(loadDataset);
 
+        // The layer element is dynamically-populated, so the event handlers
+        // need to be declared on a static element instead, so using JQuery's 'on' functionality
         var layerContainer = $("div#options-panel");
 
+        // Toggle the layer on or off
         layerContainer.on("click", "input.layer-toggle", function(){
            toggleLayerDisplay($(this).data("layerid"));
         });
 
+        // Changing the style of the layer
         layerContainer.on("change", "select.style-list", function(){
 
            setLayerStyle($(this).data("layerid"), $(this).val());
         });
 
+        // Pop up the panel containing more detailed analysis information
         layerContainer.on("click", "a.view-analysis", function(){
 
+            // Load the HTML straight from the response
             $("div#analysis-detail").load( '/analysis/view/' + $(this).data("analysisid") + '?compact' );
         });
     };
 
+    /*
+     * loadDataset
+     *
+     * Loads a EcoMaps dataset into the map control
+     *
+     */
     var loadDataset = function() {
 
+        // Highlight the selected dataset
         $("li.active").removeClass("active");
         $(this).closest("li").toggleClass("active");
 
+        // Plop the loading panel over the map
         setLoadingState(true);
 
+        // Reset the layers on the map
         for(var l in layerDict) {
             removeLayerFromMap(l);
         }
@@ -48,35 +74,22 @@ var EcomapsMap = (function() {
         // Let's get some layers!
         var datasetId = $(this).data("dsid");
 
+        // Load the layers UI straight from the response
         $("div#options-panel").load('/viewdata/layers/' + datasetId + '?' + new Date().getTime(), function() {
                 $("div#options-panel").show();
             }
         );
 
+        // Make the request for the WMS layer data
         $.getJSON('/viewdata/get_layer_data?dsid=' + datasetId,
             function(data){
 
                 for(var i=0; i< data.length; i++){
 
+                    // Give it a unique ID for our layer bag
                     var layerId = "" + datasetId + data[i].name;
 
-//                    var layerName = data[i].title;
-//                    layerList.append($("<li class='layer'>" +
-//                                            "<label class='checkbox'>" +
-//                                            "<input type='checkbox' checked='checked' data-layerid='" + layerId + "' class='layer-toggle' />" + layerName +
-//                                        "</label></li>"));
-//
-//
-//                    // Now add the styles for this layer...
-//                    var styleList = $("<select class='style-list input-medium' data-layerid='"+ layerId +"'></select>");
-//
-//                    for(var j=0; j< data[i].styles.length;j++){
-//
-//                        styleList.append($("<option value='" + data[i].styles[j].name + "'>" + data[i].styles[j].name + "</option>"));
-//                    }
-//
-//                    layerList.append($("<li class='layer style'>Style: </li>").append(styleList));
-
+                    // We'll refer back to this when changing styles or visibility
                     layerDict[layerId] = {
                         index: currentLayerIndex,
                         data: data[i],
@@ -84,37 +97,59 @@ var EcomapsMap = (function() {
                         wmsObject: null
                     };
 
+                    // Now to add to the map, and set a default style
                     addLayerToMap(layerId);
                     setLayerStyle(layerId, data[i].styles[0].name);
                 }
+
+                // All done
                 setLoadingState(false);
             }
         ) .fail(function() {
-                alert("Something went wrong");
+                alert("An error occurred loading the dataset, please try again.");
                 setLoadingState(false);
             });
     };
 
+    /*
+     * initMap
+     *
+     * Sets up the OpenLayers map
+     *
+     */
     var initMap = function() {
 
         map = new OpenLayers.Map('map');
+
+        // Add the custom loading panel here...
         map.addControl(new OpenLayers.Control.LoadingPanel());
+
+        // Zoom in over the UK to begin with, set coords here
         var lat = 54;
         var lon = -2;
         var zoom = 0;
-
         var position = new OpenLayers.LonLat(lon, lat);
 
+        // Now to add the base layer
         var wms = new OpenLayers.Layer.WMS( "OpenLayers WMS",
             "http://vmap0.tiles.osgeo.org/wms/vmap0", {layers: 'basic'} );
         map.addLayer(wms);
         map.zoomToMaxExtent();
 
+        // Perform the zoom to the UK
         map.setCenter(position, 6);
 
+        // Stretch the map down the page
         $("#map").height($("#wrap").height());
     };
 
+    /*
+     * setLoadingState
+     *
+     * Puts a loading div over the map
+     *
+     *  @param isLoading: true to show the div, false to hide
+     */
     var setLoadingState = function(isLoading) {
 
         if(isLoading) {
@@ -126,14 +161,33 @@ var EcomapsMap = (function() {
         }
     };
 
+    /*
+     * removeLayerFromMap
+     *
+     * Removes the layer with the specified ID from the map
+     *
+     *  @param layerId: ID of the layer to remove
+     */
     var removeLayerFromMap = function(layerId) {
 
+        // Look the layer up...
         var layerObj = layerDict[layerId];
+
+        //..remove from the map...
         map.removeLayer(layerObj.wmsObject);
+
+        //..and make sure we remove from the bag
         delete layerDict[layerId];
         currentLayerIndex--;
     };
 
+    /*
+     * addLayerToMap
+     *
+     * Adds a layer in our internal bag to the map control
+     *
+     *  @param layerId: ID of the layer to add
+     */
     var addLayerToMap = function(layerId) {
 
         // Extract the bits we need to make the WMS object that
@@ -142,6 +196,7 @@ var EcomapsMap = (function() {
 
         var data = layerObj.data;
 
+        // Standard parameters
         var defaultLayerParams = {
             format: 'image/png',
             version: '1.3.0',
@@ -149,6 +204,7 @@ var EcomapsMap = (function() {
             transparent: 'TRUE'
         };
 
+        // Pull out extra info for the layer constructor
         var mapUrl = data.getMapUrl;
         var wmsVersion = data.wmsVersion;
         var layerName = data.name;
@@ -157,29 +213,49 @@ var EcomapsMap = (function() {
             defaultLayerParams.version = wmsVersion;
         }
 
+        // Now we're ready to create the layer object
         var layer = new OpenLayers.Layer.WMS(layerName,
             mapUrl, defaultLayerParams, defaultLayerOptions);
 
+        // Add to map
         layer.params['layers'] = layerName;
         map.addLayer(layer);
         layerObj.wmsObject = layer;
         currentLayerIndex++;
     };
 
+    /*
+     * toggleLayerDisplay
+     *
+     *  Toggles a layer's visibility
+     *
+     *  @param layerId: ID of the layer to toggle
+     */
     var toggleLayerDisplay = function(layerId) {
-        var layerObj = layerDict[layerId];
 
+        // Get the layer ref from our storage
+        var layerObj = layerDict[layerId];
         var index = layerObj.index;
+
+        // Simply swap the visibility over
         layerObj.visible = !layerObj.visible;
-        //map.layers[index].mergeNewParams({styles:'boxfill/redblue'});
         map.layers[index].setVisibility(layerObj.visible);
     };
 
+    /*
+     * setLayerStyle
+     *
+     *  Sets the style of the specified layer
+     *
+     *  @param layerId: ID of the layer to add
+     *  @param style: name of the style to apply
+     */
     var setLayerStyle = function(layerId, style) {
 
         var layerObj = layerDict[layerId];
         var index = layerObj.index;
 
+        // Change the style parameter on this layer
         map.layers[index].mergeNewParams({
            'styles' : style
         });
