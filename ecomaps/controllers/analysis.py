@@ -144,6 +144,7 @@ class AnalysisController(BaseController):
         user = request.environ.get('REMOTE_USER')
 
         user_obj = self._user_service.get_user_by_username(user)
+        c.username = user_obj.name
 
         analysis = self._analysis_service.get_analysis_by_id(id, user_obj.id)
 
@@ -168,6 +169,8 @@ class AnalysisController(BaseController):
         """
         user = request.environ.get('REMOTE_USER')
         user_obj = self._user_service.get_user_by_username(user)
+        c.username = user_obj.name
+
         analysis = self._analysis_service.get_analysis_by_id(id, user_obj.id)
 
         if analysis:
