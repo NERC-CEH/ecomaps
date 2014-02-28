@@ -94,7 +94,8 @@ var EcomapsMap = (function() {
                         index: currentLayerIndex,
                         data: data[i],
                         visible: true,
-                        wmsObject: null
+                        wmsObject: null,
+                        legendURL: null
                     };
 
                     // Now to add to the map, and set a default style
@@ -176,6 +177,9 @@ var EcomapsMap = (function() {
         //..remove from the map...
         map.removeLayer(layerObj.wmsObject);
 
+        //..legend..
+        removeLegend(layerId);
+
         //..and make sure we remove from the bag
         delete layerDict[layerId];
         currentLayerIndex--;
@@ -201,7 +205,11 @@ var EcomapsMap = (function() {
             format: 'image/png',
             version: '1.3.0',
             CRS: 'CRS:84',
-            transparent: 'TRUE'
+            transparent: 'TRUE',
+            opacity: 80,
+            colorscalerange: '1,50',
+            belowmincolor: 'transparent',
+            abovemaxcolor: 'extend'
         };
 
         // Pull out extra info for the layer constructor
@@ -216,6 +224,14 @@ var EcomapsMap = (function() {
         // Now we're ready to create the layer object
         var layer = new OpenLayers.Layer.WMS(layerName,
             mapUrl, defaultLayerParams, defaultLayerOptions);
+
+        // Add a legend graphic
+        var defaultStyle = data.styles[0];
+        layerObj.legendURL = defaultStyle.legendURL.onlineResource.split('?')[0];
+
+        addLegend(layerId, defaultStyle.name);
+
+        $("div#legend").show();
 
         // Add to map
         layer.params['layers'] = layerName;
@@ -240,6 +256,14 @@ var EcomapsMap = (function() {
         // Simply swap the visibility over
         layerObj.visible = !layerObj.visible;
         map.layers[index].setVisibility(layerObj.visible);
+
+        if(layerObj.visible) {
+            var currentLayerStyle = $("div#options-panel").find("select[data-layerid = '" + layerId + "']")[0];
+            addLegend(layerId, $(currentLayerStyle).val());
+        }
+        else {
+            removeLegend(layerId);
+        }
     };
 
     /*
@@ -259,6 +283,52 @@ var EcomapsMap = (function() {
         map.layers[index].mergeNewParams({
            'styles' : style
         });
+
+        removeLegend(layerId);
+        addLegend(layerId, style);
+    };
+
+    /*
+     * addLegend
+     *
+     *  Adds a legend graphic for the specified layer with
+     *  the specified style
+     *
+     *  @param layerId: ID of the layer to add a legend for
+     *  @param styleName: Name of the layer style to use as the basis for the legend
+     */
+    var addLegend = function(layerId, styleName) {
+
+        // First let's get the style name in a form we can use
+        // The map layer will most likely have a style like
+        // 'boxfill/rainbow' - but we just want the 'rainbow' bit
+        if(styleName.indexOf('/') > -1){
+            styleName = styleName.split('/')[1];
+        }
+        layerObj = layerDict[layerId];
+        // Now we should get the URL for the legend graphic
+        legendURL = layerDict[layerId].legendURL;
+        legendURL += "?REQUEST=GetLegendGraphic" +
+                        "&LAYER=" + layerObj.data['name'] +
+                        "&PALETTE=" + styleName +
+                        "&colorscalerange=0,50";
+
+        console.log(legendURL);
+
+        $("div#legend").append("<img data-layerid='" + layerId + "' src='" + legendURL + "' />");
+    };
+
+    /*
+     * removeLegend
+     *
+     *  Removes the legend graphic for the specified layer
+     *
+     *  @param layerId: ID of the layer
+     *                  corresponding to the legend to remove
+     */
+    var removeLegend = function(layerId) {
+
+        $("div#legend").find("img[data-layerid='" + layerId + "']").remove();
     };
 
     return {

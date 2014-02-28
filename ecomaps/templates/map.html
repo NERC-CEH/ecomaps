@@ -96,6 +96,19 @@
         div#image {
             text-align: center;
         }
+        div#legend {
+            position: absolute;
+            bottom: 140px;
+            left: 10px;
+            height: 200px;
+            /*width: 100px;*/
+            z-index: 999;
+            background: #FFF;
+        }
+        div#legend img
+        {
+            float:left;
+        }
     </style>
 </head>
 <body>
@@ -144,6 +157,9 @@
             <div class="span9" id="map">
                 <div id="map-loading">
                     <p>Updating Map</p>
+                </div>
+                <div id="legend" class="hide">
+
                 </div>
                 <div class="pull-right hidden" id="options-panel">
                     <div class="well sidebar-nav">

@@ -1,7 +1,7 @@
 import logging
 import urllib2
 from pylons.decorators import jsonify
-from ecomaps.lib.base import BaseController, request, redirect
+from ecomaps.lib.base import BaseController, request, render, c
 from ecomaps.services.dataset import DatasetService
 from ecomaps.services.netcdf import NetCdfService
 from ecomaps.services.user import UserService
@@ -57,10 +57,30 @@ class DatasetController(BaseController):
         """
 
         log.debug("Request for %s" % request.query_string)
-
-        ds = self._dataset_service.get_dataset_by_id(id)
+        user = self._user_service.get_user_by_username(request.environ['REMOTE_USER'])
+        ds = self._dataset_service.get_dataset_by_id(id, user_id=user.id)
 
         redirect_url = "%s?%s" % (ds.wms_url.split('?')[0], request.query_string)
 
         log.debug("Redirecting to %s" % redirect_url)
         return urllib2.urlopen(redirect_url).read()
+
+    def preview(self, id):
+        """ Renders a preview view of the first 10 rows of a dataset (currently point data only!)
+        """
+
+        # Need to make sure the user has access to the dataset in question
+        user = self._user_service.get_user_by_username(request.environ['REMOTE_USER'])
+        ds = self._dataset_service.get_dataset_by_id(id, user_id = user.id)
+
+        c.dataset_name = ds.name
+
+        # This should contain the first 10 rows
+        preview_data = self._netcdf_service.get_point_data_preview(ds.netcdf_url, 10)
+
+        c.columns = c.preview_data.keys()
+
+        # Number of rows - 1 for the row range--------------------------------------v
+        c.row_set = [[preview_data[col][row] for col in c.columns] for row in range(9)]
+
+        return render('dataset_preview.html')

@@ -45,7 +45,7 @@ class DatasetService(DatabaseService):
 
             return session.query(DatasetType).all()
 
-    def get_dataset_by_id(self, dataset_id):
+    def get_dataset_by_id(self, dataset_id, user_id=None):
         """ Returns a single dataset with the given ID
             Params:
                 dataset_id: ID of the dataset to look for
@@ -54,4 +54,6 @@ class DatasetService(DatabaseService):
         with self.readonly_scope() as session:
                 return session.query(Dataset)\
                             .options(joinedload(Dataset.dataset_type)) \
-                            .filter(Dataset.id == dataset_id).one()
+                            .filter(Dataset.id == dataset_id,
+                                    or_(Dataset.viewable_by_user_id == user_id,
+                                                 Dataset.viewable_by_user_id == None)).one()

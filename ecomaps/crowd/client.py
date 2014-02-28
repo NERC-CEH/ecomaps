@@ -224,7 +224,8 @@ class CrowdClient(object):
 
             # Use this info to look up the exception we should raise
             reason = err_response['reason']
+
             try:
                 raise self._errorMap[reason]()
-            except KeyError:
+            except:
                 raise ClientException
