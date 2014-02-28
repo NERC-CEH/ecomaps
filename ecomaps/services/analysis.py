@@ -76,7 +76,7 @@ class AnalysisService(DatabaseService):
             except NoResultFound:
                 return None
 
-    def create(self, name, point_dataset_id, coverage_dataset_ids, user_id, year, random_group, model_variable, data_type):
+    def create(self, name, point_dataset_id, coverage_dataset_ids, user_id, unit_of_time, random_group, model_variable, data_type):
         """Creates a new analysis object
             Params:
                 name - Friendly name for the analysis
@@ -84,7 +84,7 @@ class AnalysisService(DatabaseService):
                 coverage_dataset_ids - List of coverage dataset ids, which should be
                     in the format <id>_<column_name>
                 user_id - Who is creating this analysis?
-                year - year for which analysis is run
+                unit_of_time - unit of time selected
                 random_group - additional input into the model
                 model_variable - the variable that is being modelled
                 data_type - data type of the variable
@@ -130,7 +130,7 @@ class AnalysisService(DatabaseService):
                 analysis.coverage_datasets.append(coverage_ds)
 
             # Parameters that are used in the analysis
-            analysis.year = year
+            analysis.unit_of_time = unit_of_time
             analysis.random_group = random_group
             analysis.model_variable = model_variable
             analysis.data_type = data_type

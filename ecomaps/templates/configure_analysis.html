@@ -53,9 +53,9 @@
         </div>
 
         <div class="control-group">
-            <label for="Year" class="control-label">Year Column:</label>
+            <label for="unit_of_time" class="control-label">Time Column:</label>
 
-            <select id="year" name="year" class="controls model-param"></select>
+            <select id="unit_of_time" name="unit_of_time" class="controls model-param"></select>
 
         </div>
 
@@ -129,8 +129,8 @@
 
                         // Populate each list we know of
 
-                        // Year
-                        populateVariableList("year", data, "year");
+                        // Time
+                        populateVariableList("unit_of_time", data, "year");
 
                         // Group by
                         populateVariableList("random_group", data, "SERIES_NUM");

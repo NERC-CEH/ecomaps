@@ -135,7 +135,7 @@ class Analysis(Base):
     progress_message = Column(String(255))
     complete = Column(Boolean)
 
-    year = Column(String(255))
+    unit_of_time = Column(String(255))
     random_group = Column(String(255))
     model_variable = Column(String(255))
     data_type = Column(String(255))
