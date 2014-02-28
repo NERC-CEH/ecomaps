@@ -145,18 +145,6 @@ class AnalysisController(BaseController):
 
         user_obj = self._user_service.get_user_by_username(user)
 
-        added_successfully = ''
-
-        if request.POST:
-            try:
-                c.form_result = request.params
-            except:
-                added_successfully = False
-            else:
-                id = int(c.form_result.get('analysis_id'))
-                self._analysis_service.publish_analysis(id)
-                added_successfully = True
-
         analysis = self._analysis_service.get_analysis_by_id(id, user_obj.id)
 
         if analysis:
@@ -169,10 +157,37 @@ class AnalysisController(BaseController):
             if 'compact' in request.params:
                 return render('analysis_compact.html')
             else:
-                return render('analysis_view.html', extra_vars={'added_successfully': added_successfully})
+                return render('analysis_view.html', extra_vars={'added_successfully': None})
         else:
             c.object_type = 'analysis'
             return render('not_found.html')
+
+    def publish(self,id):
+        """Action for publishing a set of results
+            id - ID of the analysis to look at
+        """
+        user = request.environ.get('REMOTE_USER')
+        user_obj = self._user_service.get_user_by_username(user)
+        analysis = self._analysis_service.get_analysis_by_id(id, user_obj.id)
+
+        if analysis:
+            if analysis.result_dataset:
+                # Get the result attributes from the NetCDF file associated with the result dataset
+                analysis.attributes = self._netcdf_service.get_attributes(analysis.result_dataset.netcdf_url)
+            c.analysis = analysis
+
+            try:
+                c.form_result = request.params
+            except:
+                added_successfully = False
+            else:
+                self._analysis_service.publish_analysis(int(id))
+                added_successfully = True
+
+            return render('analysis_view.html', extra_vars={'added_successfully': added_successfully})
+        else:
+            return render('not_found.html')
+
 
     def rerun(self, id):
         """Action for re-running a particular analysis with same parameters as before

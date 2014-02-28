@@ -8,6 +8,14 @@
     <title>${c.analysis.name}</title>
 </head>
 <body>
+    <div class="row">
+        <div class="span12">
+            <div class="alert alert-block alert-info">
+                <h3> Analysis run by ${c.analysis.run_by} on ${c.analysis.run_date} </h3>
+            </div>
+        </div>
+    </div>
+
     <div>
         <py:if test="added_successfully">
             <py:choose>
@@ -86,18 +94,18 @@
                     <img class="img-polaroid" src="data:image/png;base64, ${c.analysis.result_image}" />
                 </div>
             </div>
-
             <div class="row">
-                <form class="inline_buttons" method="POST" id="button_form">
+                <input type="hidden" id="analysis_id" name="analysis_id" value='${c.analysis.id}' />
+
+                <form class="inline_buttons" method="POST" action="${url(controller='analysis', action='publish', id=str(c.analysis.id))}">
                     <py:if test="c.analysis.viewable_by">
-                        <input type="hidden" id="analysis_id" name="analysis_id" value='${c.analysis.id}' />
-                        <input type="submit" class="btn btn-primary btn-large pull-right" id="submit" value="Publish" />
-                        <input type="submit" class="btn btn-primary btn-large pull-right" id="rerun" value="Re-run Analysis" />
+                        <input type="submit" class="btn btn-primary btn-large pull-right" value="Publish" />
                     </py:if>
                 </form>
-                <form class="inline_buttons" action="${url(controller='analysis', action='download', id=str(c.analysis.id))}">
-                    <input type="submit" class="btn btn-primary btn-large pull-right" id="download" value="Download" />
-                </form>
+
+                <a href="${url(controller='analysis', action='rerun', id=str(c.analysis.id))}" class="btn btn-primary btn-large pull-right inline_buttons">Re-run Analysis</a>
+
+                <a href="${url(controller='analysis', action='download', id=str(c.analysis.id))}" class="btn btn-primary btn-large pull-right inline_buttons">Download</a>
             </div>
 
         </py:when>
@@ -111,20 +119,6 @@
             </div>
         </py:otherwise>
     </py:choose>
-        
-
-<script type="text/javascript" language="JavaScript">
-    $('#submit').click(function(){
-        $('#button_form').attr('action', '/analysis/view');
-    });
-    $('#rerun').click(function(){
-        $('#button_form').attr('action', '/analysis/rerun/' + $("#analysis_id").val());
-    });
-    $('#download').click(function(){
-        $('#button_form').attr('action', '/analysis/download/' + $("#analysis_id").val());
-    });
-
-</script>
 
 </body>
 </html>
