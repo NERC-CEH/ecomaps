@@ -237,7 +237,7 @@ def setup_app(command, conf, vars):
         a5.point_dataset = ds7
         a5.result_dataset = ds3
         a5.complete = True
-        a5.year = '1997'
+        a5.unit_of_time = 'year'
         a5.random_group = 'SERIES_NUM'
         a5.model_variable = 'loi'
         a5.data_type = 'CONT'

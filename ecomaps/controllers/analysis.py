@@ -76,7 +76,7 @@ class AnalysisController(BaseController):
 
             c.coverage_datasets = coverage_datasets
 
-            year = None
+            unit_of_time = None
             random_group = None
             model_variable = None
             data_type = None
@@ -84,7 +84,7 @@ class AnalysisController(BaseController):
             if not request.POST:
 
                 return render('configure_analysis.html',
-                              extra_vars={'year': year,
+                              extra_vars={'unit_of_time': unit_of_time,
                                           'random_group': random_group,
                                           'model_variable': model_variable,
                                           'data_type': data_type})
@@ -121,7 +121,7 @@ class AnalysisController(BaseController):
                                 c.form_result.get('point_dataset_id'),
                                 c.form_result.get('coverage_dataset_ids'),
                                 user_id,
-                                c.form_result.get('year'),
+                                c.form_result.get('unit_of_time'),
                                 c.form_result.get('random_group'),
                                 c.form_result.get('model_variable'),
                                 c.form_result.get('data_type'))
@@ -204,7 +204,7 @@ class AnalysisController(BaseController):
         for dataset in cds:
             coverage_dataset_ids.extend(["%s_%s" % (dataset.dataset_id, col.column) for col in dataset.columns])
 
-        year = current_analysis.year
+        unit_of_time = current_analysis.unit_of_time
         random_group = current_analysis.random_group
         model_variable = current_analysis.model_variable
         data_type = current_analysis.data_type
@@ -212,7 +212,7 @@ class AnalysisController(BaseController):
         return render('configure_analysis.html',
                               extra_vars={'current_point_dataset_id': point_dataset_id,
                                           'current_coverage_dataset_ids': coverage_dataset_ids,
-                                          'year': year,
+                                          'unit_of_time': unit_of_time,
                                           'random_group': random_group,
                                           'model_variable': model_variable,
                                           'data_type': data_type})

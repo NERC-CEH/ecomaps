@@ -44,7 +44,7 @@ class AnalysisServiceTest(BaseTest):
                                 self.sample_analysis.point_data_dataset_id,
                                 self.sample_analysis.coverage_dataset_ids,
                                 self.sample_analysis.user_id,
-                                self.sample_analysis.year,
+                                self.sample_analysis.unit_of_time,
                                 self.sample_analysis.random_group,
                                 self.sample_analysis.model_variable,
                                 self.sample_analysis.data_type)
