@@ -101,6 +101,12 @@ form.inline_buttons input
     margin-left: 5px;
 }
 
+a.inline_buttons
+{
+    margin-top: 10px;
+    margin-left: 5px;
+}
+
 div.arrow {
     background: url(/layout/images/arrow.png) no-repeat center;
 }

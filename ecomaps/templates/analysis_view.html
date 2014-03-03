@@ -28,76 +28,110 @@
     <py:choose>
         <py:when test="c.analysis.complete">
             <div class="row">
-                <div class="span5">
+                <div class="span11">
                     <h1>${c.analysis.name}</h1>
-
-                    <div class="row">
-                        <div class="span6">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Result</th>
-                                        <th>Value</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            Goodness of fit
-                                        </td>
-                                        <td>${c.analysis.goodness_of_fit}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            Date Created
-                                        </td>
-                                        <td>${c.analysis.attributes['date_created']}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            Geospatial Longitude Min
-                                        </td>
-                                        <td>${c.analysis.attributes['geospatial_lon_min']}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            Geospatial Longitude Max
-                                        </td>
-                                        <td>${c.analysis.attributes['geospatial_lon_max']} </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            Geospatial Latitude Min
-                                        </td>
-                                        <td>${c.analysis.attributes['geospatial_lat_min']}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            Geospatial Latitude Max
-                                        </td>
-                                        <td>${c.analysis.attributes['geospatial_lat_max']} </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="span7">
-                    <img class="img-polaroid" src="data:image/png;base64, ${c.analysis.result_image}" />
                 </div>
             </div>
 
+            <div>
+                <h3> Analysis run by ${c.username} on ${c.analysis.run_date} </h3>
+            </div>
+
+            <div>
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#map" data-toggle="tab">Map Results</a></li>
+                    <li><a href="#fitting" data-toggle="tab">Fitting Results</a></li>
+                </ul>
+
+                <div class="tab-content">
+                    <div class="tab-pane active" id="map">
+                        <div class="row">
+                            <div class="span11">
+                                <div class="span5">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Result</th>
+                                                <th>Value</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    Geospatial Longitude Min
+                                                </td>
+                                                <td>${c.analysis.attributes['geospatial_lon_min']}</td>
+                                             </tr>
+                                            <tr>
+                                                <td>
+                                                    Geospatial Longitude Max
+                                                </td>
+                                                <td>${c.analysis.attributes['geospatial_lon_max']} </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Geospatial Latitude Min
+                                                </td>
+                                                <td>${c.analysis.attributes['geospatial_lat_min']}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Geospatial Latitude Max
+                                                </td>
+                                                <td>${c.analysis.attributes['geospatial_lat_max']} </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="span5 pull-right">
+                                    <img class="img-polaroid" src="data:image/png;base64, ${c.analysis.result_image}" height="250px" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="fitting">
+                        <div class="row">
+                            <div class="span11">
+                                <div class="span5">
+                                    <table class="table">
+                                        <thead>
+                                        <tr>
+                                            <th>Result</th>
+                                            <th>Value</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td>
+                                                Goodness of fit
+                                            </td>
+                                            <td>${c.analysis.goodness_of_fit}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="span5 pull-right">
+                                    <img class="img-polaroid" src="data:image/png;base64, ${c.analysis.result_image}" height="250px" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
             <div class="row">
-                <form class="inline_buttons" method="POST" id="button_form">
+                <input type="hidden" id="analysis_id" name="analysis_id" value='${c.analysis.id}' />
+
+                <form class="inline_buttons" method="POST" action="${url(controller='analysis', action='publish', id=str(c.analysis.id))}">
                     <py:if test="c.analysis.viewable_by">
-                        <input type="hidden" id="analysis_id" name="analysis_id" value='${c.analysis.id}' />
-                        <input type="submit" class="btn btn-primary btn-large pull-right" id="submit" value="Publish" />
-                        <input type="submit" class="btn btn-primary btn-large pull-right" id="rerun" value="Re-run Analysis" />
+                        <input type="submit" class="btn btn-primary btn-large pull-right" value="Publish" />
                     </py:if>
                 </form>
-                <form class="inline_buttons" action="${url(controller='analysis', action='download', id=str(c.analysis.id))}">
-                    <input type="submit" class="btn btn-primary btn-large pull-right" id="download" value="Download" />
-                </form>
+
+                <a href="${url(controller='analysis', action='rerun', id=str(c.analysis.id))}" class="btn btn-primary btn-large pull-right inline_buttons">Re-run Analysis</a>
+
+                <a href="${url(controller='analysis', action='download', id=str(c.analysis.id))}" class="btn btn-primary btn-large pull-right inline_buttons">Download</a>
             </div>
 
         </py:when>
@@ -111,20 +145,6 @@
             </div>
         </py:otherwise>
     </py:choose>
-        
-
-<script type="text/javascript" language="JavaScript">
-    $('#submit').click(function(){
-        $('#button_form').attr('action', '/analysis/view');
-    });
-    $('#rerun').click(function(){
-        $('#button_form').attr('action', '/analysis/rerun/' + $("#analysis_id").val());
-    });
-    $('#download').click(function(){
-        $('#button_form').attr('action', '/analysis/download/' + $("#analysis_id").val());
-    });
-
-</script>
 
 </body>
 </html>
