@@ -108,7 +108,7 @@ def setup_app(command, conf, vars):
         a1.result_dataset = ds3
         a1.progress_message = "Testing the progress message"
         a1.complete = True
-
+        a1.model_formula = "Formula1"
 
         # Adding a coverage dataset
 
@@ -127,7 +127,7 @@ def setup_app(command, conf, vars):
 
         # 4. Add to the analyses' collection
         a1.coverage_datasets.append(cds)
-        a1.goodness_of_fit = 75
+        a1.aic = 75
         a1.run_by_user = user
         a1.point_dataset = ds2
 
@@ -144,9 +144,10 @@ def setup_app(command, conf, vars):
         a2.run_by_user = user
         a2.result_image = _get_result_image()
         a2.coverage_datasets.append(cds_a2)
-        a2.goodness_of_fit = 60
+        a2.aic = 60
         a2.point_dataset = ds2
         a2.result_dataset = ds3
+        a2.model_formula = "Formula2"
 
         session.add(a2)
 
@@ -161,7 +162,7 @@ def setup_app(command, conf, vars):
         a3.run_by_user = user2
         a3.result_image = _get_result_image()
         a3.coverage_datasets.append(cds_a3)
-        a3.goodness_of_fit = 60
+        a3.aic = 60
         a3.point_dataset = ds2
         a3.result_dataset = ds3
 
@@ -179,7 +180,7 @@ def setup_app(command, conf, vars):
         a4.viewable_by_user = user2
         a4.result_image = _get_result_image()
         a4.coverage_datasets.append(cds_a4)
-        a4.goodness_of_fit = 60
+        a4.aic = 60
         a4.point_dataset = ds2
         a4.result_dataset = ds3
 
@@ -231,7 +232,7 @@ def setup_app(command, conf, vars):
         a5.result_image = _get_result_image()
         a5.coverage_datasets.append(cds2)
         a5.coverage_datasets.append(cds3)
-        a5.goodness_of_fit = 81
+        a5.aic = 81
         a5.point_dataset = ds7
         a5.result_dataset = ds3
         a5.complete = True

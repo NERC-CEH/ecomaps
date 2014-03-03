@@ -130,10 +130,11 @@ class Analysis(Base):
     result_dataset_id = Column(Integer, ForeignKey('datasets.id'))
     viewable_by = Column(Integer, ForeignKey('users.id'), nullable=True)
     model_id = Column(Integer, ForeignKey('models.id'))
-    goodness_of_fit = Column(Integer)
+    aic = Column(Integer)
     result_image = Column(Text)
     progress_message = Column(String(255))
     complete = Column(Boolean)
+    model_formula = Column(String(255))
 
     unit_of_time = Column(String(255))
     random_group = Column(String(255))

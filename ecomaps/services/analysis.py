@@ -103,7 +103,7 @@ class AnalysisService(DatabaseService):
             # Putting this in for testing purposes only!
             # analysis.run_date = datetime.datetime.now()
             # analysis.result_image = websetup._get_result_image()
-            analysis.goodness_of_fit = randint(50, 100)
+            analysis.aic = randint(50, 100)
             #
             # result_dataset = Dataset()
             # result_dataset.dataset_type_id = 3

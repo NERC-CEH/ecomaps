@@ -53,7 +53,10 @@
                         ${analysis.model_variable}
                     </td>
                     <td>
-                        ${analysis.goodness_of_fit}
+                        ${analysis.aic}
+                    </td>
+                    <td>
+                        ${analysis.model_formula}
                     </td>
                 </tr>
             </tbody>
@@ -73,7 +76,9 @@
                     <th>Name</th>
                     <th>Run On</th>
                     <th>Run By</th>
-                    <th>Goodness of fit</th>
+                    <th>Name of Variable</th>
+                    <th>AIC</th>
+                    <th>Model Variable</th>
                 </tr>
             </thead>
             <tbody>
@@ -88,7 +93,13 @@
                         ${analysis.run_by_user.name}
                     </td>
                     <td>
-                        ${analysis.goodness_of_fit}
+                        ${analysis.model_variable}
+                    </td>
+                    <td>
+                        ${analysis.aic}
+                    </td>
+                    <td>
+                        ${analysis.model_formula}
                     </td>
                 </tr>
             </tbody>
