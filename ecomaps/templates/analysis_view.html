@@ -47,44 +47,46 @@
                     <div class="tab-pane active" id="map">
                         <div class="row">
                             <div class="span11">
-                                <div class="span5">
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th>Result</th>
-                                                <th>Value</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>
-                                                    Geospatial Longitude Min
-                                                </td>
-                                                <td>${c.analysis.attributes['geospatial_lon_min']}</td>
-                                             </tr>
-                                            <tr>
-                                                <td>
-                                                    Geospatial Longitude Max
-                                                </td>
-                                                <td>${c.analysis.attributes['geospatial_lon_max']} </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    Geospatial Latitude Min
-                                                </td>
-                                                <td>${c.analysis.attributes['geospatial_lat_min']}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    Geospatial Latitude Max
-                                                </td>
-                                                <td>${c.analysis.attributes['geospatial_lat_max']} </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="span5 pull-right">
-                                    <img class="img-polaroid" src="data:image/png;base64, ${c.analysis.result_image}" height="250px" />
+                                <div class="row">
+                                    <div class="span5">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Result</th>
+                                                    <th>Value</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        Geospatial Longitude Min
+                                                    </td>
+                                                    <td>${c.analysis.attributes['geospatial_lon_min']}</td>
+                                                 </tr>
+                                                <tr>
+                                                    <td>
+                                                        Geospatial Longitude Max
+                                                    </td>
+                                                    <td>${c.analysis.attributes['geospatial_lon_max']} </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Geospatial Latitude Min
+                                                    </td>
+                                                    <td>${c.analysis.attributes['geospatial_lat_min']}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Geospatial Latitude Max
+                                                    </td>
+                                                    <td>${c.analysis.attributes['geospatial_lat_max']} </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="span6 pull-right">
+                                        <img class="img-polaroid" src="data:image/png;base64, ${c.analysis.result_image}" height="250px" />
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -92,26 +94,28 @@
                     <div class="tab-pane" id="fitting">
                         <div class="row">
                             <div class="span11">
-                                <div class="span5">
-                                    <table class="table">
-                                        <thead>
-                                        <tr>
-                                            <th>Result</th>
-                                            <th>Value</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr>
-                                            <td>
-                                                Goodness of fit
-                                            </td>
-                                            <td>${c.analysis.goodness_of_fit}</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="span5 pull-right">
-                                    <img class="img-polaroid" src="data:image/png;base64, ${c.analysis.result_image}" height="250px" />
+                                <div class="row">
+                                    <div class="span5">
+                                        <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <th>Result</th>
+                                                <th>Value</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr>
+                                                <td>
+                                                    Goodness of fit
+                                                </td>
+                                                <td>${c.analysis.goodness_of_fit}</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="span6 pull-right">
+                                        <img class="img-polaroid" src="data:image/png;base64, ${c.analysis.result_image}" height="250px" />
+                                    </div>
                                 </div>
                             </div>
                         </div>
