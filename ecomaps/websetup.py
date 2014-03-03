@@ -94,8 +94,6 @@ def setup_app(command, conf, vars):
 
         session.add(ds2)
 
-        return
-
         ds3 = Dataset()
         ds3.dataset_type = resultDst
         ds3.name = 'Results Dataset 1'

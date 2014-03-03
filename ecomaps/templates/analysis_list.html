@@ -31,9 +31,9 @@
                 <tr>
                     <th>Name</th>
                     <th>Run On</th>
-                    <th>Run By</th>
-                    <th>Published?</th>
-                    <th>Goodness of fit</th>
+                    <th>Name of Variable</th>
+                    <th>AIC</th>
+                    <th>Model Formula</th>
                 </tr>
             </thead>
             <tbody>
@@ -50,13 +50,7 @@
                         </py:choose>
                     </td>
                     <td>
-                        ${analysis.run_by_user.name}
-                    </td>
-                    <td>
-                        <span py:choose="">
-                            <span py:when="analysis.viewable_by == None">Y</span>
-                            <span py:otherwise="">N</span>
-                        </span>
+                        ${analysis.model_variable}
                     </td>
                     <td>
                         ${analysis.goodness_of_fit}
