@@ -77,7 +77,7 @@ var EcomapsGeneral = (function() {
         init: function(){
             testMapServer();
 
-            window.setInterval(testMapServer, 20000);
+            window.setInterval(testMapServer, 30000);
         }
     }
 })();

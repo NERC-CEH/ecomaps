@@ -149,7 +149,8 @@ class AnalysisRunner(object):
                 coverage_dict[ds.dataset] = [c.column for c in ds.columns]
 
             # Now we have enough information to kick the analysis off
-            output_file_loc, map_image_file_loc, fit_image_file_loc = analysis.run(analysis_obj.point_dataset.netcdf_url,
+            output_file_loc, map_image_file_loc, \
+            fit_image_file_loc, aic_val = analysis.run(analysis_obj.point_dataset.netcdf_url,
                                                            coverage_dict, self._update_progress)
 
             # Write the result image to
@@ -162,6 +163,8 @@ class AnalysisRunner(object):
 
                 encoded_image = base64.b64encode(img.read())
                 self._analysis_obj.fit_image = encoded_image
+
+            self._analysis_obj.goodness_of_fit = aic_val
 
             # Copy the result file to the ecomaps THREDDS server
             # Set the file name to the name of the analysis + a bit of uniqueness
@@ -214,5 +217,7 @@ class AnalysisRunner(object):
             a.result_dataset = result_ds
             a.run_date = datetime.datetime.now()
             a.result_image = self._analysis_obj.result_image
+            a.fit_image = self._analysis_obj.fit_image
+            a.goodness_of_fit = self._analysis_obj.goodness_of_fit
             session.add(result_ds)
             session.add(a)
