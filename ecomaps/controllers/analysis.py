@@ -55,7 +55,7 @@ class AnalysisController(BaseController):
 
         if not query_string:
             # Grab the analyses...
-            c.private_analyses = self._analysis_service.get_analyses_for_user(user.id)
+            c.private_analyses = self._analysis_service.get_analyses_for_user(user_id)
             c.public_analyses = self._analysis_service.get_public_analyses()
         else:
             [column,order] = str.split(query_string,"&")
@@ -63,7 +63,7 @@ class AnalysisController(BaseController):
             column = str.split(column,"=",)[1]
             order = str.split(order,"=",)[1]
             c.private_analyses = self._analysis_service.sort_private_analyses_by_column(user_id,column,order)
-            c.public_analyses = self._analysis_service.sort_public_analyses_by_column(column,order)
+            # c.public_analyses = self._analysis_service.sort_public_analyses_by_column(column,order)
 
         return render('analysis_list.html')
 
