@@ -186,21 +186,21 @@ def setup_app(command, conf, vars):
         session.add(a4)
 
         # Additional databases for the purpose of testing the analysis configuration page
-        ds4 = Dataset()
-        ds4.dataset_type = coverDst
-        ds4.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/cover1'
-        ds4.name = 'Chess Example'
-        ds4.netcdf_url = 'http://localhost:8080/thredds/dodsC/testAll/CHESS_MODEL001_RUN001_OUT_precip_1971-01.nc'
+        #ds4 = Dataset()
+        #ds4.dataset_type = coverDst
+        #ds4.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/cover1'
+        #ds4.name = 'Chess Example'
+        #ds4.netcdf_url = 'http://localhost:8080/thredds/dodsC/testAll/CHESS_MODEL001_RUN001_OUT_precip_1971-01.nc'
 
-        session.add(ds4)
+        #session.add(ds4)
 
-        ds5 = Dataset()
-        ds5.dataset_type = coverDst
-        ds5.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/cover2'
-        ds5.name = 'Land Cover Map 2'
-        ds5.netcdf_url = 'http://localhost:8080/thredds/dodsC/testAll/LCM2007_GB_1K_DOM_TAR.nc'
+        #ds5 = Dataset()
+        #ds5.dataset_type = coverDst
+        #ds5.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/cover2'
+        #ds5.name = 'Land Cover Map 2'
+        #ds5.netcdf_url = 'http://localhost:8080/thredds/dodsC/testAll/LCM2007_GB_1K_DOM_TAR.nc'
 
-        session.add(ds5)
+        #session.add(ds5)
 
         ds6 = Dataset()
         ds6.dataset_type = pointDst
@@ -217,27 +217,27 @@ def setup_app(command, conf, vars):
 
         session.add(ds7)
 
-        cds2 = AnalysisCoverageDataset()
-        cds2.dataset = ds4
+        #cds2 = AnalysisCoverageDataset()
+        #cds2.dataset = ds4
 
-        cds3 = AnalysisCoverageDataset()
-        cds3.dataset = ds5
+        #cds3 = AnalysisCoverageDataset()
+        #cds3.dataset = ds5
 
-        a5 = Analysis()
-        a5.name = "Private Analysis - multiple coverage datasets"
-        a5.run_date = datetime.datetime.now()
-        a5.run_by_user = user
-        a5.viewable_by_user = user
-        a5.result_image = _get_result_image()
-        a5.coverage_datasets.append(cds2)
-        a5.coverage_datasets.append(cds3)
-        a5.goodness_of_fit = 81
-        a5.point_dataset = ds7
-        a5.result_dataset = ds3
-        a5.complete = True
-        a5.year = '1997'
-        a5.random_group = 'SERIES_NUM'
-        a5.model_variable = 'loi'
-        a5.data_type = 'CONT'
+        #a5 = Analysis()
+        #a5.name = "Private Analysis - multiple coverage datasets"
+        #a5.run_date = datetime.datetime.now()
+        #a5.run_by_user = user
+        #a5.viewable_by_user = user
+        #a5.result_image = _get_result_image()
+        #a5.coverage_datasets.append(cds2)
+        #a5.coverage_datasets.append(cds3)
+        #a5.goodness_of_fit = 81
+        #a5.point_dataset = ds7
+        #a5.result_dataset = ds3
+        #a5.complete = True
+        #a5.year = '1997'
+        #a5.random_group = 'SERIES_NUM'
+        #a5.model_variable = 'loi'
+        #a5.data_type = 'CONT'
 
-        session.add(a5)
+        #session.add(a5)
