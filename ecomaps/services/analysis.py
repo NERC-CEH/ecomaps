@@ -1,6 +1,6 @@
 import datetime
 from random import randint
-from sqlalchemy.orm import subqueryload, subqueryload_all, aliased, contains_eager
+from sqlalchemy.orm import subqueryload, subqueryload_all, aliased, contains_eager, joinedload
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.sql import Alias, or_
 from ecomaps import websetup
@@ -68,7 +68,9 @@ class AnalysisService(DatabaseService):
 
             try:
 
-                return session.query(Analysis).filter(Analysis.id == analysis_id,
+                return session.query(Analysis)\
+                    .options(joinedload(Analysis.run_by_user)) \
+                    .filter(Analysis.id == analysis_id,
                             or_(or_(Analysis.viewable_by == user_id,
                             Analysis.viewable_by == None),
                             Analysis.run_by == user_id)).one()
@@ -76,7 +78,7 @@ class AnalysisService(DatabaseService):
             except NoResultFound:
                 return None
 
-    def create(self, name, point_dataset_id, coverage_dataset_ids, user_id, year, random_group, model_variable, data_type):
+    def create(self, name, point_dataset_id, coverage_dataset_ids, user_id, unit_of_time, random_group, model_variable, data_type):
         """Creates a new analysis object
             Params:
                 name - Friendly name for the analysis
@@ -84,7 +86,7 @@ class AnalysisService(DatabaseService):
                 coverage_dataset_ids - List of coverage dataset ids, which should be
                     in the format <id>_<column_name>
                 user_id - Who is creating this analysis?
-                year - year for which analysis is run
+                unit_of_time - unit of time selected
                 random_group - additional input into the model
                 model_variable - the variable that is being modelled
                 data_type - data type of the variable
@@ -130,7 +132,7 @@ class AnalysisService(DatabaseService):
                 analysis.coverage_datasets.append(coverage_ds)
 
             # Parameters that are used in the analysis
-            analysis.year = year
+            analysis.unit_of_time = unit_of_time
             analysis.random_group = random_group
             analysis.model_variable = model_variable
             analysis.data_type = data_type

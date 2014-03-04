@@ -11,7 +11,7 @@ class ConfigureAnalysisForm(formencode.Schema):
 
     analysis_name = formencode.validators.String(not_empty=True)
     coverage_dataset_ids = formencode.validators.Set(not_empty=True)
-    year = formencode.validators.String(not_empty=True)
+    unit_of_time = formencode.validators.String(not_empty=True)
     random_group = formencode.validators.String(not_empty=True)
     model_variable = formencode.validators.String(not_empty=True)
     data_type = formencode.validators.String(not_empty=True)

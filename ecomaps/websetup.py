@@ -94,6 +94,8 @@ def setup_app(command, conf, vars):
 
         session.add(ds2)
 
+        return
+
         ds3 = Dataset()
         ds3.dataset_type = resultDst
         ds3.name = 'Results Dataset 1'
@@ -241,3 +243,29 @@ def setup_app(command, conf, vars):
         #a5.data_type = 'CONT'
 
         #session.add(a5)
+
+        cds2 = AnalysisCoverageDataset()
+        cds2.dataset = ds4
+
+        cds3 = AnalysisCoverageDataset()
+        cds3.dataset = ds5
+
+        a5 = Analysis()
+        a5.name = "Private Analysis - multiple coverage datasets"
+        a5.run_date = datetime.datetime.now()
+        a5.run_by_user = user
+        a5.viewable_by_user = user
+        a5.result_image = _get_result_image()
+        a5.coverage_datasets.append(cds2)
+        a5.coverage_datasets.append(cds3)
+        a5.goodness_of_fit = 81
+        a5.point_dataset = ds7
+        a5.result_dataset = ds3
+        a5.complete = True
+        a5.unit_of_time = 'year'
+        a5.random_group = 'SERIES_NUM'
+        a5.model_variable = 'loi'
+        a5.data_type = 'CONT'
+
+        session.add(a5)
+

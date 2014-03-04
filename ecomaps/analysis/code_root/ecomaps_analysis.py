@@ -1,6 +1,7 @@
 from _bisect import bisect_right
 from bisect import bisect_left
 import logging
+from threading import Thread
 import os
 import time
 import pyper
@@ -26,13 +27,19 @@ class EcomapsAnalysis(object):
     """Runs the ecomaps R code"""
 
     _working_dir = None
+    _user_name = None
+    _user_email = None
 
-    def __init__(self, working_dir):
+    def __init__(self, working_dir, user_name, email):
         """Constructor:
             Params:
                 working_dir: The directory we're running the code from
+                user_name: Name of the user running the analysis
+                email: Email address of the user running the analysis
         """
         self._working_dir = working_dir
+        self._user_name = user_name
+        self._user_email = email
 
     def _open_sample_opendap(self, url):
         print '\n\nurl:\t\t\t\t\t{0}'.format(url)
@@ -401,17 +408,33 @@ class EcomapsAnalysis(object):
         # }
         #
         # to pass to the R env
-
+        r["progress_rep_file"] = os.path.join(self._working_dir.root_folder, 'progress.txt')
+        r["user_name"] = self._user_name
+        r["email_address"] = self._user_email
         r["csv_file"] = csv_full_path
-        r["image_file"] = os.path.join(self._working_dir.image_folder, 'map_output.png')
+        r["map_image_file"] = os.path.join(self._working_dir.image_folder, 'map_output.png')
+        r["fit_image_file"] = os.path.join(self._working_dir.image_folder, 'fit_output.png')
         r["temp_netcdf_file"] = os.path.join(self._working_dir.netcdf_folder, 'temp.nc')
         r["output_netcdf_file"] = os.path.join(self._working_dir.netcdf_folder, 'output.nc')
 
         progress_fn("Running R code")
 
-        r.run(CMDS="source('%s')" % r_script_full_path)
+        run_thread = Thread(target=r.run, kwargs={
+            'CMDS': "source('%s')" % r_script_full_path
+        })
+
+        run_thread.start()
+        while run_thread.is_alive():
+
+            time.sleep(10)
+
+            with open(os.path.join(self._working_dir.root_folder, 'progress.txt'), 'r') as progress_file:
+                progress_fn(progress_file.read().strip())
+
+
+        #r.run(CMDS="source('%s')" % r_script_full_path)
 
         # Now to return the results - we're interested in where the netcdf results file
         # and the png image have been written to
 
-        return r["output_netcdf_file"], r["image_file"]
+        return r["output_netcdf_file"], r["map_image_file"], r["fit_image_file"]

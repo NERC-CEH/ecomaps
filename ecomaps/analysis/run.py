@@ -137,7 +137,9 @@ class AnalysisRunner(object):
             log.debug("Analysis for %s has started" % self._analysis_obj.name)
 
             #RUN
-            analysis = EcomapsAnalysis(dir)
+            analysis = EcomapsAnalysis(dir,
+                                       analysis_obj.run_by_user.name,
+                                       analysis_obj.run_by_user.email)
 
             file_name = "%s_%s.nc" % (self._analysis_obj.name.replace(' ', '-'), str(datetime.datetime.now().isoformat()).replace(':', '-'))
 
@@ -147,14 +149,19 @@ class AnalysisRunner(object):
                 coverage_dict[ds.dataset] = [c.column for c in ds.columns]
 
             # Now we have enough information to kick the analysis off
-            output_file_loc, image_file_loc = analysis.run(analysis_obj.point_dataset.netcdf_url,
+            output_file_loc, map_image_file_loc, fit_image_file_loc = analysis.run(analysis_obj.point_dataset.netcdf_url,
                                                            coverage_dict, self._update_progress)
 
             # Write the result image to
-            with open(image_file_loc, "rb") as img:
+            with open(map_image_file_loc, "rb") as img:
 
                 encoded_image = base64.b64encode(img.read())
                 self._analysis_obj.result_image = encoded_image
+
+            with open(fit_image_file_loc, "rb") as img:
+
+                encoded_image = base64.b64encode(img.read())
+                self._analysis_obj.fit_image = encoded_image
 
             # Copy the result file to the ecomaps THREDDS server
             # Set the file name to the name of the analysis + a bit of uniqueness
@@ -165,7 +172,7 @@ class AnalysisRunner(object):
 
             # Create a result dataset
             result_ds = Dataset()
-            result_ds.name = 'Results for %s' % self._analysis_obj.name
+            result_ds.name = self._analysis_obj.name
             result_ds.wms_url = wms_url
 
             # TODO: Can we do something nicer than the ID?

@@ -40,6 +40,7 @@
                 </optgroup>
             </select>
 
+            <i class="icon-info-sign" data-toggle="tooltip" title="A coverage dataset is used to define input data into the model. More than one can be selected"></i>
         </div>
 
         <div class="control-group">
@@ -50,13 +51,18 @@
                         ${dataset.name}
                     </option>
                 </select>
+
+            <i class="icon-info-sign" data-toggle="tooltip" title="A point dataset is used to define the spatial grid in the model. Hit the Preview button to see a sample of the data."></i>
+
+            <a id="dataset-preview-open" href='#dataset-preview' data-toggle='modal' class="btn btn-mini" type="button">Preview</a>
         </div>
 
         <div class="control-group">
-            <label for="Year" class="control-label">Year Column:</label>
+            <label for="unit_of_time" class="control-label">Time Column:</label>
 
-            <select id="year" name="year" class="controls model-param"></select>
+            <select id="unit_of_time" name="unit_of_time" class="controls model-param"></select>
 
+            <i class="icon-info-sign" data-toggle="tooltip" title="Unit of time used in the model."></i>
         </div>
 
         <div class="control-group">
@@ -64,6 +70,7 @@
 
             <select id="random_group" name="random_group" class="controls model-param"></select>
 
+            <i class="icon-info-sign" data-toggle="tooltip" title="A parameter used to group data in the model."></i>
         </div>
 
         <div class="control-group">
@@ -71,6 +78,7 @@
 
             <select id="model_variable" name="model_variable" class="controls model-param"></select>
 
+            <i class="icon-info-sign" data-toggle="tooltip" title="The variable being modelled"></i>
         </div>
 
         <div class="control-group">
@@ -82,12 +90,15 @@
                 <option value="binary">Binary</option>
             </select>
 
+            <i class="icon-info-sign" data-toggle="tooltip" title="Distribution type of the data."></i>
         </div>
 
         <div class="controls">
             <input type="submit" class="btn btn-primary btn-large pull-right control-group" name="submit" value="Run" />
         </div>
     </form>
+
+    <div class="modal fade hide" id="dataset-preview"></div>
 
 <script type="text/javascript" language="JavaScript">
 //<![CDATA[
@@ -129,8 +140,8 @@
 
                         // Populate each list we know of
 
-                        // Year
-                        populateVariableList("year", data, "year");
+                        // Time
+                        populateVariableList("unit_of_time", data, "year");
 
                         // Group by
                         populateVariableList("random_group", data, "SERIES_NUM");
@@ -154,6 +165,14 @@
 
                 updatePointDatasetColumns($(this).val());
             });
+
+            //
+            $("a#dataset-preview-open").click(function() {
+                $("div#dataset-preview").html("<div class='modal-body'>Loading preview <img src='/layout/images/loading7.gif' /></div>");
+                $("div#dataset-preview").load("/dataset/preview/" + $("select#point_dataset_id").val());
+            });
+
+            $("i[data-toggle='tooltip']").tooltip();
 
             // Populate the lists based on the currently-selected point dataset
             updatePointDatasetColumns($("select#point_dataset_id option:selected").val());
