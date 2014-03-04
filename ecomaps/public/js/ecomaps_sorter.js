@@ -13,12 +13,11 @@ var EcomapsSorter = (function() {
 
             console.log(columnName);
 
-            // direction
-            var direction = "asc";
+            var direction = "asc"
 
             // Go off to server
-            // e.g. /analysis/sort/?column=blah&direction=blah2
-            $("div#private-container").load("/dataset/preview/2");
+            address = "/analysis/sort/?column=" + columnName + "&order=" + direction;
+            $("div#private-container").load(address)
         });
     };
 

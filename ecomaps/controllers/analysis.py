@@ -48,24 +48,28 @@ class AnalysisController(BaseController):
 
         # Who am I?
         user = self._user_service.get_user_by_username(request.environ['REMOTE_USER'])
-        user_id = user.id
 
-        #Get query string to check if sorting is required
-        query_string = request.query_string
-
-        if not query_string:
-            # Grab the analyses...
-            c.private_analyses = self._analysis_service.get_analyses_for_user(user_id)
-            c.public_analyses = self._analysis_service.get_public_analyses()
-        else:
-            [column,order] = str.split(query_string,"&")
-            # Remove the parts of the query strings prior to the = signs
-            column = str.split(column,"=",)[1]
-            order = str.split(order,"=",)[1]
-            c.private_analyses = self._analysis_service.sort_private_analyses_by_column(user_id,column,order)
-            # c.public_analyses = self._analysis_service.sort_public_analyses_by_column(column,order)
+        # Grab the analyses...
+        c.private_analyses = self._analysis_service.get_analyses_for_user(user.id)
+        c.public_analyses = self._analysis_service.get_public_analyses()
 
         return render('analysis_list.html')
+
+    def sort(self):
+        """Action for sorting the analysis table using a particular column
+        """
+        user = self._user_service.get_user_by_username(request.environ['REMOTE_USER'])
+        query_string = request.query_string
+        [column,order] = str.split(query_string,"&")
+
+        # Remove the parts of the query strings prior to the = signs
+        column = str.split(column,"=",)[1]
+        order = str.split(order,"=",)[1]
+        c.private_analyses = self._analysis_service.sort_private_analyses_by_column(user.id,column,order)
+        # c.public_analyses = self._analysis_service.sort_public_analyses_by_column(column,order)
+
+        return render('private_analyses_table.html')
+
 
     def create(self):
         """ Creates the configure analysis page"""
