@@ -130,16 +130,17 @@ class Analysis(Base):
     result_dataset_id = Column(Integer, ForeignKey('datasets.id'))
     viewable_by = Column(Integer, ForeignKey('users.id'), nullable=True)
     model_id = Column(Integer, ForeignKey('models.id'))
-    goodness_of_fit = Column(Integer)
+    aic = Column(Integer)
     result_image = Column(Text(length=2**31))
     progress_message = Column(String(255))
     complete = Column(Boolean)
+    model_formula = Column(String(255))
 
     unit_of_time = Column(String(255))
     random_group = Column(String(255))
     model_variable = Column(String(255))
     data_type = Column(String(255))
-    fit_image = Column(Text(length=2**31))
+    fit_image = Column(Text)
 
     # FK Relationships
     run_by_user = relationship("User", foreign_keys=[run_by])
