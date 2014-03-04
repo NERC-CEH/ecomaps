@@ -9,16 +9,34 @@ var EcomapsSorter = (function() {
 
         $("div#private-container").on("click", "th", function(){
 
+            table = $(this).closest("table");
+
             var columnName = $(this).data("column");
 
-            console.log(columnName);
+            var sortingColumn = table.data("sorting_column");
 
-            // direction
-            var direction = "asc";
+            var orderDirection = table.data("order_direction");
+
+            // If the column name matches the one that was previously sorted on - reverse the direction of sorting
+            if (typeof sortingColumn != "undefined" && sortingColumn == columnName)
+            {
+                if (orderDirection == "asc")
+                {
+                    var direction = "desc";
+                }
+                else
+                {
+                    var direction = "asc";
+                }
+            }
+            else
+            {
+                var direction = "asc";
+            }
 
             // Go off to server
-            // e.g. /analysis/sort/?column=blah&direction=blah2
-            $("div#private-container").load("/dataset/preview/2");
+            address = "/analysis/sort/?column=" + columnName + "&order=" + direction;
+            $("div#private-container").load(address);
         });
     };
 

@@ -2,7 +2,7 @@ import datetime
 from random import randint
 from sqlalchemy.orm import subqueryload, subqueryload_all, aliased, contains_eager, joinedload
 from sqlalchemy.orm.exc import NoResultFound
-from sqlalchemy.sql import Alias, or_
+from sqlalchemy.sql import Alias, or_, asc, desc
 from ecomaps import websetup
 from ecomaps.model import Dataset, Analysis, AnalysisCoverageDatasetColumn
 from ecomaps.services.general import DatabaseService
@@ -105,7 +105,7 @@ class AnalysisService(DatabaseService):
             # Putting this in for testing purposes only!
             # analysis.run_date = datetime.datetime.now()
             # analysis.result_image = websetup._get_result_image()
-            analysis.goodness_of_fit = randint(50, 100)
+            analysis.aic = randint(50, 100)
             #
             # result_dataset = Dataset()
             # result_dataset.dataset_type_id = 3
@@ -159,3 +159,55 @@ class AnalysisService(DatabaseService):
         with self.readonly_scope() as session:
 
             return session.query(Analysis.id).filter(Analysis.result_dataset_id == dataset_id).one()[0]
+
+    def sort_private_analyses_by_column(self,user_id,column,order):
+        """Sorts the private analyses by the column name
+        Params:
+                user_id: unique id of the user
+                column: The name of the column to sort on
+                order: either "asc" or "desc"
+        """
+        with self.readonly_scope() as session:
+
+            if order == "asc":
+
+                return session.query(Analysis) \
+                        .options(subqueryload(Analysis.point_dataset)) \
+                        .options(subqueryload(Analysis.coverage_datasets)) \
+                        .options(subqueryload(Analysis.run_by_user)) \
+                        .filter(or_(Analysis.viewable_by == user_id, Analysis.run_by == user_id)) \
+                        .order_by(asc(column)).all()
+            else:
+
+                return session.query(Analysis) \
+                        .options(subqueryload(Analysis.point_dataset)) \
+                        .options(subqueryload(Analysis.coverage_datasets)) \
+                        .options(subqueryload(Analysis.run_by_user)) \
+                        .filter(or_(Analysis.viewable_by == user_id, Analysis.run_by == user_id)) \
+                        .order_by(desc(column)).all()
+
+    def sort_public_analyses_by_column(self,column, order):
+        """Sorts the public analyses by the column name
+        Params:
+                column: The name of the column to sort on
+                order: either "asc" or "desc"
+        """
+        with self.readonly_scope() as session:
+
+            if order == "asc":
+
+                return session.query(Analysis) \
+                        .options(subqueryload(Analysis.point_dataset)) \
+                        .options(subqueryload(Analysis.coverage_datasets)) \
+                        .options(subqueryload(Analysis.run_by_user)) \
+                        .filter(Analysis.viewable_by == None) \
+                        .order_by(asc(column)).all()
+
+            else:
+
+                return session.query(Analysis) \
+                        .options(subqueryload(Analysis.point_dataset)) \
+                        .options(subqueryload(Analysis.coverage_datasets)) \
+                        .options(subqueryload(Analysis.run_by_user)) \
+                        .filter(Analysis.viewable_by == None) \
+                        .order_by(desc(column)).all()
