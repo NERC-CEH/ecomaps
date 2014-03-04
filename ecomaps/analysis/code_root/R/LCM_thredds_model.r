@@ -149,30 +149,25 @@ progress_fn("Constructing Model formula")
   
 progress_fn("Running Model")
 
-  progress_fn("X")
   x=newdat[newdat$rnd_group==newdat$rnd_group[1] & newdat$tm_var==newdat$tm_var[1],]
-  progress_fn("Y")
   y=newdat[newdat$rnd_group==newdat$rnd_group[1],]
 
-  progress_fn("Apply x")
   v=which(apply(x,2,function(X){length(unique(X))})==dim(x)[1])
-
-  progress_fn("Apply y")
   w=which(apply(y,2,function(X){length(unique(X))})<(dim(y)[1]-3))
-  progress_fn("Model still running")
+
   len_id = apply(newdat[,which(is.element(names(newdat),intersect(names(v),names(w))))],2,function(X){length(unique(X))})
   tmp_nm = names(len_id)[which.max(len_id)]
   newdat$temp_rand = newdat[,which(names(newdat)==tmp_nm)]
   mod_t = "mix_gam"
   if(!is.null(rand_grp) & is.null(mult_year)){
-    progress_fn("Gamm")
+    progress_fn("Applying GAMM, grouped data")
     mod=try(gamm(as.formula(form),random=list(rnd_group=~1),data=newdat,family=data_fam,niterPQL=5))
   }else{
-    progress_fn("Gamm")
+    progress_fn("Applying GAMM, multi-year")
     if(is.null(rand_grp) & !is.null(mult_year)){
       mod=try(gamm(as.formula(form),correlation=corAR1(form=~tm_var|temp_rand),data=newdat,family=data_fam,niterPQL=5))
     }else{
-        progress_fn("Gamm")
+        progress_fn("Applying GAMM, multi-year and grouped")
       if(!is.null(rand_grp) & !is.null(mult_year)){
         mod=try(gamm(as.formula(form),random=list(temp_rand=~1),correlation=corAR1(form=~tm_var|temp_rand),data=newdat,family=data_fam,niterPQL=5))
         if(class(mod)=="try-error"){
@@ -281,7 +276,7 @@ if(class(mod)!="try-error"){
     progress_fn("Result images written")
     dev.off()
     progress_fn("Calculating AIC")
-    #if(mod_t=="norm_gam"){aic_val <- AIC(mod$gam)}else{aic_val <- AIC(mod$gam)}
+    if(mod_t=="norm_gam"){aic_val <- AIC(mod$gam)}else{aic_val <- AIC(mod$lme)}
     progress_fn("AIC Complete, calculation root mean sq")
     rmse <- sqrt(mean((mod$gam$y-mod$gam$fitted.values)^2))
     progress_fn("RMS complete, calculating r squared")
@@ -411,7 +406,7 @@ ncatt_put(ncnew, 0, "comment", "comment")
 ncatt_put(ncnew, 0, "model_formula", mod_formula)
 ncatt_put(ncnew, 0, "root_mean_square_error", rmse)
 ncatt_put(ncnew, 0, "r_squared", r2)
-ncatt_put(ncnew, 0, "AIC", AIC(mod$lme))
+ncatt_put(ncnew, 0, "AIC", aic_val)
 ncatt_put(ncnew, 0, "Model_Terms", paste(c(row.names(x$pTerms.table),row.names(x$s.table)),collapse=","))
 ncatt_put(ncnew, 0, "Model_pVals", paste(round(c((x$pTerms.table[,3]),(x$s.table[,4])),4),collapse=","))
 nc_close(ncnew)

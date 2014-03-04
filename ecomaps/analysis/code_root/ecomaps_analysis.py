@@ -437,4 +437,4 @@ class EcomapsAnalysis(object):
         # Now to return the results - we're interested in where the netcdf results file
         # and the png image have been written to
 
-        return r["output_netcdf_file"], r["map_image_file"], r["fit_image_file"]
+        return r["output_netcdf_file"], r["map_image_file"], r["fit_image_file"], r["aic_val"]

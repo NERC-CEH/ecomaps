@@ -10,6 +10,7 @@
 
     var analysis_id = 0;
     var previousMessage = "";
+    var dotCounter = 0;
 
     /**
      *  makeProgressRequest
@@ -41,10 +42,14 @@
         $("ul#progress > li > i.icon-tasks").attr('class', 'icon-ok');
         $("ul#progress > li").attr('class', 'done');
 
-        var newProgressItem = $("<li><i class='icon-tasks'></i>" + message + "</li>");
+        var newProgressItem = getInProgressItem(message);
 
         $("ul#progress").append(newProgressItem);
         newProgressItem.show("normal");
+    };
+
+    var getInProgressItem = function(message){
+        return $("<li><i class='icon-tasks'></i>" + message + "</li>");
     };
 
     /**
@@ -66,7 +71,14 @@
             }
             else {
                 // If we've not moved to a new message, just indicate that something is happening
-                $("ul#progress li").last().append(".");
+                if(dotCounter < 10) {
+                    $("ul#progress li").last().append(".");
+                    dotCounter++;
+                }
+                else {
+                    $("ul#progress li").last().html(getInProgressItem(data.message).html());
+                    dotCounter = 0;
+                }
             }
 
             // Let's wait a few seconds to see what's happening

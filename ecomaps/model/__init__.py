@@ -131,7 +131,7 @@ class Analysis(Base):
     viewable_by = Column(Integer, ForeignKey('users.id'), nullable=True)
     model_id = Column(Integer, ForeignKey('models.id'))
     aic = Column(Integer)
-    result_image = Column(Text)
+    result_image = Column(Text(length=2**31))
     progress_message = Column(String(255))
     complete = Column(Boolean)
     model_formula = Column(String(255))
