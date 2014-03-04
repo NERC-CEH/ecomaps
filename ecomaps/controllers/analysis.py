@@ -68,6 +68,9 @@ class AnalysisController(BaseController):
         c.private_analyses = self._analysis_service.sort_private_analyses_by_column(user.id,column,order)
         # c.public_analyses = self._analysis_service.sort_public_analyses_by_column(column,order)
 
+        c.order = order
+        c.sorting_column = column
+
         return render('private_analyses_table.html')
 
 
