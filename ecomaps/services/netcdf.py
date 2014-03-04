@@ -45,6 +45,7 @@ class EcoMapsNetCdfFile(object):
                 # see:  http://pandas.pydata.org/pandas-docs/dev/gotchas.html#byte-ordering-issues
                 column_dictionary[column] = points[column][:no_of_rows].byteswap().newbyteorder()
 
+        del points
         return column_dictionary
 
 class NetCdfService(object):

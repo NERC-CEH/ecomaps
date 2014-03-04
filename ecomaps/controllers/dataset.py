@@ -78,7 +78,7 @@ class DatasetController(BaseController):
         # This should contain the first 10 rows
         preview_data = self._netcdf_service.get_point_data_preview(ds.netcdf_url, 10)
 
-        c.columns = c.preview_data.keys()
+        c.columns = preview_data.keys()
 
         # Number of rows - 1 for the row range--------------------------------------v
         c.row_set = [[preview_data[col][row] for col in c.columns] for row in range(9)]

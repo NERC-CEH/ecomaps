@@ -140,6 +140,7 @@ class Analysis(Base):
     random_group = Column(String(255))
     model_variable = Column(String(255))
     data_type = Column(String(255))
+    fit_image = Column(Text)
 
     # FK Relationships
     run_by_user = relationship("User", foreign_keys=[run_by])
