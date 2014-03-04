@@ -73,9 +73,13 @@ a.brand > i.icon {
     margin: 5px 5px 5px 0;
 }
 
-ul#progress li
+ul#progress li, ul.nopoints li
 {
     list-style-type: none;
+}
+
+ul.nopoints input {
+    padding: 0;
 }
 
 ul#progress li.done {
@@ -95,17 +99,6 @@ form.inline_buttons{
     margin:0;
 }
 
-form.inline_buttons input
-{
-    margin-top: 10px;
-    margin-left: 5px;
-}
-
-a.inline_buttons
-{
-    margin-top: 10px;
-    margin-left: 5px;
-}
 
 div.arrow {
     background: url(/layout/images/arrow.png) no-repeat center;

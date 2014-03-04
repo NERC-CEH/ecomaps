@@ -131,7 +131,7 @@ class Analysis(Base):
     viewable_by = Column(Integer, ForeignKey('users.id'), nullable=True)
     model_id = Column(Integer, ForeignKey('models.id'))
     goodness_of_fit = Column(Integer)
-    result_image = Column(Text)
+    result_image = Column(Text(length=2**31))
     progress_message = Column(String(255))
     complete = Column(Boolean)
 
@@ -139,7 +139,7 @@ class Analysis(Base):
     random_group = Column(String(255))
     model_variable = Column(String(255))
     data_type = Column(String(255))
-    fit_image = Column(Text)
+    fit_image = Column(Text(length=2**31))
 
     # FK Relationships
     run_by_user = relationship("User", foreign_keys=[run_by])
