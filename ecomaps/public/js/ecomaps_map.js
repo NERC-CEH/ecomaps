@@ -40,7 +40,9 @@ var EcomapsMap = (function() {
         // Changing the style of the layer
         layerContainer.on("change", "select.style-list", function(){
 
-           setLayerStyle($(this).data("layerid"), $(this).val());
+            var layerId = $(this).data("layerid");
+            layerDict[layerId].styleName = $(this).val();
+            setLayerStyle(layerId);
         });
 
         // Pop up the panel containing more detailed analysis information
@@ -48,6 +50,18 @@ var EcomapsMap = (function() {
 
             // Load the HTML straight from the response
             $("div#analysis-detail").load( '/analysis/view/' + $(this).data("analysisid") + '?compact' );
+        });
+
+        layerContainer.on("click", "button.scale-update", function() {
+
+            var minValue = $(this).siblings("input.scale-min")[0].value;
+            var maxValue = $(this).siblings("input.scale-max")[0].value;
+
+            var layerId = $(this).data("layerid");
+            var layerObj = layerDict[layerId];
+            layerObj.scaleMin = minValue;
+            layerObj.scaleMax = maxValue;
+            setLayerStyle(layerId);
         });
     };
 
@@ -95,12 +109,15 @@ var EcomapsMap = (function() {
                         data: data[i],
                         visible: true,
                         wmsObject: null,
-                        legendURL: null
+                        legendURL: null,
+                        scaleMin: 0,
+                        scaleMax: 50,
+                        styleName: data[i].styles[0].name
                     };
 
                     // Now to add to the map, and set a default style
                     addLayerToMap(layerId);
-                    setLayerStyle(layerId, data[i].styles[0].name);
+                    setLayerStyle(layerId);
                 }
 
                 // All done
@@ -207,7 +224,6 @@ var EcomapsMap = (function() {
             CRS: 'CRS:84',
             transparent: 'TRUE',
             opacity: 80,
-            colorscalerange: '1,50',
             belowmincolor: 'transparent',
             abovemaxcolor: 'extend'
         };
@@ -229,7 +245,7 @@ var EcomapsMap = (function() {
         var defaultStyle = data.styles[0];
         layerObj.legendURL = defaultStyle.legendURL.onlineResource.split('?')[0];
 
-        addLegend(layerId, defaultStyle.name);
+        //addLegend(layerId, defaultStyle.name);
 
         $("div#legend").show();
 
@@ -271,21 +287,21 @@ var EcomapsMap = (function() {
      *
      *  Sets the style of the specified layer
      *
-     *  @param layerId: ID of the layer to add
-     *  @param style: name of the style to apply
+     *  @param layerId: ID of the layer to update the style for
      */
-    var setLayerStyle = function(layerId, style) {
+    var setLayerStyle = function(layerId) {
 
         var layerObj = layerDict[layerId];
         var index = layerObj.index;
 
         // Change the style parameter on this layer
         map.layers[index].mergeNewParams({
-           'styles' : style
+           'styles' : layerObj.styleName,
+           'colorscalerange': layerObj.scaleMin + "," + layerObj.scaleMax
         });
 
         removeLegend(layerId);
-        addLegend(layerId, style);
+        addLegend(layerId);
     };
 
     /*
@@ -295,25 +311,23 @@ var EcomapsMap = (function() {
      *  the specified style
      *
      *  @param layerId: ID of the layer to add a legend for
-     *  @param styleName: Name of the layer style to use as the basis for the legend
      */
-    var addLegend = function(layerId, styleName) {
+    var addLegend = function(layerId) {
 
+        layerObj = layerDict[layerId];
+        var styleName = layerObj.styleName;
         // First let's get the style name in a form we can use
         // The map layer will most likely have a style like
         // 'boxfill/rainbow' - but we just want the 'rainbow' bit
         if(styleName.indexOf('/') > -1){
             styleName = styleName.split('/')[1];
         }
-        layerObj = layerDict[layerId];
         // Now we should get the URL for the legend graphic
-        legendURL = layerDict[layerId].legendURL;
+        legendURL = layerObj.legendURL;
         legendURL += "?REQUEST=GetLegendGraphic" +
                         "&LAYER=" + layerObj.data['name'] +
                         "&PALETTE=" + styleName +
-                        "&colorscalerange=0,50";
-
-        console.log(legendURL);
+                        "&colorscalerange=" + layerObj.scaleMin + "," + layerObj.scaleMax;
 
         $("div#legend").append("<img data-layerid='" + layerId + "' src='" + legendURL + "' />");
     };
