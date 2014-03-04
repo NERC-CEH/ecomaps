@@ -1,6 +1,6 @@
 import datetime
 from random import randint
-from sqlalchemy.orm import subqueryload, subqueryload_all, aliased, contains_eager
+from sqlalchemy.orm import subqueryload, subqueryload_all, aliased, contains_eager, joinedload
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.sql import Alias, or_
 from ecomaps import websetup
@@ -68,7 +68,9 @@ class AnalysisService(DatabaseService):
 
             try:
 
-                return session.query(Analysis).filter(Analysis.id == analysis_id,
+                return session.query(Analysis)\
+                    .options(joinedload(Analysis.run_by_user)) \
+                    .filter(Analysis.id == analysis_id,
                             or_(or_(Analysis.viewable_by == user_id,
                             Analysis.viewable_by == None),
                             Analysis.run_by == user_id)).one()
