@@ -6,6 +6,21 @@
         class="well sidebar-nav">
     <h5 id="map-title">${c.dataset.name}</h5>
 
+    <ul class="nav nav-list" py:if="c.dimensions">
+        <li py:for="dimension in c.dimensions" class="nav-header">
+            ${dimension['name']}
+            <ul class="layer-controls">
+                <li class="control-label">Select: </li>
+                <li>
+                    <select data-dimension="${dimension['name']}" class="dimension">
+                        <option py:for="value in dimension['dimensionValues']" value="${value}">${value}</option>
+                    </select>
+                </li>
+                <div class="clearfix"></div>
+            </ul>
+        </li>
+    </ul>
+
     <div class="alert alert-info" py:if="c.analysis_id">
         <i class="icon-list-alt"></i> <a href="#analysis-detail" data-toggle="modal" class="view-analysis" data-analysisid="${c.analysis_id}">Analysis Quick View</a>
     </div>
@@ -13,6 +28,7 @@
     <ul id="layer-list" class="nav nav-list">
         <li py:for="layer in reversed(c.layers)" class="layer nav-header">
             ${layer.title}
+
 
             <ul class="layer-controls">
                 <li><i class="icon-eye-open"></i><input type="checkbox" value="Display" checked="checked" class="layer-toggle" data-layerid="${c.dataset.id}${layer.name}" /></li>
@@ -23,6 +39,12 @@
                                 ${style.name}
                             </option>
                         </select>
+                </li>
+                <div class="clearfix"></div>
+                <li class="control-label">Colour range: </li>
+                <li>
+                    <input class="input-mini scale scale-min" type="text" value="0" /> to <input class="input-mini scale scale-max" type="text" value="50" />
+                    <button class="btn btn-mini scale-update" data-layerid="${c.dataset.id}${layer.name}"><i class="icon-repeat"></i></button>
                 </li>
                 <div class="clearfix"></div>
             </ul>

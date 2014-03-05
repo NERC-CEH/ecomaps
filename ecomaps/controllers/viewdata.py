@@ -187,6 +187,12 @@ class ViewdataController(WmsvizController):
 
         c.layers = self.get_layers_for_dataset(dataset)
 
+        c.dimensions = []
+
+        # Check for dimensionality
+        if c.layers and c.layers[0]['dimensions']:
+            c.dimensions = c.layers[0]['dimensions']
+
         return render('layers.html')
 
     @jsonify
