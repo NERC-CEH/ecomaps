@@ -58,11 +58,46 @@ var EcomapsSorter = (function() {
                 var direction = "asc";
             }
 
+            var isPublic = "false";
+
             // Go off to server
-            address = "/analysis/sort/?column=" + columnName + "&order=" + direction;
+            address = "/analysis/sort/?column=" + columnName + "&order=" + direction + "&is_public=" + isPublic;
             $("div#private-container").load(address, function() {
                 highlightSortedColumn("private_analyses_table",direction);
             });
+        });
+
+        $("div#public-container").on("click", "th", function(){
+
+            table = $(this).closest("table");
+
+            var columnName = $(this).data("column");
+
+            var sortingColumn = table.data("sorting_column");
+
+            var orderDirection = table.data("order_direction");
+
+            // If the column name matches the one that was previously sorted on - reverse the direction of sorting
+            if (typeof sortingColumn != "undefined" && sortingColumn == columnName){
+                if (orderDirection == "asc"){
+                    var direction = "desc";
+                }
+                else{
+                    var direction = "asc";
+                }
+            }
+            else{
+                var direction = "asc";
+            }
+
+            var isPublic = "true";
+
+            // Go off to server
+            address = "/analysis/sort/?column=" + columnName + "&order=" + direction + "&is_public=" + isPublic;
+            $("div#public-container").load(address, function() {
+                highlightSortedColumn("public_analyses_table",direction);
+            });
+
         });
     };
 
