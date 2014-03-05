@@ -78,6 +78,15 @@ def setup_app(command, conf, vars):
 
         session.add(ds)
 
+        # CEH Chess Data
+        chess = Dataset()
+        chess.name = 'CHESS 1971 01'
+        chess.dataset_type = coverDst
+        chess.netcdf_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/CHESSModel001Run001OutputAggregation/DetailWholeDataset.ncml'
+        chess.low_res_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/CHESSModel001Run001OutputDetail/CHESS_MODEL001_RUN001_OUT_1971-01.nc.html'
+        chess.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/wms/CHESSModel001Run001OutputDetail/CHESS_MODEL001_RUN001_OUT_1971-01.nc?service=WMS&version=1.3.0&request=GetCapabilities'
+
+        session.add(chess)
         # CEH
         ds2 = Dataset()
         ds2.dataset_type = pointDst
@@ -93,6 +102,8 @@ def setup_app(command, conf, vars):
         # ds2.name = 'Example Point dataset'
 
         session.add(ds2)
+
+        return
 
         ds3 = Dataset()
         ds3.dataset_type = resultDst
