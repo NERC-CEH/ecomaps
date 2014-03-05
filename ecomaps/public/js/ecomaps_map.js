@@ -63,6 +63,14 @@ var EcomapsMap = (function() {
             layerObj.scaleMax = maxValue;
             setLayerStyle(layerId);
         });
+
+        layerContainer.on("change keyup", "select.dimension", function(){
+
+            changeDimension(
+              $(this).data("dimension"),
+              $(this).val()
+            );
+        });
     };
 
     /*
@@ -343,6 +351,29 @@ var EcomapsMap = (function() {
     var removeLegend = function(layerId) {
 
         $("div#legend").find("img[data-layerid='" + layerId + "']").remove();
+    };
+
+    /*
+     * changeDimension
+     *
+     *  Alters the dimension of all layers based on the value passed in
+     *
+     *  @param dimension: Name of the dimension to change (time usually)
+     *  @param value: The dimension value to set
+     */
+    var changeDimension = function(dimension, value) {
+
+        var layerObj;
+        var dimensionObj = {};
+
+        for(var l in layerDict) {
+            if(layerDict.hasOwnProperty(l)){
+                layerObj = layerDict[l];
+                dimensionObj = {};
+                dimensionObj[dimension] = value;
+                map.layers[layerObj.index].mergeNewParams(dimensionObj);
+            }
+        }
     };
 
     return {
