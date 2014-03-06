@@ -57,3 +57,9 @@ class DatasetService(DatabaseService):
                             .filter(Dataset.id == dataset_id,
                                     or_(Dataset.viewable_by_user_id == user_id,
                                                  Dataset.viewable_by_user_id == None)).one()
+
+    def get_all_datasets(self):
+        with self.readonly_scope() as session:
+            return session.query(Dataset)\
+                        .options(joinedload(Dataset.dataset_type)) \
+                         .all()

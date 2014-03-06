@@ -84,3 +84,19 @@ class DatasetController(BaseController):
         c.row_set = [[preview_data[col][row] for col in c.columns] for row in range(9)]
 
         return render('dataset_preview.html')
+
+    def view_datasets(self):
+        """Allow admin-user to see all available datasets. If user is non-admin, redirect to page not found.
+        """
+        identity = request.environ.get('REMOTE_USER')
+
+        user = self._user_service.get_user_by_username(identity)
+
+        if user.access_level == "Admin":
+
+            c.datasets = self._dataset_service.get_all_datasets()
+            return render('all_analyses.html')
+
+        else:
+
+            return render('not_found.html')
