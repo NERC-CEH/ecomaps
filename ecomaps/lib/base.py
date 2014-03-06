@@ -50,7 +50,7 @@ class BaseController(WSGIController):
 
         if 'login' not in environ.get('PATH_INFO'):
             user = self._user_service.get_user_by_username(request.environ['REMOTE_USER'])
-            if user.access_level == "Admin":
+            if user and user.access_level == "Admin":
                 c.admin_user = True
             else:
                 c.admin_user = False
