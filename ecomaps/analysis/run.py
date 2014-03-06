@@ -183,6 +183,7 @@ class AnalysisRunner(object):
             # TODO: Can we do something nicer than the ID?
             result_ds.dataset_type_id = 3
             result_ds.netcdf_url = self._open_ndap_format % file_name
+            result_ds.viewable_by_user_id = analysis_obj.run_by_user.id
 
             # Tidy up the analysis object
             self._save_analysis(result_ds)
