@@ -11,7 +11,7 @@ from shapely.geometry import Point
 
 __author__ = 'Phil Jenkins (Tessella)'
 
-#log = logging.getLogger(__name__)
+log = logging.getLogger(__name__)
 
 #  How to check if a list, tuple or dictionary is empty in Python
 #  From: http://www.pythoncentral.io/how-to-check-if-a-list-tuple-or-dictionary-is-empty-in-python/
@@ -401,13 +401,10 @@ class EcomapsAnalysis(object):
 
         r = pyper.R()
 
-        # TODO: Construct a dictionary containing
-        # {
-        #   hi_res_url1: [column name 1, column name 2],
-        #   hi_res_url2: [column name 3]
-        # }
-        #
-        # to pass to the R env
+        # Constructing a dictionary of url/column names for each coverage dataset selected
+        coverage_setup = dict([(ds.low_res_url, coverage_dict[ds]) for ds in coverage_dict.keys()])
+
+        r["coverage_setup"] = coverage_setup
         r["progress_rep_file"] = os.path.join(self._working_dir.root_folder, 'progress.txt')
         r["user_name"] = self._user_name
         r["email_address"] = self._user_email
@@ -417,7 +414,7 @@ class EcomapsAnalysis(object):
         r["temp_netcdf_file"] = os.path.join(self._working_dir.netcdf_folder, 'temp.nc')
         r["output_netcdf_file"] = os.path.join(self._working_dir.netcdf_folder, 'output.nc')
 
-        progress_fn("Running R code")
+        progress_fn("Starting R code")
 
         run_thread = Thread(target=r.run, kwargs={
             'CMDS': "source('%s')" % r_script_full_path
@@ -427,9 +424,11 @@ class EcomapsAnalysis(object):
         while run_thread.is_alive():
 
             time.sleep(10)
-
-            with open(os.path.join(self._working_dir.root_folder, 'progress.txt'), 'r') as progress_file:
-                progress_fn(progress_file.read().strip())
+            try:
+                with open(os.path.join(self._working_dir.root_folder, 'progress.txt'), 'r') as progress_file:
+                    progress_fn(progress_file.read().strip())
+            except IOError:
+                log.warn("Couldn't open progress file for writing")
 
 
         #r.run(CMDS="source('%s')" % r_script_full_path)
