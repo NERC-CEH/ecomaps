@@ -29,7 +29,7 @@
             </p>
 
             <div id="private-container">
-                <table py:if="c.private_analyses" class="table">
+                <table py:if="c.private_analyses" class="table" id="private_analyses_table">
                     <thead>
                         <tr>
                             <th data-column="analyses.name">Name</th>
@@ -74,7 +74,7 @@
             </p>
 
             <div id="public-container">
-                <table py:if="c.public_analyses" class="table">
+                <table py:if="c.public_analyses" class="table" id="public_analyses_table">
                     <thead>
                         <tr>
                             <th data-column="analyses.name">Name</th>
