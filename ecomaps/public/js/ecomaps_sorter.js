@@ -118,6 +118,7 @@ var EcomapsSorter = (function() {
             initSortables();
 
             // Default view
+            $("div#private-container").html("<div class='modal-body'>Loading data <img src='/layout/images/loading7.gif' /></div>");
             $("div#private-container").load("sort/?column=analyses.name&order=asc&is_public=false");
             $("div#public-container").load("sort/?column=analyses.name&order=asc&is_public=true");
         }
