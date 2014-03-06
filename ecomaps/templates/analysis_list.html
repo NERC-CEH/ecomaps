@@ -29,41 +29,6 @@
             </p>
 
             <div id="private-container">
-                <table py:if="c.private_analyses" class="table" id="private_analyses_table">
-                    <thead>
-                        <tr>
-                            <th data-column="analyses.name">Name</th>
-                            <th data-column="run_date">Run On</th>
-                            <th data-column="model_variable">Name of Variable</th>
-                            <th data-column="aic">AIC</th>
-                            <th data-column="model_formula">Model Formula</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr py:for="analysis in c.private_analyses"  py:attrs="{'class':'warning'} if analysis.viewable_by!=None else {}">
-                            <td>
-                                <a href="${h.url(controller='analysis', action='view', id=analysis.id)}">${analysis.name}</a>
-                            </td>
-                            <td>
-                                <py:choose>
-                                    <py:when test="analysis.run_date">${analysis.run_date.strftime('%d-%b-%Y %H:%M')}</py:when>
-                                    <py:otherwise>
-                                        <a href="${url(controller='analysis', action='test', id=str(analysis.id))}">In progress (${analysis.progress_message})</a>
-                                    </py:otherwise>
-                                </py:choose>
-                            </td>
-                            <td>
-                                ${analysis.model_variable}
-                            </td>
-                            <td>
-                                ${analysis.aic}
-                            </td>
-                            <td>
-                                ${analysis.model_formula}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
             </div>
         </div>
         <div class="tab-pane active" id="public-analyses">
@@ -74,40 +39,6 @@
             </p>
 
             <div id="public-container">
-                <table py:if="c.public_analyses" class="table" id="public_analyses_table">
-                    <thead>
-                        <tr>
-                            <th data-column="analyses.name">Name</th>
-                            <th data-column="run_date">Run On</th>
-                            <th data-column="analyses.run_by">Run By</th>
-                            <th data-column="model_variable">Name of Variable</th>
-                            <th data-column="aic">AIC</th>
-                            <th data-column="model_formula">Model Formula</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr py:for="analysis in c.public_analyses">
-                            <td>
-                                <a href="${h.url(controller='analysis', action='view', id=analysis.id)}">${analysis.name}</a>
-                            </td>
-                            <td>
-                                ${analysis.run_date.strftime('%d-%b-%Y %H:%M')}
-                            </td>
-                            <td>
-                                ${analysis.run_by_user.name}
-                            </td>
-                            <td>
-                                ${analysis.model_variable}
-                            </td>
-                            <td>
-                                ${analysis.aic}
-                            </td>
-                            <td>
-                                ${analysis.model_formula}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
             </div>
         </div>
     </div>

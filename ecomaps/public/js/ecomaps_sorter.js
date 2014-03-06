@@ -117,8 +117,9 @@ var EcomapsSorter = (function() {
         init: function(){
             initSortables();
 
-            // Potentially load a default view?
-            //$("div#private-container").load("/dataset/preview/2");
+            // Default view
+            $("div#private-container").load("sort/?column=analyses.name&order=asc&is_public=false");
+            $("div#public-container").load("sort/?column=analyses.name&order=asc&is_public=true");
         }
     }
 })();
