@@ -56,49 +56,52 @@ var EcomapsSorter = (function() {
 
     };
 
-    var initSortables = function() {
+    var constructAddressString = function(tableHeader){
+        // Function builds the address to redirect to depending on the column header that has been clicked.
 
-        var table = null;
+        var table = $(tableHeader).closest("table");
+
+        var tableId = $(table).get(0).id;
+
+        var selectedColumnName = $(tableHeader).data("column");
+
+        var previousSortingColumn = table.data("sorting_column");
+
+        var direction = getOrderDirection(tableId ,selectedColumnName,previousSortingColumn);
+
+        if (tableId == "public_analyses_table"){
+            var isPublic = "true";
+        }
+        else{
+            var isPublic = "false";
+        }
+
+        var address = "/analysis/sort/?column=" + selectedColumnName + "&order=" + direction + "&is_public=" + isPublic;
+
+        return{
+            tableId : tableId,
+            direction: direction,
+            address : address
+        }
+    }
+
+    var initSortables = function() {
 
         $("div#private-container").on("click", "th", function(){
 
-            table = $(this).closest("table");
+            var result = constructAddressString($(this));
 
-            var selectedColumnName = $(this).data("column");
-
-            var previousSortingColumn = table.data("sorting_column");
-
-            tableId = $(table).get(0).id;
-
-            var direction = getOrderDirection(tableId ,selectedColumnName,previousSortingColumn);
-
-            var isPublic = "false";
-
-            // Go off to server
-            var address = "/analysis/sort/?column=" + selectedColumnName + "&order=" + direction + "&is_public=" + isPublic;
-            $("div#private-container").load(address, function() {
-                highlightSortedColumn(tableId,direction);
+            $("div#private-container").load(result.address, function() {
+                highlightSortedColumn(result.tableId,result.direction);
             });
         });
 
         $("div#public-container").on("click", "th", function(){
 
-            table = $(this).closest("table");
+            var result = constructAddressString($(this));
 
-            var selectedColumnName = $(this).data("column");
-
-            var previousSortingColumn = table.data("sorting_column");
-
-            tableId = $(table).get(0).id;
-
-            var direction = getOrderDirection(tableId,selectedColumnName,previousSortingColumn);
-
-            var isPublic = "true";
-
-            // Go off to server
-            var address = "/analysis/sort/?column=" + selectedColumnName + "&order=" + direction + "&is_public=" + isPublic;
-            $("div#public-container").load(address, function() {
-                highlightSortedColumn(tableId,direction);
+            $("div#public-container").load(result.address, function() {
+                highlightSortedColumn(result.tableId,result.direction);
             });
 
         });
