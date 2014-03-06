@@ -401,13 +401,10 @@ class EcomapsAnalysis(object):
 
         r = pyper.R()
 
-        # TODO: Construct a dictionary containing
-        # {
-        #   hi_res_url1: [column name 1, column name 2],
-        #   hi_res_url2: [column name 3]
-        # }
-        #
-        # to pass to the R env
+        # Constructing a dictionary of url/column names for each coverage dataset selected
+        coverage_setup = dict([(ds.low_res_url, coverage_dict[ds]) for ds in coverage_dict.keys()])
+
+        r["coverage_setup"] = coverage_setup
         r["progress_rep_file"] = os.path.join(self._working_dir.root_folder, 'progress.txt')
         r["user_name"] = self._user_name
         r["email_address"] = self._user_email
