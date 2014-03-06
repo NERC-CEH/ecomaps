@@ -28,6 +28,7 @@ class TestEcomapsAnalysis(unittest.TestCase):
 
                 coverage_ds = Dataset()
                 coverage_ds.netcdf_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/LCM2007_25mAggregation/DetailWholeDataset.ncml'
+                coverage_ds.low_res_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/fileServer/LCM2007_1kmDetail/LCM2007_GB_1K_DOM_TAR.nc'
 
                 def progress(msg):
 

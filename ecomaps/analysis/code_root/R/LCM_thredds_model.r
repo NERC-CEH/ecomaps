@@ -17,19 +17,41 @@ progress_fn <- function(message) {
     close(file_obj)
 }
 
+
+
 progress_fn("Initiating R session and loading libraries")
 
 #set contrasts to match those used in SAS as CS has always used this approach
 options(contrasts = c(factor = "contr.SAS",ordered = "contr.poly"))
 
+
+
 #specify the file server and file to pull the netdcdf file off  and the variables needed from each
 covariate_data = list()
-covariate_data[[1]]=list()
-covariate_data[[1]]$linkfile="http://thredds-prod.nerc-lancaster.ac.uk/thredds/fileServer/LCM2007_1kmDetail/LCM2007_GB_1K_DOM_TAR.nc"
-covariate_data[[1]]$vars=c("LandCover")
+
+# PJ: Constructing the named list dynamically based on what
+# has been passed in from the Python
+for(i in 1:length(names(coverage_setup))) {
+
+    covariate_data[[i]] = list()
+    url = names(coverage_setup)[i]
+    covariate_data[[i]]$linkfile = url
+    covariate_data[[i]]$vars = c(coverage_setup[[url]])
+
+    #progress_fn(paste("new ", covariate_data))
+    #stop("Test Complete")
+}
+
+old_covariate_data = list()
+old_covariate_data[[1]]=list()
+old_covariate_data[[1]]$linkfile="http://thredds-prod.nerc-lancaster.ac.uk/thredds/fileServer/LCM2007_1kmDetail/LCM2007_GB_1K_DOM_TAR.nc"
+old_covariate_data[[1]]$vars=c("LandCover")
 #covariate_data[[2]]=list()
 #covariate_data[[2]]$linkfile="http://thredds-prod.nerc-lancaster.ac.uk/thredds/fileServer/CHESSModel001Run001OutputDetail/CHESS_MODEL001_RUN001_OUT_1971-01.nc"
 #covariate_data[[2]]$vars=c("ta","precip")
+
+#progress_fn(paste("old ", old_covariate_data))
+#stop("Test complete")
 
 #capture the user's name and email to include in netcdf file produced
 users_name = user_name
