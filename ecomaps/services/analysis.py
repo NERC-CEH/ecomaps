@@ -155,22 +155,20 @@ class AnalysisService(DatabaseService):
         """
         with self.readonly_scope() as session:
 
+            query = session.query(Analysis) \
+                        .options(subqueryload(Analysis.point_dataset)) \
+                        .options(subqueryload(Analysis.coverage_datasets)) \
+                        .options(subqueryload(Analysis.run_by_user)) \
+                        .filter(or_(Analysis.viewable_by == user_id, Analysis.run_by == user_id))
+
             if order == "asc":
 
-                return session.query(Analysis) \
-                        .options(subqueryload(Analysis.point_dataset)) \
-                        .options(subqueryload(Analysis.coverage_datasets)) \
-                        .options(subqueryload(Analysis.run_by_user)) \
-                        .filter(or_(Analysis.viewable_by == user_id, Analysis.run_by == user_id)) \
-                        .order_by(asc(column)).all()
+                return query.order_by(asc(column)).all()
+
             else:
 
-                return session.query(Analysis) \
-                        .options(subqueryload(Analysis.point_dataset)) \
-                        .options(subqueryload(Analysis.coverage_datasets)) \
-                        .options(subqueryload(Analysis.run_by_user)) \
-                        .filter(or_(Analysis.viewable_by == user_id, Analysis.run_by == user_id)) \
-                        .order_by(desc(column)).all()
+                return query.order_by(desc(column)).all()
+
 
     def sort_public_analyses_by_column(self,column, order):
         """Sorts the public analyses by the column name
@@ -180,20 +178,16 @@ class AnalysisService(DatabaseService):
         """
         with self.readonly_scope() as session:
 
-            if order == "asc":
-
-                return session.query(Analysis) \
+            query = session.query(Analysis) \
                         .options(subqueryload(Analysis.point_dataset)) \
                         .options(subqueryload(Analysis.coverage_datasets)) \
                         .options(subqueryload(Analysis.run_by_user)) \
-                        .filter(Analysis.viewable_by == None) \
-                        .order_by(asc(column)).all()
+                        .filter(Analysis.viewable_by == None)
+
+            if order == "asc":
+
+                return query.order_by(asc(column)).all()
 
             else:
 
-                return session.query(Analysis) \
-                        .options(subqueryload(Analysis.point_dataset)) \
-                        .options(subqueryload(Analysis.coverage_datasets)) \
-                        .options(subqueryload(Analysis.run_by_user)) \
-                        .filter(Analysis.viewable_by == None) \
-                        .order_by(desc(column)).all()
+                return query.order_by(desc(column)).all()
