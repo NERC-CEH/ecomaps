@@ -28,6 +28,9 @@ var EcomapsMap = (function() {
         // Each dataset link in the menu...
         $("a.dataset").click(loadDataset);
 
+        // Image export
+        $("a#image-export").click(exportMapImage);
+
         // The layer element is dynamically-populated, so the event handlers
         // need to be declared on a static element instead, so using JQuery's 'on' functionality
         var layerContainer = $("div#options-panel");
@@ -149,6 +152,7 @@ var EcomapsMap = (function() {
 
         // Add the custom loading panel here...
         map.addControl(new OpenLayers.Control.LoadingPanel());
+        map.addControl(new OpenLayers.Control.ScaleLine())
 
         // Zoom in over the UK to begin with, set coords here
         var lat = 54;
@@ -158,7 +162,7 @@ var EcomapsMap = (function() {
 
         // Now to add the base layer
         var wms = new OpenLayers.Layer.WMS( "OpenLayers WMS",
-            "http://vmap0.tiles.osgeo.org/wms/vmap0", {layers: 'basic'} );
+            "/dataset/base", {layers: 'basic'});
         map.addLayer(wms);
         map.zoomToMaxExtent();
 
@@ -374,6 +378,72 @@ var EcomapsMap = (function() {
                 map.layers[layerObj.index].mergeNewParams(dimensionObj);
             }
         }
+    };
+
+    /*
+     * exportMapImage
+     *
+     *  Exports the current map state to a canvas, which
+     *  can be saved as an image (except in IE8, typical)
+     *
+     */
+    var exportMapImage = function() {
+
+        // Let's find the canvas on the page
+        var canvas = $("canvas#map-canvas").get(0);
+        canvas.width = 0;
+
+        // Set the canvas to the right size for this map
+        canvas.width = map.viewPortDiv.clientWidth;
+        // adding a little more height for padding the legends
+        canvas.height = map.viewPortDiv.clientHeight + 200;
+
+        // OK let's set up the canvas...
+        var context = canvas.getContext("2d");
+
+        // Which layers are selected ?
+        var visibleLayers = $("div.olLayerGrid").filter(function(){
+            return $(this).css("display") != 'none';
+        });
+
+        // Now look for each tile image in the layer...
+        visibleLayers.children("img").each(function(){
+
+            //..and draw it in the canvas
+            context.drawImage(this, this.offsetLeft, this.offsetTop);
+        });
+
+
+
+        // This'll help us space the legends out
+        var legendCount =0;
+
+        $("div#legend img").each(function(){
+
+            // Draw the legends at the bottom left, spaced out by their width
+            context.drawImage(this, $(this).width()*legendCount, 490);
+            legendCount++;
+        });
+
+        context.font = "bold 20px sans-serif";
+        context.fillText("EcoMaps Image Export - " + $("#map-title").html(), 10,25);
+
+        var layerCount = 1;
+
+        // Now to write the layer names out
+        for(var l in layerDict) {
+            if(layerDict.hasOwnProperty(l)){
+                layerObj = layerDict[l];
+
+                if(layerObj.visible) {
+                    context.font = "18px sans-serif";
+                    context.fillText(layerObj.data.title, 20,45*layerCount);
+                    layerCount++;
+                }
+            }
+        }
+
+        window.open(canvas.toDataURL("image/png"));
     };
 
     return {

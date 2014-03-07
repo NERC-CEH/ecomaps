@@ -1,9 +1,13 @@
+import datetime
+import logging
 import os
 from ecomaps.crowd.models import UserRequest
 
 import urllib2, simplejson
 
 __author__ = 'Phil Jenkins (Tessella)'
+
+log = logging.getLogger(__name__)
 
 class ClientException(Exception):
     """ Base exception for Crowd-based errors """
@@ -43,6 +47,8 @@ class CrowdClient(object):
         'INVALID_USER_AUTHENTICATION': AuthenticationFailedException,
         'INVALID_USER': UserException
     }
+
+    _token_cache = {}
 
     def __init__(self, api_url=None, app_name=None, app_pwd=None):
         """Constructor function
@@ -114,6 +120,32 @@ class CrowdClient(object):
                 raises exception if not
         """
 
+        # Look for a user, and last access entry in the
+        # cache...
+        try:
+            user, last_access_time = self._token_cache[token]
+
+            time_since_last_access = datetime.datetime.now() - last_access_time
+
+            if time_since_last_access.seconds > 20:
+
+                del[self._token_cache[token]]
+
+            else:
+
+                log.debug("Found user in cache - no need to call Crowd")
+
+                return {
+                    'user': user,
+                    'token': token
+                }
+
+        except KeyError:
+
+            server_credentials = self._make_request('session/' + token)
+            self._token_cache[token] = (server_credentials['user'], datetime.datetime.now())
+            return server_credentials
+
         return self._make_request('session/' + token)
 
     def delete_session(self, token):
@@ -175,6 +207,8 @@ class CrowdClient(object):
 
         # Make sure we specify that we're sending JSON, otherwise Crowd
         # assumes XML
+        log.debug("Making a request for %s" % resource)
+
         if data:
             # Request implicitly becomes a POST if data is attached
             request = urllib2.Request(self.crowd_api + resource, data)
