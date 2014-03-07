@@ -60,18 +60,22 @@ class AnalysisController(BaseController):
         """
         user = self._user_service.get_user_by_username(request.environ['REMOTE_USER'])
         query_string = request.query_string
-        [column,order] = str.split(query_string,"&")
+        [column,order,is_public] = str.split(query_string,"&")
 
         # Remove the parts of the query strings prior to the = signs
         column = str.split(column,"=",)[1]
         order = str.split(order,"=",)[1]
-        c.private_analyses = self._analysis_service.sort_private_analyses_by_column(user.id,column,order)
-        # c.public_analyses = self._analysis_service.sort_public_analyses_by_column(column,order)
+        is_public = str.split(is_public, "=")[1]
 
         c.order = order
         c.sorting_column = column
 
-        return render('private_analyses_table.html')
+        if is_public == "true":
+            c.public_analyses = self._analysis_service.sort_public_analyses_by_column(column,order)
+            return render('public_analyses_table.html')
+        else:
+            c.private_analyses = self._analysis_service.sort_private_analyses_by_column(user.id,column,order)
+            return render('private_analyses_table.html')
 
 
     def create(self):

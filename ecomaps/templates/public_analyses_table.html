@@ -1,31 +1,30 @@
 <div xmlns="http://www.w3.org/1999/xhtml"
       xmlns:xi="http://www.w3.org/2001/XInclude"
       xmlns:py="http://genshi.edgewall.org/"
-      >
+    >
     <link rel="stylesheet" type="text/css" href="../layout/ecomaps.css"/>
-    <table class="sortable table" id="private_analyses_table"
+    <table class="sortable table" id="public_analyses_table"
         py:attrs="{'data-order_direction': c.order, 'data-sorting_column': c.sorting_column} if c.order!=None else {}">
         <thead>
             <tr>
                 <th data-column="analyses.name">Name</th>
                 <th data-column="run_date">Run On</th>
+                <th data-column="analyses.run_by">Run By</th>
                 <th data-column="model_variable">Name of Variable</th>
                 <th data-column="aic">AIC</th>
                 <th data-column="model_formula">Model Formula</th>
             </tr>
         </thead>
         <tbody>
-            <tr py:for="analysis in c.private_analyses"  py:attrs="{'class':'warning'} if analysis.viewable_by!=None else {}">
+            <tr py:for="analysis in c.public_analyses">
                 <td>
                     <a href="${h.url(controller='analysis', action='view', id=analysis.id)}">${analysis.name}</a>
                 </td>
                 <td>
-                    <py:choose>
-                        <py:when test="analysis.run_date">${analysis.run_date.strftime('%d-%b-%Y %H:%M')}</py:when>
-                        <py:otherwise>
-                            <a href="${url(controller='analysis', action='test', id=str(analysis.id))}">In progress (${analysis.progress_message})</a>
-                        </py:otherwise>
-                    </py:choose>
+                    ${analysis.run_date.strftime('%d-%b-%Y %H:%M')}
+                </td>
+                <td>
+                    ${analysis.run_by_user.name}
                 </td>
                 <td>
                     ${analysis.model_variable}

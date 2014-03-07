@@ -120,3 +120,8 @@ div#dataset-preview, div#image-panel {
     margin-left: -420px;
     font-size: 75%;
 }
+
+table.sortable th
+{
+    cursor: pointer;
+}
