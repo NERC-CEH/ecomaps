@@ -20,28 +20,31 @@
 
         <div class="tab-content">
             <div class="tab-pane active" id="my-analyses">
-
-
-            <p py:if="not c.private_analyses">
-                You don't have any analyses yet.
-                You can create a new one <a href="${h.url(controller='analysis', action='create')}">here</a><span py:if="c.public_analyses">, or try looking at the public repository</span>
-
-            </p>
-
-            <div id="private-container">
+                <py:choose>
+                    <py:when test="not c.private_analyses">
+                        <p>
+                            You don't have any analyses yet.
+                            You can create a new one <a href="${h.url(controller='analysis', action='create')}">here</a><span py:if="c.public_analyses">, or try looking at the public repository</span>
+                        </p>
+                    </py:when>
+                    <py:otherwise>
+                        <div id="private-container"></div>
+                    </py:otherwise>
+                </py:choose>
+            </div>
+            <div class="tab-pane active" id="public-analyses">
+                <py:choose>
+                    <py:when test="not c.public_analyses">
+                        <p>
+                        There aren't any public analyses yet, why not <a href="${h.url(controller='analysis', action='create')}">create a new one?</a>
+                        </p>
+                    </py:when>
+                    <py:otherwise>
+                        <div id="public-container"></div>
+                    </py:otherwise>
+                </py:choose>
             </div>
         </div>
-        <div class="tab-pane active" id="public-analyses">
-
-            <p py:if="not c.public_analyses">
-            There aren't any public analyses yet, why not <a href="${h.url(controller='analysis', action='create')}">create a new one?</a>
-
-            </p>
-
-            <div id="public-container">
-            </div>
-        </div>
-    </div>
 
 
     </div>
