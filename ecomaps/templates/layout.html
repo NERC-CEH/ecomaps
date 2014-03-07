@@ -46,6 +46,9 @@
                             <li>
                                 <a href="${h.url(controller='analysis')}">My Ecomaps</a>
                             </li>
+                            <li>
+                                <a href="${h.url(controller='home', action='about')}">About</a>
+                            </li>
                             <py:if test="c.admin_user">
                                 <li>
                                     <a href="${h.url(controller='user', action='view_users')}">Users</a>

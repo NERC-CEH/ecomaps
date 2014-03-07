@@ -45,6 +45,12 @@
             opacity: 0.9;
             z-index: 999;
         }
+        div#functions-panel {
+            position: absolute;
+            top: 80px;
+            right: 40px;
+            z-index: 1000;
+        }
         ul.layer-controls {
             text-transform: none;
             list-style-type: none;
@@ -114,6 +120,9 @@
         {
             float:left;
         }
+        div#image-panel {
+            width: 1000px;
+        }
     </style>
 </head>
 <body>
@@ -129,7 +138,7 @@
 
                     <ul class="nav">
                         <li>
-                            <a href="${h.url(controller='viewdata')}">Explore</a>
+                            <a href="${h.url(controller='map')}">Explore</a>
                         </li>
                         <li>
                             <a href="${h.url(controller='analysis', action='create')}">New Analysis</a>
@@ -159,6 +168,7 @@
                 </div>
 
             </div>
+
             <div class="span9" id="map">
                 <div id="map-loading">
                     <p>Updating Map</p>
@@ -175,10 +185,21 @@
                     </div>
                 </div>
             </div>
+            <div class="pull-right" id="functions-panel">
+                    <div class="alert">
+                        <a href="#image-panel" id="image-export"><i class="icon-share"></i> Export as image</a>
+                    </div>
+                </div>
         </div>
     </div>
     </div>
 
     <div class="modal fade hide" id="analysis-detail"></div>
+    <div class="modal fade hide" id="image-panel">
+        <div class="modal-body" id="image-panel-body">
+            <p>Right-click and "Save As..." to save this image</p>
+            <canvas id="map-canvas"></canvas>
+        </div>
+    </div>
 </body>
 </html>

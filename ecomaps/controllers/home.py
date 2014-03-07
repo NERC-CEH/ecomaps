@@ -22,3 +22,8 @@ class HomeController(BaseController):
         c.name = user.name
 
         return render("home.html")
+
+    def about(self):
+        """Action for when the user selects the about tab"""
+
+        return render("about.html")

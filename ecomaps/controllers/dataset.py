@@ -65,6 +65,13 @@ class DatasetController(BaseController):
         log.debug("Redirecting to %s" % redirect_url)
         return urllib2.urlopen(redirect_url).read()
 
+    def base(self):
+        """ Indirection layer to enable a base map wms service to be wrapped up in our domain
+        """
+
+        redirect_url = "http://vmap0.tiles.osgeo.org/wms/vmap0?%s" % request.query_string
+        return urllib2.urlopen(redirect_url).read()
+
     def preview(self, id):
         """ Renders a preview view of the first 10 rows of a dataset (currently point data only!)
         """

@@ -115,8 +115,13 @@ div.arrow {
 }
 
 /* Modal dataset preview window */
-div#dataset-preview {
+div#dataset-preview, div#image-panel {
     width: 900px;
     margin-left: -420px;
     font-size: 75%;
+}
+
+table.sortable th
+{
+    cursor: pointer;
 }
