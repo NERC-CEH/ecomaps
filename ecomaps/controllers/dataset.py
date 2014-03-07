@@ -1,10 +1,16 @@
 import logging
 import urllib2
+from pylons import url
+from pylons.controllers.util import redirect
+import formencode
 from pylons.decorators import jsonify
 from ecomaps.lib.base import BaseController, request, render, c
 from ecomaps.services.dataset import DatasetService
 from ecomaps.services.netcdf import NetCdfService
 from ecomaps.services.user import UserService
+from ecomaps.model.add_dataset_form import AddDatasetForm
+from formencode import htmlfill
+
 
 __author__ = 'Phil Jenkins (Tessella)'
 
@@ -95,8 +101,54 @@ class DatasetController(BaseController):
         if user.access_level == "Admin":
 
             c.datasets = self._dataset_service.get_all_datasets()
-            return render('all_analyses.html')
+            return render('all_datasets.html')
 
         else:
 
             return render('not_found.html')
+
+    def add(self):
+        "Add a new dataset"
+        if not request.POST:
+
+            return render('add_dataset.html')
+
+        schema = AddDatasetForm()
+        c.form_errors = {}
+
+        if request.POST:
+
+            try:
+                c.form_result = schema.to_python(request.params)
+
+            except formencode.Invalid, error:
+
+                c.form_result = error.value
+                c.form_errors = error.error_dict or {}
+
+            if c.form_errors:
+                html = render('add_dataset.html')
+                return htmlfill.render(html,
+                                       defaults=c.form_result,
+                                       errors=c.form_errors,
+                                       auto_error_formatter=custom_formatter)
+            else:
+                dataset_type = c.form_result.get('type')
+
+                if dataset_type == "Coverage":
+                    self._dataset_service.create_coverage_dataset(c.form_result.get('name'),
+                                                            c.form_result.get('wms_url'),
+                                                            c.form_result.get('netcdf_url'),
+                                                            c.form_result.get('low_res_url'))
+                else:
+                    self._dataset_service.create_point_dataset(c.form_result.get('name'),
+                                                            c.form_result.get('wms_url'),
+                                                            c.form_result.get('netcdf_url'))
+
+                return redirect(url(controller="dataset", action="view_datasets"))
+
+def custom_formatter(error):
+    """Custom error formatter"""
+    return '<span class="help-inline">%s</span>' % (
+        htmlfill.html_quote(error)
+    )

@@ -63,3 +63,32 @@ class DatasetService(DatabaseService):
             return session.query(Dataset)\
                         .options(joinedload(Dataset.dataset_type)) \
                          .all()
+
+    def create_coverage_dataset(self,name,wms_url,netcdf_url,low_res_url):
+        with self.transaction_scope() as session:
+
+            dataset = Dataset()
+            dataset.name = name
+            dataset_type = DatasetType()
+            dataset_type.type = 'Coverage'
+            dataset.dataset_type = dataset_type
+            dataset.netcdf_url = netcdf_url
+            dataset.wms_url = wms_url
+            dataset.low_res_url = low_res_url
+
+            session.add(dataset)
+
+
+    def create_point_dataset(self,name,wms_url,netcdf_url):
+        with self.transaction_scope() as session:
+
+            dataset = Dataset()
+            dataset.name = name
+            dataset_type = DatasetType()
+            dataset_type.type = 'Point'
+            dataset.dataset_type = dataset_type
+            dataset.netcdf_url = netcdf_url
+            dataset.wms_url = wms_url
+            dataset.low_res_url = None
+
+            session.add(dataset)

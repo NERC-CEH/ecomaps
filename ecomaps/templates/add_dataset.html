@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:py="http://genshi.edgewall.org/">
+<xi:include href="layout.html" />
+<head>
+    <title>New Dataset</title>
+    <link rel="stylesheet" type="text/css" href="../layout/ecomaps.css"/>
+</head>
+<body>
+    <h1>Add new dataset</h1>
+
+    <form method="POST">
+        <div class="control-group">
+            <label for="Name" class="control-label">Name:</label>
+               ${h.html_tags.text('name', class_='controls')}
+            <label for="Type" class="control-label">Type:</label>
+               ${h.html_tags.text('type', class_='controls')}
+            <label for="wms_url" class="control-label">WMS URL:</label>
+               ${h.html_tags.text('wms_url', class_='controls')}
+            <label for="netcdf_url" class="control-label">NetCDF URL:</label>
+               ${h.html_tags.text('netcdf_url', class_='controls')}
+            <label for="low_res_url" class="control-label">Low Res URL:</label>
+               ${h.html_tags.text('low_res_url', class_='controls')}
+        </div>
+
+        <div class="controls">
+            <input type="submit" class="btn btn-primary btn-large pull-right control-group" value="Add" />
+        </div>
+    </form>
+
+<script type="text/javascript" language="JavaScript">
+            $(function () {
+
+            // Error span swap
+            $("span.help-inline").each(function(index, el){
+
+                // Find the parent control group
+                // Swap the message with the input
+                $(el).insertAfter($(el).next());
+                $(el).closest("div.control-group").addClass("error");
+            });
+        })
+</script>
+
+</body>
+</html>
