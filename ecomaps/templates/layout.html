@@ -50,8 +50,19 @@
                                 <a href="${h.url(controller='home', action='about')}">About</a>
                             </li>
                             <py:if test="c.admin_user">
-                                <li>
-                                    <a href="${h.url(controller='user', action='view_users')}">Users</a>
+                                <li class="dropdown">
+                                    <a data-toggle="dropdown" class="dropdown-toggle">
+                                        Admin Options
+                                        <b class="caret"></b>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a href="${h.url(controller='user', action='view_users')}">Users</a>
+                                        </li>
+                                        <li>
+                                            <a href="${h.url(controller='dataset', action='view_datasets')}">Datasets</a>
+                                        </li>
+                                    </ul>
                                 </li>
                             </py:if>
                         </ul>
