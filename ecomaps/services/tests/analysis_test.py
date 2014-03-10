@@ -22,6 +22,7 @@ class AnalysisServiceTest(BaseTest):
         self.sample_analysis.coverage_dataset_ids = ['1_LandCover','3_LandCover']
         self.sample_analysis.parameters = []
         self.sample_analysis.id = 12
+        self.sample_analysis.input_hash = 12345
 
         results_dataset = Dataset()
         results_dataset.type = 'Result'
@@ -47,7 +48,8 @@ class AnalysisServiceTest(BaseTest):
                                 self.sample_analysis.unit_of_time,
                                 self.sample_analysis.random_group,
                                 self.sample_analysis.model_variable,
-                                self.sample_analysis.data_type)
+                                self.sample_analysis.data_type,
+                                self.sample_analysis.input_hash)
 
         self._mock_session.add.assert_called_once_with(ANY)
         self._mock_session.commit.assert_called_once_with()

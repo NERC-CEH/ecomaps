@@ -135,6 +135,7 @@ class Analysis(Base):
     progress_message = Column(String(255))
     complete = Column(Boolean)
     model_formula = Column(String(255))
+    input_hash = Column(Integer)
 
     unit_of_time = Column(String(255))
     random_group = Column(String(255))

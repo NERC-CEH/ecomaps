@@ -139,6 +139,21 @@ class AnalysisController(BaseController):
                                            errors=c.form_errors,
                                            auto_error_formatter=custom_formatter)
                 else:
+
+                    hash = get_hash_for_inputs(c.form_result, ['point_dataset_id',
+                                                               'coverage_dataset_ids',
+                                                               'unit_of_time',
+                                                               'random_group',
+                                                               'model_variable',
+                                                               'data_type'])
+
+                    # Now check to see if we've already got an analysis in
+                    # EcoMaps that has these inputs...
+                    test_analysis = self._analysis_service.get_public_analyses_with_identical_input(hash)
+
+                    if test_analysis:
+                        return redirect(url(controller='analysis', action='view', id=test_analysis.id))
+
                     analysis_id = self._analysis_service.create(c.form_result.get('analysis_name'),
                                 c.form_result.get('point_dataset_id'),
                                 c.form_result.get('coverage_dataset_ids'),
@@ -146,7 +161,8 @@ class AnalysisController(BaseController):
                                 c.form_result.get('unit_of_time'),
                                 c.form_result.get('random_group'),
                                 c.form_result.get('model_variable'),
-                                c.form_result.get('data_type'))
+                                c.form_result.get('data_type'),
+                                hash)
 
                     c.analysis_id = analysis_id
 
@@ -312,3 +328,27 @@ def custom_formatter(error):
     return '<span class="help-inline">%s</span>' % (
         htmlfill.html_quote(error)
     )
+
+def get_hash_for_inputs(input_dict, keys=None):
+    """ Returns a hash based on the dict passed in, or a subset of its keys
+
+    @param input_dict: Dictionary to get a hash code for
+    @param keys: List of keys to subselect
+    """
+
+    sub_dict = {}
+    if keys:
+
+        # Create a subset
+        for key in keys:
+
+            try:
+                assert isinstance(input_dict[key], list)
+                sub_dict[key] = "".join(input_dict[key])
+            except AssertionError:
+                sub_dict[key] = input_dict[key]
+    else:
+        sub_dict = input_dict
+
+    return hash(frozenset(sub_dict.items()))
+
