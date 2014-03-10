@@ -125,3 +125,9 @@ table.sortable th
 {
     cursor: pointer;
 }
+
+
+.navbar-inverse .nav li.dropdown.open > .dropdown-toggle, .navbar-inverse .nav li.dropdown.active > .dropdown-toggle, .navbar-inverse .nav li.dropdown.open.active > .dropdown-toggle {
+    background-color: #3A5894;
+    color: #FFFFFF;
+}
