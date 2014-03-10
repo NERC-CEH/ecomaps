@@ -78,7 +78,9 @@ class AnalysisService(DatabaseService):
             except NoResultFound:
                 return None
 
-    def create(self, name, point_dataset_id, coverage_dataset_ids, user_id, unit_of_time, random_group, model_variable, data_type):
+    def create(self, name, point_dataset_id, coverage_dataset_ids,
+               user_id, unit_of_time, random_group, model_variable,
+               data_type, input_hash):
         """Creates a new analysis object
             Params:
                 name - Friendly name for the analysis
@@ -90,6 +92,7 @@ class AnalysisService(DatabaseService):
                 random_group - additional input into the model
                 model_variable - the variable that is being modelled
                 data_type - data type of the variable
+                input_hash - used to quickly identify a duplicate analysis in terms of inputs
             Returns:
                 ID of newly-inserted analysis
         """
@@ -122,6 +125,9 @@ class AnalysisService(DatabaseService):
             analysis.random_group = random_group
             analysis.model_variable = model_variable
             analysis.data_type = data_type
+
+            # Hash of input values for future comparison
+            analysis.input_hash = input_hash
 
             session.add(analysis)
 
@@ -191,3 +197,22 @@ class AnalysisService(DatabaseService):
             else:
 
                 return query.order_by(desc(column)).all()
+
+
+    def get_public_analyses_with_identical_input(self, input_hash):
+        """ Gets a list of published analyses matching the input hash
+
+        @param: Hash of input values used to determine whether an analysis has been run before
+        """
+
+        with self.readonly_scope() as session:
+
+            try:
+            # Only pull out public analyses for now
+                return session.query(Analysis) \
+                        .filter(Analysis.input_hash == input_hash,
+                                Analysis.viewable_by == None) \
+                        .one()
+
+            except NoResultFound:
+                return None
