@@ -1,5 +1,5 @@
 from sqlalchemy import engine_from_config, Column, Integer, String, ForeignKey, Table, DateTime, create_engine, Text, Boolean, \
-    ForeignKeyConstraint
+    ForeignKeyConstraint, BigInteger
 from sqlalchemy.orm import relationship
 from ecomaps.model.meta import Session, Base
 from contextlib import contextmanager
@@ -135,7 +135,7 @@ class Analysis(Base):
     progress_message = Column(String(255))
     complete = Column(Boolean)
     model_formula = Column(String(255))
-    input_hash = Column(Integer)
+    input_hash = Column(BigInteger)
 
     unit_of_time = Column(String(255))
     random_group = Column(String(255))
