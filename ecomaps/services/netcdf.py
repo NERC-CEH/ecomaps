@@ -1,6 +1,6 @@
-from geopandas import GeoDataFrame, GeoSeries
+
 from pydap.client import open_url
-from shapely.geometry import Point
+from coards import parse
 
 __author__ = 'Phil Jenkins (Tessella)'
 
@@ -9,6 +9,7 @@ class EcoMapsNetCdfFile(object):
 
     attributes = {}
     columns = []
+    time_values = []
     url = None
 
     def __init__(self, url):
@@ -24,6 +25,17 @@ class EcoMapsNetCdfFile(object):
         # Pull out the attributes, and column names
         self.attributes = f.attributes['NC_GLOBAL']
         self.columns = f.keys()
+
+        if 'time' in f:
+            # There's a time dimension in this dataset, so let's grab the possible
+            # values out
+            try:
+                time_units = f['time'].attributes['units']
+                self.time_values = [parse(t, time_units) for t in f['time']]
+            except IndexError:
+
+                # Not a parseable time format
+                pass
         del f
 
     def get_preview_data(self, no_of_rows):
@@ -89,3 +101,15 @@ class NetCdfService(object):
         ds = EcoMapsNetCdfFile(netcdf_url)
 
         return ds.get_preview_data(no_of_rows)
+
+
+    def get_time_points(self, netcdf_url):
+        """ Returns a list of datetime objects corresponding to the
+            possible time points in a temporal dataset
+
+            @param netcdf_url: URL to the netCDF dataset to interrogate
+            @returns : A list of datetimes, or empty list if no temporal dimension
+        """
+
+        ds = EcoMapsNetCdfFile(netcdf_url)
+        return ds.time_values

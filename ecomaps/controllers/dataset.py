@@ -154,6 +154,22 @@ class DatasetController(BaseController):
 
                 return redirect(url(controller="dataset", action="view_datasets"))
 
+    def timeselection(self, id):
+        """ Gets the possible time points for a temporal dataset
+            @param id: ID of the dataset to get time points for
+        """
+
+        ds = self._dataset_service.get_dataset_by_id(id, user_id = self.current_user.id)
+        c.time_points = self._netcdf_service.get_time_points(ds.netcdf_url)
+
+        c.dataset_name = ds.name
+        c.column_name = request.params.get('col', '')
+
+        if c.time_points:
+            # Render the points back
+            return "%s: %s\n %s" % (c.dataset_name, c.column_name, c.time_points)
+
+
 def custom_formatter(error):
     """Custom error formatter"""
     return '<span class="help-inline">%s</span>' % (

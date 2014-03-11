@@ -24,6 +24,7 @@ app_globals = config['pylons.app_globals']
 class BaseController(WSGIController):
 
     _user_service = None
+    current_user = None
 
     def __init__(self, user_service=UserService()):
         """Constructor for the base controller, takes in a user services
@@ -49,8 +50,8 @@ class BaseController(WSGIController):
         # available in environ['pylons.routes_dict'
 
         if 'login' not in environ.get('PATH_INFO'):
-            user = self._user_service.get_user_by_username(request.environ['REMOTE_USER'])
-            if user and user.access_level == "Admin":
+            self.current_user = self._user_service.get_user_by_username(request.environ['REMOTE_USER'])
+            if self.current_user and self.current_user.access_level == "Admin":
                 c.admin_user = True
             else:
                 c.admin_user = False
