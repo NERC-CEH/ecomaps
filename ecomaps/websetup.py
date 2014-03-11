@@ -143,6 +143,7 @@ def setup_app(command, conf, vars):
         a1.aic = 75
         a1.run_by_user = user
         a1.point_dataset = ds2
+        a1.deleted = False
 
         session.add(a1)
 

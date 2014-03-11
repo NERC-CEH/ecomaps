@@ -201,31 +201,37 @@ class AnalysisController(BaseController):
             c.object_type = 'analysis'
             return render('not_found.html')
 
-    def publish(self,id):
+    def publish(self):
         """Action for publishing a set of results
-            id - ID of the analysis to look at
         """
-        user = request.environ.get('REMOTE_USER')
-        user_obj = self._user_service.get_user_by_username(user)
-        c.username = user_obj.name
 
-        analysis = self._analysis_service.get_analysis_by_id(id, user_obj.id)
+        if request.POST:
 
-        if analysis:
-            if analysis.result_dataset:
-                # Get the result attributes from the NetCDF file associated with the result dataset
-                analysis.attributes = self._netcdf_service.get_attributes(analysis.result_dataset.netcdf_url)
-            c.analysis = analysis
+            analysis_id = request.params.get('analysis_id')
 
-            try:
-                c.form_result = request.params
-            except:
-                added_successfully = False
+            user = request.environ.get('REMOTE_USER')
+            user_obj = self._user_service.get_user_by_username(user)
+            c.username = user_obj.name
+
+            analysis = self._analysis_service.get_analysis_by_id(analysis_id, user_obj.id)
+
+            if analysis:
+                if analysis.result_dataset:
+                    # Get the result attributes from the NetCDF file associated with the result dataset
+                    analysis.attributes = self._netcdf_service.get_attributes(analysis.result_dataset.netcdf_url)
+                c.analysis = analysis
+
+                try:
+                    c.form_result = request.params
+                except:
+                    added_successfully = False
+                else:
+                    self._analysis_service.publish_analysis(int(analysis_id))
+                    added_successfully = True
+
+                return render('analysis_view.html', extra_vars={'added_successfully': added_successfully})
             else:
-                self._analysis_service.publish_analysis(int(id))
-                added_successfully = True
-
-            return render('analysis_view.html', extra_vars={'added_successfully': added_successfully})
+                return render('not_found.html')
         else:
             return render('not_found.html')
 
@@ -321,6 +327,15 @@ class AnalysisController(BaseController):
             fapp = FileApp(temp_file.name, headers=headers)
 
             return fapp(request.environ, self.start_response)
+
+    def delete(self):
+        """Action for when user wants to delete a private analysis"""
+        if request.POST:
+
+            analysis_id = request.params.get('analysis_id')
+            self._analysis_service.delete_private_analysis(analysis_id)
+
+            return redirect(url(controller='analysis', action='index'))
 
 
 def custom_formatter(error):
