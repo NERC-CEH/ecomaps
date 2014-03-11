@@ -82,9 +82,9 @@ def setup_app(command, conf, vars):
         chess = Dataset()
         chess.name = 'CHESS 1971 01'
         chess.dataset_type = coverDst
-        chess.netcdf_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/CHESSModel001Run001OutputAggregation/DetailWholeDataset.ncml'
-        chess.low_res_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/CHESSModel001Run001OutputDetail/CHESS_MODEL001_RUN001_OUT_1971-01.nc.html'
-        chess.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/wms/CHESSModel001Run001OutputDetail/CHESS_MODEL001_RUN001_OUT_1971-01.nc?service=WMS&version=1.3.0&request=GetCapabilities'
+        chess.netcdf_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/TestDetail/CHESS37YearAverageAnnualPrecip.nc'
+        chess.low_res_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/TestDetail/CHESS37YearAverageAnnualPrecip.nc'
+        chess.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/wms/TestDetail/CHESS37YearAverageAnnualPrecip.nc?service=WMS&version=1.3.0&request=GetCapabilities'
 
         session.add(chess)
         # CEH
@@ -103,13 +103,15 @@ def setup_app(command, conf, vars):
 
         session.add(ds2)
 
-        return
-
         ds3 = Dataset()
         ds3.dataset_type = resultDst
         ds3.name = 'Results Dataset 1'
-        ds3.netcdf_url = 'http://localhost:8080/thredds/dodsC/testAll/LCM2007_GB_1K_DOM_TAR.nc'
-        
+        ds3.netcdf_url = 'http://localhost:8080/thredds/dodsC/testAll/results.nc'
+        ds3.wms_url = 'http://localhost:8080/thredds/wms/testAll/results.nc?service=WMS&version=1.3.0&request=GetCapabilities'
+        ds3.viewable_by_user_id = user.id
+
+        session.add(ds3)
+
         a1 = Analysis()
         a1.name = "JENP's Analysis 1"
         a1.viewable_by_user = user
@@ -117,7 +119,7 @@ def setup_app(command, conf, vars):
         a1.run_date = datetime.datetime.now()
         a1.result_image = _get_result_image()
         a1.result_dataset = ds3
-        a1.progress_message = "Testing the progress message"
+        a1.progress_message = ""
         a1.complete = True
         a1.model_formula = "Formula1"
 
@@ -143,6 +145,8 @@ def setup_app(command, conf, vars):
         a1.point_dataset = ds2
 
         session.add(a1)
+
+        return
 
         cds_a2 = AnalysisCoverageDataset()
 
