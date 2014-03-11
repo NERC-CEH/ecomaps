@@ -81,3 +81,20 @@ class AnalysisServiceTest(BaseTest):
         # Check HTTP status code of the object returned:
         #    200 indicates a successful request.
         self.assertEqual(results_file.getcode(), 200)
+
+    def test_delete_private_analysis(self):
+
+        mock_query_result = MagicMock()
+        mock_query_result.one = MagicMock(return_value=self.sample_analysis)
+
+        mock_query = MagicMock()
+        mock_query.filter = MagicMock()
+        mock_query.filter.return_value = mock_query_result
+
+        self._mock_session.query = MagicMock()
+        self._mock_session.query.return_value = mock_query
+
+        analysis_service = AnalysisService(self._mock_session)
+        analysis_service.delete_private_analysis(self.sample_analysis.id)
+
+        self.assertEqual(self.sample_analysis.deleted, True)
