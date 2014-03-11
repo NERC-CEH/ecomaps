@@ -333,9 +333,14 @@ class AnalysisController(BaseController):
         if request.POST:
 
             analysis_id = request.params.get('analysis_id')
-            self._analysis_service.delete_private_analysis(analysis_id)
 
-            return redirect(url(controller='analysis', action='index'))
+            # Check user has access to the analysis before deleting
+            user = request.environ.get('REMOTE_USER')
+            user_object = self._user_service.get_user_by_username(user)
+            analysis = self._analysis_service.get_analysis_by_id(analysis_id, user_object.id)
+            if analysis:
+                self._analysis_service.delete_private_analysis(analysis_id)
+                return redirect(url(controller='analysis', action='index'))
 
 
 def custom_formatter(error):
