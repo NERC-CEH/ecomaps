@@ -59,7 +59,7 @@ class AnalysisController(BaseController):
 
         return render('analysis_list.html')
 
-    def sort(self):
+    def sort_and_filter(self):
         """Action for sorting the analysis table using a particular column. Also responsible for filtering the table
         based on the model variable.
         """
@@ -69,22 +69,22 @@ class AnalysisController(BaseController):
 
         column = get_parameter_value(params,'column')
         order = get_parameter_value(params,'order')
-        model_variable = get_parameter_value(params,'model_variable')
+        filter_variable = get_parameter_value(params,'filter_variable')
         is_public = get_parameter_value(params,'is_public')
 
         c.order = order
         c.sorting_column = column
-        c.filter_variable = model_variable
+        c.filter_variable = filter_variable
 
         if is_public == "true":
-            c.public_analyses = self._analysis_service.sort_public_analyses_by_column(column,order,model_variable)
+            c.public_analyses = self._analysis_service.sort_and_filter_public_analyses_by_column(column,order,filter_variable)
 
             if not c.public_analyses:
                 c.empty_public_table = "true"
 
             return render('public_analyses_table.html')
         else:
-            c.private_analyses = self._analysis_service.sort_private_analyses_by_column(user.id,column,order,model_variable)
+            c.private_analyses = self._analysis_service.sort_and_filter_private_analyses_by_column(user.id,column,order,filter_variable)
 
             if not c.private_analyses:
                 c.empty_private_table = "true"

@@ -163,12 +163,13 @@ class AnalysisService(DatabaseService):
             return session.query(Analysis.id).filter(Analysis.result_dataset_id == dataset_id,
                                                      Analysis.deleted != True).one()[0]
 
-    def sort_private_analyses_by_column(self,user_id,column,order, model_variable):
-        """Sorts the private analyses by the column name
+    def sort_and_filter_private_analyses_by_column(self,user_id,column,order, filter_variable):
+        """Sorts the private analyses by the column name, and applies a filter on the model variable value selected
         Params:
                 user_id: unique id of the user
                 column: The name of the column to sort on
                 order: either "asc" or "desc"
+                filter_variable: the model_variable value used to filter the analyses
         """
         with self.readonly_scope() as session:
 
@@ -179,8 +180,8 @@ class AnalysisService(DatabaseService):
                         .filter(or_(Analysis.viewable_by == user_id, Analysis.run_by == user_id),
                                 Analysis.deleted != True)
 
-            if model_variable:
-                query = query.filter(Analysis.model_variable == model_variable)
+            if filter_variable:
+                query = query.filter(Analysis.model_variable == filter_variable)
 
             if order == "asc":
 
@@ -195,11 +196,12 @@ class AnalysisService(DatabaseService):
                 return query.all()
 
 
-    def sort_public_analyses_by_column(self,column, order, model_variable):
-        """Sorts the public analyses by the column name
+    def sort_and_filter_public_analyses_by_column(self,column, order, filter_variable):
+        """Sorts the public analyses by the column name and applies a filter on the model variable value selected
         Params:
                 column: The name of the column to sort on
                 order: either "asc" or "desc"
+                filter_variable: the model_variable value used to filter the analyses
         """
         with self.readonly_scope() as session:
 
@@ -210,8 +212,8 @@ class AnalysisService(DatabaseService):
                         .filter(Analysis.viewable_by == None,
                                 Analysis.deleted != True)
 
-            if model_variable:
-                query = query.filter(Analysis.model_variable == model_variable)
+            if filter_variable:
+                query = query.filter(Analysis.model_variable == filter_variable)
 
             if order == "asc":
 

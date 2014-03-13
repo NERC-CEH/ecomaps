@@ -83,7 +83,7 @@ var EcomapsSorter = (function() {
             var filter = table.data("filter");
         }
 
-        var address = "/analysis/sort/?column=" + selectedColumnName + "&order=" + direction + "&is_public=" + isPublic + "&model_variable=" + filter;
+        var address = "/analysis/sort_and_filter/?column=" + selectedColumnName + "&order=" + direction + "&is_public=" + isPublic + "&filter_variable=" + filter;
 
         return{
             tableId : tableId,
@@ -117,7 +117,7 @@ var EcomapsSorter = (function() {
 
             var filter = $("select#private_filter_value").val().replace(/ /g,'');
 
-            var address = "/analysis/sort/?column=&order=&is_public=false&model_variable=" + filter;
+            var address = "/analysis/sort_and_filter/?column=&order=&is_public=false&filter_variable=" + filter;
 
             $("div#private-container").load(address, function() {
 
@@ -128,7 +128,7 @@ var EcomapsSorter = (function() {
 
             var filter = $("select#public_filter_value").val().replace(/ /g,'');;
 
-            var address = "/analysis/sort/?column=&order=&is_public=true&model_variable=" + filter;
+            var address = "/analysis/sort_and_filter/?column=&order=&is_public=true&filter_variable=" + filter;
 
             $("div#public-container").load(address, function() {
 
@@ -149,8 +149,8 @@ var EcomapsSorter = (function() {
 
             // Default view
             $("div#private-container").html("<div class='modal-body'>Loading data <img src='/layout/images/loading7.gif' /></div>");
-            $("div#private-container").load("sort/?column=analyses.name&order=asc&is_public=false");
-            $("div#public-container").load("sort/?column=analyses.name&order=asc&is_public=true");
+            $("div#private-container").load("sort_and_filter/?column=analyses.name&order=asc&is_public=false");
+            $("div#public-container").load("sort_and_filter/?column=analyses.name&order=asc&is_public=true");
         }
     }
 })();
