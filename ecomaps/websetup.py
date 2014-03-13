@@ -179,11 +179,11 @@ def setup_app(command, conf, vars):
         a3.run_by_user = user2
         a3.result_image = _get_result_image()
         a3.coverage_datasets.append(cds_a3)
-        a3.aic = 60
+        a3.aic = 65
         a3.point_dataset = ds2
         a3.result_dataset = ds3
         a3.deleted = False
-        a3.model_variable="loi"
+        a3.model_variable="rain"
 
         session.add(a3)
 
@@ -264,3 +264,18 @@ def setup_app(command, conf, vars):
         a5.deleted = False
 
         session.add(a5)
+
+        a6 = Analysis()
+        a6.name = "Example public analysis 3"
+        a6.run_date = datetime.datetime.now()
+        a6.run_by_user = user2
+        a6.result_image = _get_result_image()
+        a6.coverage_datasets.append(cds_a3)
+        a6.aic = 79
+        a6.point_dataset = ds2
+        a6.result_dataset = ds3
+        a6.deleted = False
+        a6.model_variable="loi"
+
+        session.add(a6)
+

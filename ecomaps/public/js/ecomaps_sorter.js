@@ -56,7 +56,7 @@ var EcomapsSorter = (function() {
 
     };
 
-    var constructAddressString = function(tableHeader){
+    var constructAddressStringForSorting = function(tableHeader){
         // Function builds the address to redirect to depending on the column header that has been clicked.
 
         var table = $(tableHeader).closest("table");
@@ -92,11 +92,28 @@ var EcomapsSorter = (function() {
         }
     }
 
+    var buildAddressStringForFiltering = function(selectId, tableId, isPublic){
+
+            // Remove the whitespace around the filter value when it's extracted
+            var filter = $("select#" + selectId).val().replace(/ /g,'');
+
+            var table = $("#" + tableId);
+            var column = table.data("sorting_column");
+            var order = table.data("order_direction");
+
+            var address = "/analysis/sort_and_filter/?column=" + column + "&order=" + order + "&is_public=" + isPublic + "&filter_variable=" + filter;
+
+            return{
+                direction: order,
+                address: address
+            }
+    };
+
     var initSortables = function() {
 
         $("div#private-container").on("click", "th", function(){
 
-            var result = constructAddressString($(this));
+            var result = constructAddressStringForSorting($(this));
 
             $("div#private-container").load(result.address, function() {
                 highlightSortedColumn(result.tableId,result.direction);
@@ -105,7 +122,7 @@ var EcomapsSorter = (function() {
 
         $("div#public-container").on("click", "th", function(){
 
-            var result = constructAddressString($(this));
+            var result = constructAddressStringForSorting($(this));
 
             $("div#public-container").load(result.address, function() {
                 highlightSortedColumn(result.tableId,result.direction);
@@ -115,23 +132,23 @@ var EcomapsSorter = (function() {
 
         $("#filter_private_button").click(function() {
 
-            var filter = $("select#private_filter_value").val().replace(/ /g,'');
+            tableId = "private_analyses_table"
 
-            var address = "/analysis/sort_and_filter/?column=&order=&is_public=false&filter_variable=" + filter;
+            var result = buildAddressStringForFiltering("private_filter_value", tableId, "false")
 
-            $("div#private-container").load(address, function() {
-
+            $("div#private-container").load(result.address, function() {
+                 highlightSortedColumn(tableId,result.direction);
             });
         });
 
         $("#filter_public_button").click(function() {
 
-            var filter = $("select#public_filter_value").val().replace(/ /g,'');;
+           tableId = "public_analyses_table"
 
-            var address = "/analysis/sort_and_filter/?column=&order=&is_public=true&filter_variable=" + filter;
+            var result = buildAddressStringForFiltering("public_filter_value", tableId, "true")
 
-            $("div#public-container").load(address, function() {
-
+            $("div#public-container").load(result.address, function() {
+                highlightSortedColumn(tableId,result.direction);
             });
         });
 
