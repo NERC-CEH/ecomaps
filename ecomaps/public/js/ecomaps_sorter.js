@@ -76,7 +76,14 @@ var EcomapsSorter = (function() {
             var isPublic = "false";
         }
 
-        var address = "/analysis/sort/?column=" + selectedColumnName + "&order=" + direction + "&is_public=" + isPublic;
+        if(typeof table.data("filter") === 'undefined'){
+            var filter = "";
+        }
+        else{
+            var filter = table.data("filter");
+        }
+
+        var address = "/analysis/sort/?column=" + selectedColumnName + "&order=" + direction + "&is_public=" + isPublic + "&model_variable=" + filter;
 
         return{
             tableId : tableId,
@@ -105,6 +112,29 @@ var EcomapsSorter = (function() {
             });
 
         });
+
+        $("#filter_private_button").click(function() {
+
+            var filter = $("select#private_filter_value").val().replace(/ /g,'');
+
+            var address = "/analysis/sort/?column=&order=&is_public=false&model_variable=" + filter;
+
+            $("div#private-container").load(address, function() {
+
+            });
+        });
+
+        $("#filter_public_button").click(function() {
+
+            var filter = $("select#public_filter_value").val().replace(/ /g,'');;
+
+            var address = "/analysis/sort/?column=&order=&is_public=true&model_variable=" + filter;
+
+            $("div#public-container").load(address, function() {
+
+            });
+        });
+
     };
 
     return {

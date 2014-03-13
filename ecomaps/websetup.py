@@ -144,10 +144,9 @@ def setup_app(command, conf, vars):
         a1.run_by_user = user
         a1.point_dataset = ds2
         a1.deleted = False
+        a1.model_variable="loi"
 
         session.add(a1)
-
-        return
 
         cds_a2 = AnalysisCoverageDataset()
 
@@ -164,6 +163,8 @@ def setup_app(command, conf, vars):
         a2.point_dataset = ds2
         a2.result_dataset = ds3
         a2.model_formula = "Formula2"
+        a2.deleted = False
+        a2.model_variable="rain"
 
         session.add(a2)
 
@@ -181,6 +182,8 @@ def setup_app(command, conf, vars):
         a3.aic = 60
         a3.point_dataset = ds2
         a3.result_dataset = ds3
+        a3.deleted = False
+        a3.model_variable="loi"
 
         session.add(a3)
 
@@ -199,6 +202,8 @@ def setup_app(command, conf, vars):
         a4.aic = 60
         a4.point_dataset = ds2
         a4.result_dataset = ds3
+        a4.deleted = False
+        a4.model_variable="rain"
 
         session.add(a4)
 
@@ -256,5 +261,6 @@ def setup_app(command, conf, vars):
         a5.random_group = 'SERIES_NUM'
         a5.model_variable = 'loi'
         a5.data_type = 'CONT'
+        a5.deleted = False
 
         session.add(a5)

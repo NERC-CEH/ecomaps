@@ -3,8 +3,28 @@
       xmlns:py="http://genshi.edgewall.org/"
       >
     <link rel="stylesheet" type="text/css" href="../layout/ecomaps.css"/>
+    <?python
+            from genshi.builder import tag
+
+            attributes = {}
+
+            if c.order is not None:
+                attributes['data-order_direction'] = c.order
+            else:
+                attributes['data-order_direction'] = {}
+
+            if c.sorting_column is not None:
+                attributes['data-sorting_column'] = c.sorting_column
+            else:
+                attributes['data-sorting_column'] = {}
+
+            if c.filter_variable is not None:
+                attributes['data-filter'] = c.filter_variable
+            else:
+                attributes['data-filter'] = {}
+    ?>
     <table class="sortable table" id="private_analyses_table"
-        py:attrs="{'data-order_direction': c.order, 'data-sorting_column': c.sorting_column} if c.order!=None else {}">
+        py:attrs="attributes">
         <thead>
             <tr>
                 <th data-column="analyses.name">Name</th>

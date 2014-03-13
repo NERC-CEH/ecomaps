@@ -163,7 +163,7 @@ class AnalysisService(DatabaseService):
             return session.query(Analysis.id).filter(Analysis.result_dataset_id == dataset_id,
                                                      Analysis.deleted != True).one()[0]
 
-    def sort_private_analyses_by_column(self,user_id,column,order):
+    def sort_private_analyses_by_column(self,user_id,column,order, model_variable):
         """Sorts the private analyses by the column name
         Params:
                 user_id: unique id of the user
@@ -179,16 +179,23 @@ class AnalysisService(DatabaseService):
                         .filter(or_(Analysis.viewable_by == user_id, Analysis.run_by == user_id),
                                 Analysis.deleted != True)
 
+            if model_variable:
+                query = query.filter(Analysis.model_variable == model_variable)
+
             if order == "asc":
 
                 return query.order_by(asc(column)).all()
 
-            else:
+            elif order == "desc":
 
                 return query.order_by(desc(column)).all()
 
+            else:
 
-    def sort_public_analyses_by_column(self,column, order):
+                return query
+
+
+    def sort_public_analyses_by_column(self,column, order, model_variable):
         """Sorts the public analyses by the column name
         Params:
                 column: The name of the column to sort on
@@ -203,13 +210,20 @@ class AnalysisService(DatabaseService):
                         .filter(Analysis.viewable_by == None,
                                 Analysis.deleted != True)
 
+            if model_variable:
+                query = query.filter(Analysis.model_variable == model_variable)
+
             if order == "asc":
 
                 return query.order_by(asc(column)).all()
 
-            else:
+            elif order == "desc":
 
                 return query.order_by(desc(column)).all()
+
+            else:
+
+                return query
 
 
     def get_public_analyses_with_identical_input(self, input_hash):
@@ -242,3 +256,13 @@ class AnalysisService(DatabaseService):
             analysis = session.query(Analysis).filter(Analysis.id == analysis_id,
                                                       Analysis.deleted != True).one()
             analysis.deleted = True
+
+    def get_all_model_variables(self):
+        """Return all the distinct model variable values across all the analyses
+        """
+        with self.readonly_scope() as session:
+
+            try:
+                return session.query(Analysis.model_variable).distinct()
+            except NoResultFound:
+                return None
