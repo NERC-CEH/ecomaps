@@ -135,6 +135,24 @@ var EcomapsSorter = (function() {
             });
         });
 
+         $("#undo_filter_private_button").click(function() {
+
+            var address = "sort_and_filter/?column=analyses.name&order=asc&is_public=false"
+
+            $("div#private-container").load(address, function() {
+
+            });
+        });
+
+        $("#undo_filter_public_button").click(function() {
+
+            var address = "sort_and_filter/?column=analyses.name&order=asc&is_public=true"
+
+            $("div#public-container").load(address, function() {
+
+            });
+        });
+
     };
 
     return {
