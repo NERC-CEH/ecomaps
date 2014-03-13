@@ -60,7 +60,8 @@ class AnalysisController(BaseController):
         return render('analysis_list.html')
 
     def sort(self):
-        """Action for sorting the analysis table using a particular column
+        """Action for sorting the analysis table using a particular column. Also responsible for filtering the table
+        based on the model variable.
         """
         user = self._user_service.get_user_by_username(request.environ['REMOTE_USER'])
         query_string = request.query_string
@@ -77,9 +78,17 @@ class AnalysisController(BaseController):
 
         if is_public == "true":
             c.public_analyses = self._analysis_service.sort_public_analyses_by_column(column,order,model_variable)
+
+            if not c.public_analyses:
+                c.empty_public_table = "true"
+
             return render('public_analyses_table.html')
         else:
             c.private_analyses = self._analysis_service.sort_private_analyses_by_column(user.id,column,order,model_variable)
+
+            if not c.private_analyses:
+                c.empty_private_table = "true"
+
             return render('private_analyses_table.html')
 
 

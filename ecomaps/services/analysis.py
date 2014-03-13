@@ -192,7 +192,7 @@ class AnalysisService(DatabaseService):
 
             else:
 
-                return query
+                return query.all()
 
 
     def sort_public_analyses_by_column(self,column, order, model_variable):
@@ -223,7 +223,7 @@ class AnalysisService(DatabaseService):
 
             else:
 
-                return query
+                return query.all()
 
 
     def get_public_analyses_with_identical_input(self, input_hash):
