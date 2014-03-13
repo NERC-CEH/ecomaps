@@ -6,7 +6,9 @@
     <?python
             from genshi.builder import tag
 
-            attributes = {}
+            attributes = {
+                "data-filter": c.filter_variable
+            }
 
             if c.order is not None:
                 attributes['data-order_direction'] = c.order
@@ -17,11 +19,6 @@
                 attributes['data-sorting_column'] = c.sorting_column
             else:
                 attributes['data-sorting_column'] = {}
-
-            if c.filter_variable is not None:
-                attributes['data-filter'] = c.filter_variable
-            else:
-                attributes['data-filter'] = {}
     ?>
     <py:choose>
         <py:when test="c.empty_public_table">
