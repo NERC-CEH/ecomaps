@@ -284,9 +284,11 @@ class AnalysisController(BaseController):
             ds.column_names = self._netcdf_service.get_variable_column_names(ds.netcdf_url)
 
         c.coverage_datasets = coverage_datasets
+        c.all_models = self._model_service.get_all_models()
 
         current_analysis = self._analysis_service.get_analysis_by_id(id, user_id)
         point_dataset_id = current_analysis.point_data_dataset_id
+        model_id = current_analysis.model_id
 
         # For each coverage dataset that was linked to the original analysis, there
         # will be a number of column names chosen...
@@ -304,7 +306,8 @@ class AnalysisController(BaseController):
         data_type = current_analysis.data_type
 
         return render('configure_analysis.html',
-                              extra_vars={'current_point_dataset_id': point_dataset_id,
+                              extra_vars={'current_model_id': model_id,
+                                          'current_point_dataset_id': point_dataset_id,
                                           'current_coverage_dataset_ids': coverage_dataset_ids,
                                           'unit_of_time': unit_of_time,
                                           'random_group': random_group,

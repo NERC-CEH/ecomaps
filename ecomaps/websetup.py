@@ -120,6 +120,14 @@ def setup_app(command, conf, vars):
 
         session.add(model)
 
+        model2 = Model()
+        model2.name = "Test Model 2"
+        model2.id = 2
+        model2.description = "Model2 for testing"
+        model2.code_path = "code_root"
+
+        session.add(model2)
+
         a1 = Analysis()
         a1.name = "JENP's Analysis 1"
         a1.viewable_by_user = user
@@ -174,7 +182,8 @@ def setup_app(command, conf, vars):
         a2.model_formula = "Formula2"
         a2.deleted = False
         a2.model_variable="rain"
-        a2.model_id = model.id
+        a2.complete = True
+        a2.model_id = model2.id
 
         session.add(a2)
 
@@ -194,6 +203,7 @@ def setup_app(command, conf, vars):
         a3.result_dataset = ds3
         a3.deleted = False
         a3.model_variable="rain"
+        a3.complete = True
         a3.model_id = model.id
 
         session.add(a3)
@@ -215,7 +225,8 @@ def setup_app(command, conf, vars):
         a4.result_dataset = ds3
         a4.deleted = False
         a4.model_variable="rain"
-        a4.model_id = model.id
+        a4.complete = True
+        a4.model_id = model2.id
 
         session.add(a4)
 
@@ -274,6 +285,7 @@ def setup_app(command, conf, vars):
         a5.model_variable = 'loi'
         a5.data_type = 'CONT'
         a5.deleted = False
+        a5.complete = True
         a5.model_id = model.id
 
         session.add(a5)
@@ -289,7 +301,8 @@ def setup_app(command, conf, vars):
         a6.result_dataset = ds3
         a6.deleted = False
         a6.model_variable="loi"
-        a5.model_id = model.id
+        a6.complete = True
+        a6.model_id = model2.id
 
         session.add(a6)
 
