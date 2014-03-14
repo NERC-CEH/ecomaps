@@ -28,7 +28,10 @@
 
 
         <ul class="layer-controls">
-            <li><i class="icon-eye-open"></i><input type="checkbox" value="Display" checked="checked" class="layer-toggle" data-layerid="${c.dataset.id}${layer.name}" /></li>
+            <li>
+                <i class="icon-eye-open"></i><input type="checkbox" value="Display" checked="checked" class="layer-toggle" data-layerid="${c.dataset.id}${layer.name}" />
+                <i class="icon-picture"></i><input type="checkbox" title="Show Legend" checked="Checked" class="legend-toggle" data-layerid="${c.dataset.id}${layer.name}" />
+            </li>
             <li class="control-label">Style: </li>
             <li>
                     <select class="style-list" data-layerid="${c.dataset.id}${layer.name}">

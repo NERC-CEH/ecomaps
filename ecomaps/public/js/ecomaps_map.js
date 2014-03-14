@@ -40,6 +40,11 @@ var EcomapsMap = (function() {
            toggleLayerDisplay($(this).data("layerid"));
         });
 
+        // Toggle legend display on/off
+        layerContainer.on("click", "input.legend-toggle", function(){
+            toggleLegendDisplay($(this).data("layerid"));
+        });
+
         // Changing the style of the layer
         layerContainer.on("change", "select.style-list", function(){
 
@@ -337,6 +342,18 @@ var EcomapsMap = (function() {
         else {
             removeLegend(layerId);
         }
+    };
+
+    /*
+     * toggleLegendDisplay
+     *
+     *  Toggles a layer's legend visibility
+     *
+     *  @param layerId: ID of the layer containing the legend to toggle
+     */
+    var toggleLegendDisplay = function(layerId) {
+
+        $("img[data-layerid=" + layerId + "]").toggle();
     };
 
     /*
