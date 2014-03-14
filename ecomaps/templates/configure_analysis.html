@@ -110,6 +110,13 @@
             <i class="icon-info-sign" data-toggle="tooltip" title="Distribution type of the data."></i>
         </div>
 
+        <div class="control-group">
+            <label for="Analysis Description" class="control-label">Description:</label>
+            ${h.html_tags.text('analysis_description', class_='controls', placeholder='Description...')}
+
+            <i class="icon-info-sign" data-toggle="tooltip" title="A short description of the analysis: What is being modelled? Why is it interesting? etc."></i>
+        </div>
+
         <div class="controls">
             <input type="submit" class="btn btn-primary btn-large pull-right control-group" name="submit" value="Run" />
         </div>

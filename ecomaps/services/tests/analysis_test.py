@@ -24,6 +24,7 @@ class AnalysisServiceTest(BaseTest):
         self.sample_analysis.id = 12
         self.sample_analysis.input_hash = 12345
         self.sample_analysis.model_id = 1
+        self.sample_analysis.description = 'Analysis for testing purposes'
 
         results_dataset = Dataset()
         results_dataset.type = 'Result'
@@ -52,6 +53,7 @@ class AnalysisServiceTest(BaseTest):
                                 self.sample_analysis.model_variable,
                                 self.sample_analysis.data_type,
                                 self.sample_analysis.model_id,
+                                self.sample_analysis.description,
                                 self.sample_analysis.input_hash,
                                 time_indicies)
 

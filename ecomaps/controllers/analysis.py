@@ -163,7 +163,8 @@ class AnalysisController(BaseController):
                                                            'random_group',
                                                            'model_variable',
                                                            'data_type',
-                                                           'model_id'])
+                                                           'model_id',
+                                                           'analysis_description'])
 
                 test_analysis = self._analysis_service.get_public_analyses_with_identical_input(hash)
 
@@ -191,6 +192,7 @@ class AnalysisController(BaseController):
                             c.form_result.get('model_variable'),
                             c.form_result.get('data_type'),
                             c.form_result.get('model_id'),
+                            c.form_result.get('analysis_description'),
                             hash,
                             time_indicies)
 
