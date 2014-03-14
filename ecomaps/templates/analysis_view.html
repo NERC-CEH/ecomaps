@@ -40,10 +40,10 @@
                 <div class="span3">
                     <div class="alert alert-info">
                         <p><strong>Actions</strong></p>
-                        <input type="hidden" id="analysis_id" name="analysis_id" value='${c.analysis.id}' />
                         <ul class="nopoints">
                             <li>
-                                <form class="inline_buttons" method="POST" action="${url(controller='analysis', action='publish', id=str(c.analysis.id))}">
+                                <form class="inline_buttons" method="POST" action="${url(controller='analysis', action='publish')}">
+                                    <input type="hidden" id="analysis_id" name="analysis_id" value='${c.analysis.id}' />
                                     <py:if test="c.analysis.viewable_by is not None">
                                         <i class="icon-globe"></i> <input type="submit" class="btn btn-link" value="Publish" />
                                     </py:if>
@@ -58,6 +58,15 @@
                             <li>
                                 <a href="${url(controller='analysis', action='download', id=str(c.analysis.id))}"><i class="icon-download-alt"></i> Download</a>
                             </li>
+                            <py:if test="c.analysis.viewable_by is not None">
+                                <li>
+                                    <form class="inline_buttons" method="POST" action="${url(controller='analysis', action='delete')}">
+                                        <input type="hidden" id="analysis_id1" name="analysis_id" value='${c.analysis.id}' />
+                                        <i class="icon-remove-circle"></i>
+                                        <input type="submit" class="btn btn-link" value="Delete" />
+                                    </form>
+                                </li>
+                            </py:if>
                         </ul>
                     </div>
                 </div>

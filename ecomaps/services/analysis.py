@@ -27,7 +27,8 @@ class AnalysisService(DatabaseService):
                         .options(subqueryload(Analysis.point_dataset)) \
                         .options(subqueryload(Analysis.coverage_datasets)) \
                         .options(subqueryload(Analysis.run_by_user)) \
-                        .filter(or_(Analysis.viewable_by == user_id, Analysis.run_by == user_id)) \
+                        .filter(or_(Analysis.viewable_by == user_id, Analysis.run_by == user_id),
+                                Analysis.deleted != True) \
                         .all()
 
     def get_public_analyses(self):
@@ -40,7 +41,8 @@ class AnalysisService(DatabaseService):
                         .options(subqueryload(Analysis.point_dataset)) \
                         .options(subqueryload(Analysis.coverage_datasets)) \
                         .options(subqueryload(Analysis.run_by_user)) \
-                        .filter(Analysis.viewable_by == None) \
+                        .filter(Analysis.viewable_by == None,
+                                Analysis.deleted != True) \
                         .all()
 
     def publish_analysis(self, analysis_id):
@@ -51,7 +53,13 @@ class AnalysisService(DatabaseService):
 
         with self.transaction_scope() as session:
 
-            analysis = session.query(Analysis).filter(Analysis.id == analysis_id).one()
+            try:
+
+                analysis = session.query(Analysis).filter(Analysis.id == analysis_id,
+                                                      Analysis.deleted != True).one()
+
+            except NoResultFound:
+                return None
 
             # Now update the "viewable by" field - setting to None
             # infers that the analysis is published
@@ -73,7 +81,8 @@ class AnalysisService(DatabaseService):
                     .filter(Analysis.id == analysis_id,
                             or_(or_(Analysis.viewable_by == user_id,
                             Analysis.viewable_by == None),
-                            Analysis.run_by == user_id)).one()
+                            Analysis.run_by == user_id),
+                            Analysis.deleted != True).one()
 
             except NoResultFound:
                 return None
@@ -106,6 +115,7 @@ class AnalysisService(DatabaseService):
             analysis.run_by = user_id
             analysis.viewable_by = user_id
             analysis.point_data_dataset_id = int(point_dataset_id)
+            analysis.deleted = False
 
             # Hook up the coverage datasets
 
@@ -159,14 +169,16 @@ class AnalysisService(DatabaseService):
 
         with self.readonly_scope() as session:
 
-            return session.query(Analysis.id).filter(Analysis.result_dataset_id == dataset_id).one()[0]
+            return session.query(Analysis.id).filter(Analysis.result_dataset_id == dataset_id,
+                                                     Analysis.deleted != True).one()[0]
 
-    def sort_private_analyses_by_column(self,user_id,column,order):
-        """Sorts the private analyses by the column name
+    def sort_and_filter_private_analyses_by_column(self,user_id,column,order, filter_variable):
+        """Sorts the private analyses by the column name, and applies a filter on the model variable value selected
         Params:
                 user_id: unique id of the user
                 column: The name of the column to sort on
                 order: either "asc" or "desc"
+                filter_variable: the model_variable value used to filter the analyses
         """
         with self.readonly_scope() as session:
 
@@ -174,22 +186,31 @@ class AnalysisService(DatabaseService):
                         .options(subqueryload(Analysis.point_dataset)) \
                         .options(subqueryload(Analysis.coverage_datasets)) \
                         .options(subqueryload(Analysis.run_by_user)) \
-                        .filter(or_(Analysis.viewable_by == user_id, Analysis.run_by == user_id))
+                        .filter(or_(Analysis.viewable_by == user_id, Analysis.run_by == user_id),
+                                Analysis.deleted != True)
+
+            if filter_variable:
+                query = query.filter(Analysis.model_variable == filter_variable)
 
             if order == "asc":
 
                 return query.order_by(asc(column)).all()
 
-            else:
+            elif order == "desc":
 
                 return query.order_by(desc(column)).all()
 
+            else:
 
-    def sort_public_analyses_by_column(self,column, order):
-        """Sorts the public analyses by the column name
+                return query.all()
+
+
+    def sort_and_filter_public_analyses_by_column(self,column, order, filter_variable):
+        """Sorts the public analyses by the column name and applies a filter on the model variable value selected
         Params:
                 column: The name of the column to sort on
                 order: either "asc" or "desc"
+                filter_variable: the model_variable value used to filter the analyses
         """
         with self.readonly_scope() as session:
 
@@ -197,15 +218,23 @@ class AnalysisService(DatabaseService):
                         .options(subqueryload(Analysis.point_dataset)) \
                         .options(subqueryload(Analysis.coverage_datasets)) \
                         .options(subqueryload(Analysis.run_by_user)) \
-                        .filter(Analysis.viewable_by == None)
+                        .filter(Analysis.viewable_by == None,
+                                Analysis.deleted != True)
+
+            if filter_variable:
+                query = query.filter(Analysis.model_variable == filter_variable)
 
             if order == "asc":
 
                 return query.order_by(asc(column)).all()
 
-            else:
+            elif order == "desc":
 
                 return query.order_by(desc(column)).all()
+
+            else:
+
+                return query.all()
 
 
     def get_public_analyses_with_identical_input(self, input_hash):
@@ -220,8 +249,31 @@ class AnalysisService(DatabaseService):
             # Only pull out public analyses for now
                 return session.query(Analysis) \
                         .filter(Analysis.input_hash == input_hash,
-                                Analysis.viewable_by == None) \
+                                Analysis.viewable_by == None,
+                                Analysis.deleted != True) \
                         .one()
 
+            except NoResultFound:
+                return None
+
+    def delete_private_analysis(self, analysis_id):
+        """Deletion is only a 'soft' delete i.e. a flag will be set so that the analysis is not viewable by the user.
+           This is so that if the user wants to recover the analysis, the can be reversed.
+            Params
+                analysis_id = id of the analysis to delete
+        """
+        with self.transaction_scope() as session:
+
+            analysis = session.query(Analysis).filter(Analysis.id == analysis_id,
+                                                      Analysis.deleted != True).one()
+            analysis.deleted = True
+
+    def get_all_model_variables(self):
+        """Return all the distinct model variable values across all the analyses
+        """
+        with self.readonly_scope() as session:
+
+            try:
+                return session.query(Analysis.model_variable).distinct()
             except NoResultFound:
                 return None

@@ -67,18 +67,21 @@ class IntegrationTests(unittest.TestCase):
             analysis_a.coverage_datasets.append(AnalysisCoverageDataset(dataset_b))
             analysis_a.viewable_by = self._user_id
             analysis_a.result_dataset = dataset_d
+            analysis_a.deleted = False
 
             analysis_b = Analysis()
             analysis_b.point_dataset = dataset_a
             analysis_b.coverage_datasets.append(AnalysisCoverageDataset(dataset_b))
             analysis_b.run_by = self._user_id
             analysis_b.result_dataset = dataset_d
+            analysis_b.deleted = False
 
             analysis_c = Analysis()
             analysis_c.point_dataset = dataset_a
             analysis_c.coverage_datasets.append(AnalysisCoverageDataset(dataset_b))
             analysis_c.viewable_by = self._another_user_id
             analysis_c.result_dataset = dataset_d
+            analysis_c.deleted = False
 
             session.add(analysis_a)
             session.add(analysis_b)

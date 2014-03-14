@@ -136,6 +136,7 @@ class Analysis(Base):
     complete = Column(Boolean)
     model_formula = Column(String(255))
     input_hash = Column(BigInteger)
+    deleted = Column(Boolean)
 
     unit_of_time = Column(String(255))
     random_group = Column(String(255))

@@ -11,7 +11,6 @@
 </head>
 <body>
     <h1>My Ecomaps</h1>
-
     <div class="tabbable">
         <ul class="nav nav-pills" id="analysis-tabs">
             <li><a href="#my-analyses" data-toggle="pill">My Analyses</a></li>
@@ -20,6 +19,7 @@
 
         <div class="tab-content">
             <div class="tab-pane active" id="my-analyses">
+
                 <py:choose>
                     <py:when test="not c.private_analyses">
                         <p>
@@ -28,11 +28,22 @@
                         </p>
                     </py:when>
                     <py:otherwise>
+                        <div id="filter_private">
+                            <label>Filter analyses by model variable:</label>
+                            <select name="model_variable" id="private_filter_value">
+                                <option py:for="model_variable in c.all_model_variables">
+                                    ${model_variable}
+                                </option>
+                            </select>
+                            <button type="submit" id="filter_private_button" data-toggle="tooltip" title="Filter private analyses"><i class="icon-filter"></i></button>
+                            <button type="submit" id="undo_filter_private_button" data-toggle="tooltip" title="Undo"><i class="icon-refresh"></i></button>
+                        </div>
                         <div id="private-container"></div>
                     </py:otherwise>
                 </py:choose>
             </div>
             <div class="tab-pane active" id="public-analyses">
+
                 <py:choose>
                     <py:when test="not c.public_analyses">
                         <p>
@@ -40,7 +51,17 @@
                         </p>
                     </py:when>
                     <py:otherwise>
-                        <div id="public-container"></div>
+                        <div id="filter_public">
+                            <label>Filter analyses by model variable:</label>
+                            <select name="model_variable" id="public_filter_value">
+                                <option py:for="model_variable in c.all_model_variables">
+                                    ${model_variable}
+                                </option>
+                            </select>
+                            <button type="submit" id="filter_public_button" data-toggle="tooltip" title="Filter public analyses"><i class="icon-filter"></i></button>
+                            <button type="submit" id="undo_filter_public_button" data-toggle="tooltip" title="Undo"><i class="icon-refresh"></i></button>
+                        </div>
+                                <div id="public-container"> </div>
                     </py:otherwise>
                 </py:choose>
             </div>

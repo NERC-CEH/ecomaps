@@ -15,6 +15,7 @@ from formencode import htmlfill
 import tempfile
 from paste.fileapp import FileApp
 import os
+import urlparse
 
 #from pylons import request, response, session, tmpl_context as c, url
 #from pylons.controllers.util import abort, redirect
@@ -53,28 +54,41 @@ class AnalysisController(BaseController):
         c.private_analyses = self._analysis_service.get_analyses_for_user(user.id)
         c.public_analyses = self._analysis_service.get_public_analyses()
 
+        #Get the model variables - used to populate the filter dropdown
+        c.all_model_variables = self._analysis_service.get_all_model_variables()
+
         return render('analysis_list.html')
 
-    def sort(self):
-        """Action for sorting the analysis table using a particular column
+    def sort_and_filter(self):
+        """Action for sorting the analysis table using a particular column. Also responsible for filtering the table
+        based on the model variable.
         """
         user = self._user_service.get_user_by_username(request.environ['REMOTE_USER'])
         query_string = request.query_string
-        [column,order,is_public] = str.split(query_string,"&")
+        params = urlparse.parse_qs(query_string)
 
-        # Remove the parts of the query strings prior to the = signs
-        column = str.split(column,"=",)[1]
-        order = str.split(order,"=",)[1]
-        is_public = str.split(is_public, "=")[1]
+        column = get_parameter_value(params,'column')
+        order = get_parameter_value(params,'order')
+        filter_variable = get_parameter_value(params,'filter_variable')
+        is_public = get_parameter_value(params,'is_public')
 
         c.order = order
         c.sorting_column = column
+        c.filter_variable = filter_variable
 
         if is_public == "true":
-            c.public_analyses = self._analysis_service.sort_public_analyses_by_column(column,order)
+            c.public_analyses = self._analysis_service.sort_and_filter_public_analyses_by_column(column,order,filter_variable)
+
+            if not c.public_analyses:
+                c.empty_public_table = "true"
+
             return render('public_analyses_table.html')
         else:
-            c.private_analyses = self._analysis_service.sort_private_analyses_by_column(user.id,column,order)
+            c.private_analyses = self._analysis_service.sort_and_filter_private_analyses_by_column(user.id,column,order,filter_variable)
+
+            if not c.private_analyses:
+                c.empty_private_table = "true"
+
             return render('private_analyses_table.html')
 
 
@@ -209,31 +223,37 @@ class AnalysisController(BaseController):
             c.object_type = 'analysis'
             return render('not_found.html')
 
-    def publish(self,id):
+    def publish(self):
         """Action for publishing a set of results
-            id - ID of the analysis to look at
         """
-        user = request.environ.get('REMOTE_USER')
-        user_obj = self._user_service.get_user_by_username(user)
-        c.username = user_obj.name
 
-        analysis = self._analysis_service.get_analysis_by_id(id, user_obj.id)
+        if request.POST:
 
-        if analysis:
-            if analysis.result_dataset:
-                # Get the result attributes from the NetCDF file associated with the result dataset
-                analysis.attributes = self._netcdf_service.get_attributes(analysis.result_dataset.netcdf_url)
-            c.analysis = analysis
+            analysis_id = request.params.get('analysis_id')
 
-            try:
-                c.form_result = request.params
-            except:
-                added_successfully = False
+            user = request.environ.get('REMOTE_USER')
+            user_obj = self._user_service.get_user_by_username(user)
+            c.username = user_obj.name
+
+            analysis = self._analysis_service.get_analysis_by_id(analysis_id, user_obj.id)
+
+            if analysis:
+                if analysis.result_dataset:
+                    # Get the result attributes from the NetCDF file associated with the result dataset
+                    analysis.attributes = self._netcdf_service.get_attributes(analysis.result_dataset.netcdf_url)
+                c.analysis = analysis
+
+                try:
+                    c.form_result = request.params
+                except:
+                    added_successfully = False
+                else:
+                    self._analysis_service.publish_analysis(int(analysis_id))
+                    added_successfully = True
+
+                return render('analysis_view.html', extra_vars={'added_successfully': added_successfully})
             else:
-                self._analysis_service.publish_analysis(int(id))
-                added_successfully = True
-
-            return render('analysis_view.html', extra_vars={'added_successfully': added_successfully})
+                return render('not_found.html')
         else:
             return render('not_found.html')
 
@@ -330,6 +350,20 @@ class AnalysisController(BaseController):
 
             return fapp(request.environ, self.start_response)
 
+    def delete(self):
+        """Action for when user wants to delete a private analysis"""
+        if request.POST:
+
+            analysis_id = request.params.get('analysis_id')
+
+            # Check user has access to the analysis before deleting
+            user = request.environ.get('REMOTE_USER')
+            user_object = self._user_service.get_user_by_username(user)
+            analysis = self._analysis_service.get_analysis_by_id(analysis_id, user_object.id)
+            if analysis:
+                self._analysis_service.delete_private_analysis(analysis_id)
+                return redirect(url(controller='analysis', action='index'))
+
 
 def custom_formatter(error):
     """Custom error formatter"""
@@ -360,3 +394,9 @@ def get_hash_for_inputs(input_dict, keys=None):
 
     return hash(frozenset(sub_dict.items()))
 
+def get_parameter_value(dictionary, name):
+
+    try:
+        return dictionary[name][0]
+    except:
+        return None
