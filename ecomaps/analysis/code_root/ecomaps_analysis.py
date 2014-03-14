@@ -222,7 +222,8 @@ class EcomapsAnalysis(object):
         else:
            return before
 
-    def _geodataframe_intersect(self, north_list, east_list, dataframe, array, geotransform, column_name):
+    def _geodataframe_intersect(self, north_list, east_list, dataframe,
+                                array, geotransform, column_name, time_index):
 
         for count, row in dataframe.iterrows():
 
@@ -231,7 +232,10 @@ class EcomapsAnalysis(object):
 
             xpixel, ypixel = self._mapToPixel(easting, northing, geotransform)
 
-            dataframe.loc[count, column_name] = int(array[column_name][ypixel, xpixel])
+            if time_index:
+                dataframe.loc[count, column_name] = int(array[column_name][time_index, ypixel, xpixel])
+            else:
+                dataframe.loc[count, column_name] = int(array[column_name][ypixel, xpixel])
 
         return dataframe
 
@@ -355,32 +359,36 @@ class EcomapsAnalysis(object):
 
         array_intersect = None
 
-        for coverage_ds in coverage_dict.keys():
+        # for coverage_ds in coverage_dict.keys():
+        #
+        #     northing_list, easting_list = self._get_coordinate_lists(coverage_ds.netcdf_url)
+        #
+        #     if len(easting_list) > 10000:
+        #          pixelxsize, pixelysize = 25, -25
+        #     else:
+        #         #  Set array 'geotransform' properties, similar to world file (eg .tfw)
+        #         pixelxsize, pixelysize = 1000, -1000
+        #
+        #     arrayxorigin, arrayyorigin = 0.0, 1300000.0
+        #     arrayxrotation, arrayyrotation = 0.0, 0.0
+        #
+        #     #  Set array 'geotransform' list
+        #     gt = (arrayxorigin, pixelxsize, arrayxrotation, arrayyorigin, arrayyrotation, pixelysize)
+        #
+        #     # We may have multiple columns that we want to add
+        #     # to the data frame, so perform an intersect for each
+        #     for column_name, time_index in coverage_dict[coverage_ds]:
+        #
+        #         array = self._get_landcover_array(coverage_ds.netcdf_url, column_name)
+        #
+        #         #  Add new column to data frame to store data from coverage ds
+        #         points_gdf[column_name] = -9999
+        #
+        #         progress_fn("Setting up the analysis: %s" % column_name)
+        #
+        #         array_intersect = self._geodataframe_intersect(northing_list, easting_list, points_gdf, array, gt, column_name, time_index)
 
-            northing_list, easting_list = self._get_coordinate_lists(coverage_ds.netcdf_url)
-
-            #  Set array 'geotransform' properties, similar to world file (eg .tfw)
-            pixelxsize, pixelysize = 25, -25
-            arrayxorigin, arrayyorigin = 0.0, 1300000.0
-            arrayxrotation, arrayyrotation = 0.0, 0.0
-
-            #  Set array 'geotransform' list
-            gt = (arrayxorigin, pixelxsize, arrayxrotation, arrayyorigin, arrayyrotation, pixelysize)
-
-            # We may have multiple columns that we want to add
-            # to the data frame, so perform an intersect for each
-            for column_name in coverage_dict[coverage_ds]:
-
-                array = self._get_landcover_array(coverage_ds.netcdf_url, column_name)
-
-                #  Add new column to data frame to store data from coverage ds
-                points_gdf[column_name] = -9999
-
-                progress_fn("Setting up the analysis: %s" % column_name)
-
-                array_intersect = self._geodataframe_intersect(northing_list, easting_list, points_gdf, array, gt, column_name)
-
-            # array_intersect = self._sample_intersect(northing_list, easting_list, points_df, array)
+            #array_intersect = self._sample_intersect(northing_list, easting_list, points_df, array)
 
         csv_folder = self._working_dir.csv_folder
         csv_file_name = 'InputRDataFile.csv'
@@ -389,7 +397,7 @@ class EcomapsAnalysis(object):
         )
 
         progress_fn("Creating input files")
-        self._data_frame_to_csv(array_intersect, csv_full_path)
+        #self._data_frame_to_csv(array_intersect, csv_full_path)
 
         r_code_folder = self._working_dir.r_script_folder
         r_script = 'LCM_thredds_model.r'
@@ -401,8 +409,20 @@ class EcomapsAnalysis(object):
 
         r = pyper.R()
 
+        time_slices = {}
+        coverage_setup = {}
+
+        for ds, columns in coverage_dict.iteritems():
+            column_list = []
+            for col, time_slice in columns:
+                if time_slice:
+                    time_slices[col] = time_slice
+
+                column_list.append(col)
+            coverage_setup[ds.low_res_url] = column_list
+
         # Constructing a dictionary of url/column names for each coverage dataset selected
-        coverage_setup = dict([(ds.low_res_url, coverage_dict[ds]) for ds in coverage_dict.keys()])
+        #coverage_setup = dict([(ds.low_res_url, coverage_dict[ds]) for ds in coverage_dict.keys()])
 
         r["coverage_setup"] = coverage_setup
         r["progress_rep_file"] = os.path.join(self._working_dir.root_folder, 'progress.txt')
@@ -436,4 +456,4 @@ class EcomapsAnalysis(object):
         # Now to return the results - we're interested in where the netcdf results file
         # and the png image have been written to
 
-        return r["output_netcdf_file"], r["map_image_file"], r["fit_image_file"], r["aic_val"]
+        return r["output_netcdf_file"], r["map_image_file"], r["fit_image_file"], r.get("aic_val", "")

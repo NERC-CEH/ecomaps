@@ -6,6 +6,7 @@
 <head>
     <title>Create Analysis</title>
     <link rel="stylesheet" type="text/css" href="../layout/ecomaps.css"/>
+    <script type="text/javascript" src="/js/ecomaps_create_analysis.js"></script>
 </head>
 <body>
     <h1>Create Analysis</h1>
@@ -21,8 +22,16 @@
             </div>
         </div>
     </div>
+    <?python
+        from genshi.builder import tag
 
-    <form class="form-horizontal" method="POST" action="${url(controller='analysis', action='create')}">
+        test = {
+            "attribute": "12345",
+            "test" : "hello"
+        }
+    ?>
+
+    <form py:attrs="test" class="form-horizontal" method="POST" action="${url(controller='analysis', action='create')}">
 
         <div class="control-group">
             <label for="analysis_name" class="control-label">Name of Analysis:</label>
@@ -41,6 +50,10 @@
             </select>
 
             <i class="icon-info-sign" data-toggle="tooltip" title="A coverage dataset is used to define input data into the model. More than one can be selected"></i>
+        </div>
+
+        <div id="time-point-container">
+
         </div>
 
         <div class="control-group">

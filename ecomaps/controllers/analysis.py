@@ -81,99 +81,107 @@ class AnalysisController(BaseController):
     def create(self):
         """ Creates the configure analysis page"""
 
-        identity = request.environ.get('REMOTE_USER')
+        user_id = self.current_user.id
 
-        if identity is not None:
+        c.point_datasets = self._dataset_service.get_datasets_for_user(user_id,'Point')
 
-            user = self._user_service.get_user_by_username(identity)
-            user_id = user.id
+        coverage_datasets = self._dataset_service.get_datasets_for_user(user_id, 'Coverage')
 
-            c.point_datasets = self._dataset_service.get_datasets_for_user(user_id,'Point')
+        for ds in coverage_datasets:
 
-            coverage_datasets = self._dataset_service.get_datasets_for_user(user_id, 'Coverage')
+            ds.column_names = self._netcdf_service.get_variable_column_names(ds.netcdf_url)
 
-            for ds in coverage_datasets:
+        c.coverage_datasets = coverage_datasets
 
-                ds.column_names = self._netcdf_service.get_variable_column_names(ds.netcdf_url)
-
-            c.coverage_datasets = coverage_datasets
+        if not request.POST:
 
             unit_of_time = None
             random_group = None
             model_variable = None
             data_type = None
 
-            if not request.POST:
+            return render('configure_analysis.html',
+                          extra_vars={'unit_of_time': unit_of_time,
+                                      'random_group': random_group,
+                                      'model_variable': model_variable,
+                                      'data_type': data_type})
 
-                return render('configure_analysis.html',
-                              extra_vars={'unit_of_time': unit_of_time,
-                                          'random_group': random_group,
-                                          'model_variable': model_variable,
-                                          'data_type': data_type})
-
+        else:
             schema = ConfigureAnalysisForm()
             c.form_errors = {}
 
-            if request.POST:
+            try:
+                c.form_result = schema.to_python(request.params)
 
-                try:
-                    c.form_result = schema.to_python(request.params)
+            except formencode.Invalid, error:
+                c.form_result = error.value
+                c.form_errors = error.error_dict or {}
 
-                except formencode.Invalid, error:
-                    c.form_result = error.value
-                    c.form_errors = error.error_dict or {}
+            #    If coverage_dataset_ids is not populated on the form
+            #    the validation doesn't throw an error, but instead returns an empty
+            #    array. Hence we have to do the error-handling ourselves
+            if not c.form_result.get('coverage_dataset_ids'):
+                c.form_errors = dict(c.form_errors.items() + {
+                    'coverage_dataset_ids': 'Please select at least one coverage dataset'
+                }.items())
 
-                #    If coverage_dataset_ids is not populated on the form
-                #    the validation doesn't throw an error, but instead returns an empty
-                #    array. Hence we have to do the error-handling ourselves
-                if not c.form_result.get('coverage_dataset_ids'):
-                    c.form_errors = dict(c.form_errors.items() + {
-                        'coverage_dataset_ids': 'Please select at least one coverage dataset'
-                    }.items())
+            if c.form_errors:
+                html = render('configure_analysis.html')
 
-                if c.form_errors:
-                    html = render('configure_analysis.html')
+                return htmlfill.render(html,
+                                       defaults=c.form_result,
+                                       errors=c.form_errors,
+                                       auto_error_formatter=custom_formatter)
+            else:
 
-                    return htmlfill.render(html,
-                                           defaults=c.form_result,
-                                           errors=c.form_errors,
-                                           auto_error_formatter=custom_formatter)
-                else:
+                # OK, the form has been processed successfully, now
+                # to see if this combination of inputs has been used
+                # before
+                hash = get_hash_for_inputs(c.form_result, ['point_dataset_id',
+                                                           'coverage_dataset_ids',
+                                                           'unit_of_time',
+                                                           'random_group',
+                                                           'model_variable',
+                                                           'data_type'])
 
-                    hash = get_hash_for_inputs(c.form_result, ['point_dataset_id',
-                                                               'coverage_dataset_ids',
-                                                               'unit_of_time',
-                                                               'random_group',
-                                                               'model_variable',
-                                                               'data_type'])
+                test_analysis = self._analysis_service.get_public_analyses_with_identical_input(hash)
 
-                    # Now check to see if we've already got an analysis in
-                    # EcoMaps that has these inputs...
-                    test_analysis = self._analysis_service.get_public_analyses_with_identical_input(hash)
+                if test_analysis:
+                    return redirect(url(controller='analysis', action='view', id=test_analysis.id))
 
-                    if test_analysis:
-                        return redirect(url(controller='analysis', action='view', id=test_analysis.id))
+                # Almost ready to create, although first we need to create a collection of
+                # time point indicies based on any temporal datasets we may have chosen
 
-                    analysis_id = self._analysis_service.create(c.form_result.get('analysis_name'),
-                                c.form_result.get('point_dataset_id'),
-                                c.form_result.get('coverage_dataset_ids'),
-                                user_id,
-                                c.form_result.get('unit_of_time'),
-                                c.form_result.get('random_group'),
-                                c.form_result.get('model_variable'),
-                                c.form_result.get('data_type'),
-                                hash)
+                time_indicies = {}
 
-                    c.analysis_id = analysis_id
+                for column in c.form_result.get('coverage_dataset_ids'):
 
-                    analysis_to_run = self._analysis_service.get_analysis_by_id(analysis_id, user_id)
+                    # Is there a time selection field for this coverage ds column ?
+                    # If so, it'll have been given a name starting with 'time' - see dataset_time_values.html
+                    if c.form_result.get('time_%s' % column):
+                        time_indicies[column] = int(c.form_result.get('time_%s' % column))
 
-                    # The path to the code may need to be made dynamic
-                    # if we start running multiple analyses
-                    runner = AnalysisRunner('code_root')
-                    runner.run_async(analysis_to_run)
+                analysis_id = self._analysis_service.create(c.form_result.get('analysis_name'),
+                            c.form_result.get('point_dataset_id'),
+                            c.form_result.get('coverage_dataset_ids'),
+                            user_id,
+                            c.form_result.get('unit_of_time'),
+                            c.form_result.get('random_group'),
+                            c.form_result.get('model_variable'),
+                            c.form_result.get('data_type'),
+                            hash,
+                            time_indicies)
 
-                    return render('analysis_progress.html')
+                c.analysis_id = analysis_id
+
+                analysis_to_run = self._analysis_service.get_analysis_by_id(analysis_id, user_id)
+
+                # The path to the code may need to be made dynamic
+                # if we start running multiple analyses
+                runner = AnalysisRunner('code_root')
+                runner.run_async(analysis_to_run)
+
+                return render('analysis_progress.html')
 
     def view(self, id):
         """Action for looking in detail at a single analysis

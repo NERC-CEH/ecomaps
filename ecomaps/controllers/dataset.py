@@ -164,10 +164,11 @@ class DatasetController(BaseController):
 
         c.dataset_name = ds.name
         c.column_name = request.params.get('col', '')
+        c.identifier = "%s_%s" % (ds.id, c.column_name)
 
         if c.time_points:
             # Render the points back
-            return "%s: %s\n %s" % (c.dataset_name, c.column_name, c.time_points)
+            return render("dataset_time_values.html")
 
 
 def custom_formatter(error):

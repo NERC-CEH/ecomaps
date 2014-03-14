@@ -80,7 +80,7 @@ class AnalysisService(DatabaseService):
 
     def create(self, name, point_dataset_id, coverage_dataset_ids,
                user_id, unit_of_time, random_group, model_variable,
-               data_type, input_hash):
+               data_type, input_hash, time_indicies):
         """Creates a new analysis object
             Params:
                 name - Friendly name for the analysis
@@ -93,6 +93,8 @@ class AnalysisService(DatabaseService):
                 model_variable - the variable that is being modelled
                 data_type - data type of the variable
                 input_hash - used to quickly identify a duplicate analysis in terms of inputs
+                time_indicies - if any columns in coverage datasets need time slicing, the index (i.e. the time slice)
+                                to take will be stored against each relevant column in here
             Returns:
                 ID of newly-inserted analysis
         """
@@ -110,12 +112,19 @@ class AnalysisService(DatabaseService):
             for id in coverage_dataset_ids:
 
                 coverage_ds = AnalysisCoverageDataset()
+
                 # The coverage dataset 'ID' is actually a
                 # composite in the form <id>_<column-name>
-                id, column_name = id.split('_')
-                id_as_int = int(id)
+                ds_id, column_name = id.split('_')
+                id_as_int = int(ds_id)
                 coverage_ds.dataset_id = id_as_int
                 col = AnalysisCoverageDatasetColumn()
+
+                # Check to see if we need to record a time index against
+                # this column, will be used for time-slicing later
+                if id in time_indicies:
+                    col.time_index = time_indicies[id]
+
                 col.column = column_name
                 coverage_ds.columns.append(col)
                 analysis.coverage_datasets.append(coverage_ds)
