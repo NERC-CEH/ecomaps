@@ -73,12 +73,12 @@ a.brand > i.icon {
     margin: 5px 5px 5px 0;
 }
 
-ul#progress li, ul.nopoints li
+ul#progress li, .nopoints li
 {
     list-style-type: none;
 }
 
-ul.nopoints input {
+.nopoints input {
     padding: 0;
 }
 
