@@ -3,7 +3,7 @@ import os
 import pylons.test
 from ecomaps.config.environment import load_environment
 from ecomaps.model import session_scope, DatasetType, Dataset, Analysis, User, AnalysisCoverageDataset, \
-    AnalysisCoverageDatasetColumn
+    AnalysisCoverageDatasetColumn, Model
 from ecomaps.model.meta import Base, Session
 
 __author__ = 'Phil Jenkins (Tessella)'
@@ -112,6 +112,14 @@ def setup_app(command, conf, vars):
 
         session.add(ds3)
 
+        model = Model()
+        model.name = "Test Model"
+        model.id = 1
+        model.description = "Model for testing"
+        model.code_path = "code_root"
+
+        session.add(model)
+
         a1 = Analysis()
         a1.name = "JENP's Analysis 1"
         a1.viewable_by_user = user
@@ -122,6 +130,7 @@ def setup_app(command, conf, vars):
         a1.progress_message = ""
         a1.complete = True
         a1.model_formula = "Formula1"
+        a1.model_id = model.id
 
         # Adding a coverage dataset
 
@@ -165,6 +174,7 @@ def setup_app(command, conf, vars):
         a2.model_formula = "Formula2"
         a2.deleted = False
         a2.model_variable="rain"
+        a2.model_id = model.id
 
         session.add(a2)
 
@@ -184,6 +194,7 @@ def setup_app(command, conf, vars):
         a3.result_dataset = ds3
         a3.deleted = False
         a3.model_variable="rain"
+        a3.model_id = model.id
 
         session.add(a3)
 
@@ -204,6 +215,7 @@ def setup_app(command, conf, vars):
         a4.result_dataset = ds3
         a4.deleted = False
         a4.model_variable="rain"
+        a4.model_id = model.id
 
         session.add(a4)
 
@@ -262,6 +274,7 @@ def setup_app(command, conf, vars):
         a5.model_variable = 'loi'
         a5.data_type = 'CONT'
         a5.deleted = False
+        a5.model_id = model.id
 
         session.add(a5)
 
@@ -276,6 +289,7 @@ def setup_app(command, conf, vars):
         a6.result_dataset = ds3
         a6.deleted = False
         a6.model_variable="loi"
+        a5.model_id = model.id
 
         session.add(a6)
 

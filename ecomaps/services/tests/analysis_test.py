@@ -23,6 +23,7 @@ class AnalysisServiceTest(BaseTest):
         self.sample_analysis.parameters = []
         self.sample_analysis.id = 12
         self.sample_analysis.input_hash = 12345
+        self.sample_analysis.model_id = 1
 
         results_dataset = Dataset()
         results_dataset.type = 'Result'
@@ -39,6 +40,7 @@ class AnalysisServiceTest(BaseTest):
 
         self._mock_session.add = MagicMock()
         self._mock_session.commit = MagicMock()
+        time_indicies = {}
 
         analysis_service = AnalysisService(self._mock_session)
         analysis_service.create(self.sample_analysis.name,
@@ -49,7 +51,9 @@ class AnalysisServiceTest(BaseTest):
                                 self.sample_analysis.random_group,
                                 self.sample_analysis.model_variable,
                                 self.sample_analysis.data_type,
-                                self.sample_analysis.input_hash)
+                                self.sample_analysis.model_id,
+                                self.sample_analysis.input_hash,
+                                time_indicies)
 
         self._mock_session.add.assert_called_once_with(ANY)
         self._mock_session.commit.assert_called_once_with()
