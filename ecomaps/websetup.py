@@ -90,8 +90,8 @@ def setup_app(command, conf, vars):
         # CEH
         ds2 = Dataset()
         ds2.dataset_type = pointDst
-        ds2.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/ECOMAPSDetail/ECOMAPSInputLOI01.nc?service=WMS&version=1.3.0&request=GetCapabilities'
-        ds2.netcdf_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/ECOMAPSDetail/ECOMAPSInputLOI01.nc'
+        ds2.wms_url = 'http://localhost:8080/thredds/wms/testAll/JENP.nc?service=WMS&version=1.3.0&request=GetCapabilities'
+        ds2.netcdf_url = 'http://localhost:8080/thredds/dodsC/testAll/JENP.nc'
         ds2.name = 'Example Point dataset'
 
         # LOCAL
@@ -111,6 +111,7 @@ def setup_app(command, conf, vars):
         ds3.viewable_by_user_id = user.id
 
         session.add(ds3)
+
 
         a1 = Analysis()
         a1.name = "JENP's Analysis 1"
@@ -147,6 +148,8 @@ def setup_app(command, conf, vars):
         a1.model_variable="loi"
 
         session.add(a1)
+
+        return
 
         cds_a2 = AnalysisCoverageDataset()
 
