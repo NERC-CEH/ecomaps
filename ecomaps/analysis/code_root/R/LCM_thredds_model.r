@@ -95,7 +95,7 @@ do_work <- function() {
         for(vn in 1:length(covariate_data[[i]]$vars)){
 
             progress_fn("In here!")
-            nm_var[cn] <- covariate_data[[i]]$vars[vn]
+            nm_var[cn] <- toString(covariate_data[[i]]$vars[vn])
 
             #save the spatial dimensions
             #north[[cn]] <- get.var.ncdf(cov_dat,"y")
