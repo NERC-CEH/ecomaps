@@ -110,6 +110,7 @@ do_work <- function() {
             #Next, the data are read using the get.var.ncdf()function, and some �attributes� are read, like the long name of the variable and its missing value.  Then the missing values in the data array are replaced by R/S+ "data not available" values.
 
             # get the data and attributes
+            progress_fn(paste("Trying to get ", nm_var[cn]))
             tmp.array[[cn]] <- ncvar_get(cov_dat,nm_var[cn])
 
             if(!is.na(time_slices[[nm_var[cn]]])){
@@ -430,5 +431,5 @@ do_work <- function() {
 #########################
 #########################
 
-#do_work()
-tryCatch(do_work(), error=function(e) { progress_fn(geterrmessage()); return(NA)})
+do_work()
+#tryCatch(do_work(), error=function(e) { progress_fn(geterrmessage()); return(NA)})
