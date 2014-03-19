@@ -15,3 +15,4 @@ class ConfigureAnalysisForm(formencode.Schema):
     random_group = formencode.validators.String(not_empty=True)
     model_variable = formencode.validators.String(not_empty=True)
     data_type = formencode.validators.String(not_empty=True)
+    analysis_description = formencode.validators.String(not_empty=True)

@@ -6,6 +6,7 @@ from ecomaps.analysis.run import AnalysisRunner
 
 from ecomaps.lib.base import BaseController, c, request, response, render, session, abort
 from ecomaps.services.analysis import AnalysisService
+from ecomaps.services.model import ModelService
 from ecomaps.services.netcdf import NetCdfService
 from ecomaps.services.user import UserService
 from ecomaps.services.dataset import DatasetService
@@ -31,9 +32,11 @@ class AnalysisController(BaseController):
     _analysis_service = None
     _dataset_service = None
     _netcdf_service = None
+    _model_service = None
 
     def __init__(self, user_service=UserService(), analysis_service=AnalysisService(),
-                 dataset_service=DatasetService(), netcdf_service=NetCdfService()):
+                 dataset_service=DatasetService(), netcdf_service=NetCdfService(),
+                 model_service=ModelService()):
         """Constructor for the analysis controller, takes in any services required
             Params:
                 user_service: User service to use within the controller
@@ -43,6 +46,7 @@ class AnalysisController(BaseController):
         self._analysis_service = analysis_service
         self._dataset_service = dataset_service
         self._netcdf_service = netcdf_service
+        self._model_service = model_service
 
     def index(self):
         """Default action for the analysis controller"""
@@ -96,6 +100,8 @@ class AnalysisController(BaseController):
         """ Creates the configure analysis page"""
 
         user_id = self.current_user.id
+
+        c.all_models = self._model_service.get_all_models()
 
         c.point_datasets = self._dataset_service.get_datasets_for_user(user_id,'Point')
 
@@ -156,7 +162,9 @@ class AnalysisController(BaseController):
                                                            'unit_of_time',
                                                            'random_group',
                                                            'model_variable',
-                                                           'data_type'])
+                                                           'data_type',
+                                                           'model_id',
+                                                           'analysis_description'])
 
                 test_analysis = self._analysis_service.get_public_analyses_with_identical_input(hash)
 
@@ -183,6 +191,8 @@ class AnalysisController(BaseController):
                             c.form_result.get('random_group'),
                             c.form_result.get('model_variable'),
                             c.form_result.get('data_type'),
+                            c.form_result.get('model_id'),
+                            c.form_result.get('analysis_description'),
                             hash,
                             time_indicies)
 
@@ -190,9 +200,11 @@ class AnalysisController(BaseController):
 
                 analysis_to_run = self._analysis_service.get_analysis_by_id(analysis_id, user_id)
 
+                model = self._model_service.get_model_by_id(analysis_to_run.model_id)
+
                 # The path to the code may need to be made dynamic
                 # if we start running multiple analyses
-                runner = AnalysisRunner('code_root')
+                runner = AnalysisRunner(model.code_path)
                 runner.run_async(analysis_to_run)
 
                 return render('analysis_progress.html')
@@ -274,9 +286,11 @@ class AnalysisController(BaseController):
             ds.column_names = self._netcdf_service.get_variable_column_names(ds.netcdf_url)
 
         c.coverage_datasets = coverage_datasets
+        c.all_models = self._model_service.get_all_models()
 
         current_analysis = self._analysis_service.get_analysis_by_id(id, user_id)
         point_dataset_id = current_analysis.point_data_dataset_id
+        model_id = current_analysis.model_id
 
         # For each coverage dataset that was linked to the original analysis, there
         # will be a number of column names chosen...
@@ -294,7 +308,8 @@ class AnalysisController(BaseController):
         data_type = current_analysis.data_type
 
         return render('configure_analysis.html',
-                              extra_vars={'current_point_dataset_id': point_dataset_id,
+                              extra_vars={'current_model_id': model_id,
+                                          'current_point_dataset_id': point_dataset_id,
                                           'current_coverage_dataset_ids': coverage_dataset_ids,
                                           'unit_of_time': unit_of_time,
                                           'random_group': random_group,

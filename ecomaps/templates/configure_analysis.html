@@ -22,20 +22,24 @@
             </div>
         </div>
     </div>
-    <?python
-        from genshi.builder import tag
 
-        test = {
-            "attribute": "12345",
-            "test" : "hello"
-        }
-    ?>
-
-    <form py:attrs="test" class="form-horizontal" method="POST" action="${url(controller='analysis', action='create')}">
+    <form class="form-horizontal" method="POST" action="${url(controller='analysis', action='create')}">
 
         <div class="control-group">
             <label for="analysis_name" class="control-label">Name of Analysis:</label>
             ${h.html_tags.text('analysis_name', class_='controls')}
+        </div>
+
+        <div class="control-group">
+
+            <label for="model_id" class="control-label">Choose Model to Run:</label>
+            <select id="model_id" name="model_id" class="controls">
+                <option py:for="model in c.all_models" value="${model.id}" py:attrs="{'selected':'True'} if defined('current_model_id') and model.id is current_model_id else {}">
+                    ${model.name}
+                </option>
+            </select>
+
+            <i class="icon-info-sign" data-toggle="tooltip" title="The model used to generate the analysis results."></i>
         </div>
 
         <div class="control-group">
@@ -104,6 +108,13 @@
             </select>
 
             <i class="icon-info-sign" data-toggle="tooltip" title="Distribution type of the data."></i>
+        </div>
+
+        <div class="control-group">
+            <label for="Analysis Description" class="control-label">Description:</label>
+            <textarea class="controls" placeholder="Description" id="analysis_description" name="analysis_description"></textarea>
+
+            <i class="icon-info-sign" data-toggle="tooltip" title="A short description of the analysis: What is being modelled? Why is it interesting? etc."></i>
         </div>
 
         <div class="controls">

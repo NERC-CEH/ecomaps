@@ -89,7 +89,8 @@ class AnalysisService(DatabaseService):
 
     def create(self, name, point_dataset_id, coverage_dataset_ids,
                user_id, unit_of_time, random_group, model_variable,
-               data_type, input_hash, time_indicies):
+               data_type, model_id, analysis_description,input_hash,
+               time_indicies):
         """Creates a new analysis object
             Params:
                 name - Friendly name for the analysis
@@ -101,6 +102,8 @@ class AnalysisService(DatabaseService):
                 random_group - additional input into the model
                 model_variable - the variable that is being modelled
                 data_type - data type of the variable
+                model_id - id of the model to be used to generate the results
+                analysis_description - a short string describing the analysis
                 input_hash - used to quickly identify a duplicate analysis in terms of inputs
                 time_indicies - if any columns in coverage datasets need time slicing, the index (i.e. the time slice)
                                 to take will be stored against each relevant column in here
@@ -116,6 +119,8 @@ class AnalysisService(DatabaseService):
             analysis.viewable_by = user_id
             analysis.point_data_dataset_id = int(point_dataset_id)
             analysis.deleted = False
+            analysis.model_id = model_id
+            analysis.description = analysis_description
 
             # Hook up the coverage datasets
 
