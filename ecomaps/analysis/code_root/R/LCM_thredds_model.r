@@ -111,7 +111,7 @@ do_work <- function() {
 
             # get the data and attributes
             progress_fn(paste("Trying to get ", nm_var[cn]))
-            tmp.array[[cn]] <- ncvar_get(cov_dat,nm_var[cn])
+            tmp.array[[cn]] <- ncvar_get(cov_dat,toString(nm_var[cn]))
 
             if(!is.na(time_slices[[nm_var[cn]]])){
                 progress_fn(paste("Time slice for: ", nm_var[cn], ": ",  time_slices[[nm_var[cn]]]))
