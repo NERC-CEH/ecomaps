@@ -92,6 +92,8 @@ do_work <- function() {
 
         cov_dat <- nc_open(temp_netcdf_file)
 
+        progress_fn(paste(covariate_data[[i]]$vars))
+
         for(vn in 1:length(covariate_data[[i]]$vars)){
 
             progress_fn("In here!")
@@ -110,14 +112,14 @@ do_work <- function() {
             #Next, the data are read using the get.var.ncdf()function, and some �attributes� are read, like the long name of the variable and its missing value.  Then the missing values in the data array are replaced by R/S+ "data not available" values.
 
             # get the data and attributes
-            progress_fn(paste("Trying to get ", nm_var[cn]))
+
             tmp.array[[cn]] <- ncvar_get(cov_dat,toString(nm_var[cn]))
 
-            if(!is.na(time_slices[[nm_var[cn]]])){
+            if(length(time_slices) > 0 && !is.na(time_slices[[nm_var[cn]]])){
                 progress_fn(paste("Time slice for: ", nm_var[cn], ": ",  time_slices[[nm_var[cn]]]))
                 tmp.array[[cn]] <- tmp.array[[cn]][,,(time_slices[[nm_var[cn]]])]
             }
-
+            progress_fn("TEST")
             ###retrieve meta-data from netcdf files
 
             #dlname <- att.get.ncdf(lcm1km07,nm_var,"long_name")$value
