@@ -148,7 +148,7 @@ class AnalysisRunner(object):
             for ds in analysis_obj.coverage_datasets:
                 # Important - convert unicode to ascii in here to avoid the R code
                 # creating another list if only one column
-                coverage_dict[ds.dataset] = [(c.column, c.time_index) for c in ds.columns]
+                coverage_dict[ds.dataset] = [(str(c.column), c.time_index) for c in ds.columns]
 
             # Now we have enough information to kick the analysis off
             output_file_loc, map_image_file_loc, \
