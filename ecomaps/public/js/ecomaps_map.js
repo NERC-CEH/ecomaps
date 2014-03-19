@@ -40,6 +40,11 @@ var EcomapsMap = (function() {
            toggleLayerDisplay($(this).data("layerid"));
         });
 
+        // Toggle legend display on/off
+        layerContainer.on("click", "input.legend-toggle", function(){
+            toggleLegendDisplay($(this).data("layerid"));
+        });
+
         // Changing the style of the layer
         layerContainer.on("change", "select.style-list", function(){
 
@@ -74,6 +79,46 @@ var EcomapsMap = (function() {
               $(this).val()
             );
         });
+
+        // Reset button
+        $("button#reset-button").click(resetViewer);
+    };
+
+    var createSortableList = function() {
+
+        // Making the layers sortable - we'll
+        // have an <ol> for each dataset selected
+        $("ol.sortable").sortable({
+            group: 'layers',
+            itemSelector : "li.layer",
+            nested: false,
+            handle: 'i.icon-resize-vertical',
+            onDragStart: function ($item, position, _super) {
+                var layerContainer = $("div#layer-list");
+
+                // Force the list container to maintain its rendered width
+                layerContainer.css('width',layerContainer.css('width'));
+                _super($item, position);
+            },
+
+            onDrop : function($item, container, _super) {
+                // How many layers do we have v--- Subtract base layer
+                var index = map.layers.length-1;
+                $("ol.sortable li.layer").each(function(){
+
+                    // Now reorder the map layers based on the order
+                    // they come through this each() function
+                    var layerId = $(this).data("layerid");
+                    var layer = layerDict[layerId];
+                    layer.index = index;
+                    var mapLayer = map.getLayersByName(layer.data.name)[0];
+                    map.setLayerIndex(mapLayer, index);
+
+                    index--;
+                });
+                _super($item, container);
+            }
+        });
     };
 
     /*
@@ -85,59 +130,67 @@ var EcomapsMap = (function() {
     var loadDataset = function() {
 
         // Highlight the selected dataset
-        $("li.active").removeClass("active");
-        $(this).closest("li").toggleClass("active");
+        //$("li.active").removeClass("active");
+        if ($(this).closest("li").hasClass("active")) {
 
-        // Plop the loading panel over the map
-        setLoadingState(true);
-
-        // Reset the layers on the map
-        for(var l in layerDict) {
-            removeLayerFromMap(l);
         }
+        else {
 
-        // Let's get some layers!
-        var datasetId = $(this).data("dsid");
+            $(this).closest("li").addClass("active");
+            // Plop the loading panel over the map
+            setLoadingState(true);
 
-        // Load the layers UI straight from the response
-        $("div#options-panel").load('/viewdata/layers/' + datasetId + '?' + new Date().getTime(), function() {
-                $("div#options-panel").show();
-            }
-        );
+            // Let's get some layers!
+            var datasetId = $(this).data("dsid");
 
-        // Make the request for the WMS layer data
-        $.getJSON('/viewdata/get_layer_data?dsid=' + datasetId,
-            function(data){
+            // Load the layers UI straight from the response
+            $.get('/viewdata/layers/' + datasetId, function(result) {
 
-                for(var i=0; i< data.length; i++){
+                $("div#layer-container").prepend(result);
+                var dimensionItems = $("div#layer-list").find("li.dimension");
 
-                    // Give it a unique ID for our layer bag
-                    var layerId = "" + datasetId + data[i].name;
-
-                    // We'll refer back to this when changing styles or visibility
-                    layerDict[layerId] = {
-                        index: currentLayerIndex,
-                        data: data[i],
-                        visible: true,
-                        wmsObject: null,
-                        legendURL: null,
-                        scaleMin: 0,
-                        scaleMax: 50,
-                        styleName: data[i].styles[0].name
-                    };
-
-                    // Now to add to the map, and set a default style
-                    addLayerToMap(layerId);
-                    setLayerStyle(layerId);
+                if(dimensionItems.length > 0){
+                    dimensionItems.detach().appendTo("ol#dimension-list");
+                    $("div#dimension-panel").show();
                 }
-
-                // All done
-                setLoadingState(false);
-            }
-        ) .fail(function() {
-                alert("An error occurred loading the dataset, please try again.");
-                setLoadingState(false);
+                $("div#options-panel").show();
+                createSortableList();
             });
+
+            // Make the request for the WMS layer data
+            $.getJSON('/viewdata/get_layer_data?dsid=' + datasetId,
+                function(data){
+
+                    for(var i=0; i< data.length; i++){
+
+                        // Give it a unique ID for our layer bag
+                        var layerId = "" + datasetId + data[i].name;
+
+                        // We'll refer back to this when changing styles or visibility
+                        layerDict[layerId] = {
+                            index: currentLayerIndex,
+                            data: data[i],
+                            visible: true,
+                            wmsObject: null,
+                            legendURL: null,
+                            scaleMin: 0,
+                            scaleMax: 50,
+                            styleName: data[i].styles[0].name
+                        };
+
+                        // Now to add to the map, and set a default style
+                        addLayerToMap(layerId);
+                        setLayerStyle(layerId);
+                    }
+
+                    // All done
+                    setLoadingState(false);
+                }
+            ) .fail(function() {
+                    alert("An error occurred loading the dataset, please try again.");
+                    setLoadingState(false);
+                });
+        }
     };
 
     /*
@@ -157,7 +210,6 @@ var EcomapsMap = (function() {
         // Zoom in over the UK to begin with, set coords here
         var lat = 54;
         var lon = -2;
-        var zoom = 0;
         var position = new OpenLayers.LonLat(lon, lat);
 
         // Now to add the base layer
@@ -257,8 +309,6 @@ var EcomapsMap = (function() {
         var defaultStyle = data.styles[0];
         layerObj.legendURL = defaultStyle.legendURL.onlineResource.split('?')[0];
 
-        //addLegend(layerId, defaultStyle.name);
-
         $("div#legend").show();
 
         // Add to map
@@ -292,6 +342,18 @@ var EcomapsMap = (function() {
         else {
             removeLegend(layerId);
         }
+    };
+
+    /*
+     * toggleLegendDisplay
+     *
+     *  Toggles a layer's legend visibility
+     *
+     *  @param layerId: ID of the layer containing the legend to toggle
+     */
+    var toggleLegendDisplay = function(layerId) {
+
+        $("img[data-layerid=" + layerId + "]").toggle();
     };
 
     /*
@@ -413,8 +475,6 @@ var EcomapsMap = (function() {
             context.drawImage(this, this.offsetLeft, this.offsetTop);
         });
 
-
-
         // This'll help us space the legends out
         var legendCount =0;
 
@@ -444,6 +504,22 @@ var EcomapsMap = (function() {
         }
 
         window.open(canvas.toDataURL("image/png"));
+    };
+
+    var resetViewer = function() {
+
+        // Reset the layers on the map
+        for(var l in layerDict) {
+            if(layerDict.hasOwnProperty(l)){
+                removeLayerFromMap(l);
+            }
+        }
+
+        $("div#layer-container").html("");
+        $("ol#dimension-list").html("");
+        $("div#dimension-panel").hide();
+        $("div#options-panel").hide();
+        $("li.active").removeClass("active");
     };
 
     return {

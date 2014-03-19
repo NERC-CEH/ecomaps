@@ -16,6 +16,7 @@ from cStringIO import StringIO
 import xml.sax.saxutils as saxutils
 
 #from ows_server.models import Utilities
+from paste.httpexceptions import HTTPNotFound
 from paste.request import parse_querystring
 import ecomaps.lib.utils as utils
 
@@ -49,7 +50,7 @@ class WmsvizController(BaseController):
         """
         log.debug('entered wmsviz controller index action')
 
-
+        return HTTPNotFound
         
         g.helpIcon='layout/icons/help.png'  #needs to go in config
         

@@ -36,6 +36,10 @@ class UserException(ClientException):
     def __init__(self):
         pass
 
+class CrowdCommunicationExcpetion(ClientException):
+
+    def __init__(self):
+        pass
 
 class CrowdClient(object):
     """Provides a simple interface to a crowd server"""
@@ -229,7 +233,12 @@ class CrowdClient(object):
             # If we haven't connected to Crowd yet,
             # make a dummy request in order to save our
             # application credentials
-            self.opener.open(self.crowd_api + 'group/membership')
+            try:
+                self.opener.open(self.crowd_api + 'group/membership')
+            except urllib2.HTTPError as h_ex:
+                log.error("CROWD CONNECTION ISSUE: %s" % h_ex)
+                raise CrowdCommunicationExcpetion()
+
             urllib2.install_opener(self.opener)
             self.opener_installed = True
 

@@ -33,3 +33,8 @@ class EcoMapsNetCdfFileTest(unittest.TestCase):
         columns = s.get_variable_column_names("http://localhost:8080/thredds/dodsC/testAll/LCM2007_GB_1K_DOM_TAR.nc")
 
         self.assertEqual(columns, ['LandCover'])
+
+    def test_temporal_dataset(self):
+
+        f = EcoMapsNetCdfFile('http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/ECOMAPSDetail/ECOMAPSInputLOI01.nc')
+        g=0

@@ -136,6 +136,8 @@ class Analysis(Base):
     complete = Column(Boolean)
     model_formula = Column(String(255))
     input_hash = Column(BigInteger)
+    deleted = Column(Boolean)
+    description = Column(String(1000))
 
     unit_of_time = Column(String(255))
     random_group = Column(String(255))
@@ -166,6 +168,7 @@ class AnalysisCoverageDatasetColumn(Base):
     analysis_id = Column(Integer)
     dataset_id = Column(Integer)
     column = Column(String(255))
+    time_index = Column(Integer)
 
     #analysis_coverage_dataset = relationship('AnalysisCoverageDataset', foreign_keys=[analysis_id, dataset_id])
 
