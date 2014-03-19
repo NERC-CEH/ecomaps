@@ -154,7 +154,8 @@ class ViewdataController(WmsvizController):
             else:
                 ds_id = request.params['layerid'][len('ds_'):]
 
-            dataset = self._dataset_service.get_dataset_by_id(ds_id)
+            dataset = self._dataset_service.get_dataset_by_id(ds_id,
+                                                              user_id=self.current_user.id)
             return self.get_layers_for_dataset(dataset)
 
         else:
@@ -178,7 +179,8 @@ class ViewdataController(WmsvizController):
         """ Returns a view on a dataset's map layers
             @param dataset_id: The ID of the dataset to get the layer data for
         """
-        dataset = self._dataset_service.get_dataset_by_id(id)
+        dataset = self._dataset_service.get_dataset_by_id(id,
+                                                          user_id=self.current_user.id)
 
         c.dataset = dataset
 
