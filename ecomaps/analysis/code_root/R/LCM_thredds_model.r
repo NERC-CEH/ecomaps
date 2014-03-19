@@ -431,4 +431,4 @@ do_work <- function() {
 #########################
 
 #do_work()
-tryCatch(do_work(), error=function(e) { progress_fn(paste(geterrmessage(), sys.calls())); return(NA)})
+tryCatch(do_work(), error=function(e) { progress_fn(geterrmessage()); return(NA)})
