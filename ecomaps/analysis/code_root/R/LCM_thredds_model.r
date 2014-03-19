@@ -431,5 +431,5 @@ do_work <- function() {
 #########################
 #########################
 
-do_work()
-#tryCatch(do_work(), error=function(e) { progress_fn(geterrmessage()); return(NA)})
+#do_work()
+tryCatch(do_work(), error=function(e) { progress_fn(geterrmessage()); return(NA)})
