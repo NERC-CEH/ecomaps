@@ -28,7 +28,7 @@ class UserController(BaseController):
 
         self._dataset_service = dataset_service
 
-    def view_users(self):
+    def index(self):
         """Allow admin-user to see all users of the system. If user is non-admin, redirect to page not found.
         """
         identity = request.environ.get('REMOTE_USER')
@@ -48,6 +48,10 @@ class UserController(BaseController):
     def create(self):
         """Create a new user
         """
+
+        if not self.current_user.access_level == 'Admin':
+            return render('not_found.html')
+
         if not request.POST:
 
             return render('new_user.html')
@@ -82,11 +86,11 @@ class UserController(BaseController):
                                        auto_error_formatter=custom_formatter)
             else:
                 # By default a user will be an external user
-                self._user_service.create(user_email,
+                self._user_service.create(c.form_result.get('user_name'),
                                           c.form_result.get('name'),
                                           user_email,
-                                          "External")
-                return redirect(url(controller="user", action="view_users"))
+                                          "Admin" if c.form_result.get('is_admin') else "CEH")
+                return redirect(url(controller="user"))
 
 
 def custom_formatter(error):

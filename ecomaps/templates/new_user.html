@@ -12,10 +12,18 @@
 
     <form method="POST">
         <div class="control-group">
+            <label for="user_name" class="control-label">
+                Login Name:
+            </label>
+                ${h.html_tags.text('user_name', class_='controls')}
             <label for="Name" class="control-label">Name:</label>
                ${h.html_tags.text('name', class_='controls')}
             <label for="Email" class="control-label" id="email">Email:</label>
                ${h.html_tags.text('email', class_='controls')}
+            <label for="is_admin" class="checkbox">
+                ${h.html_tags.checkbox('is_admin', class_='checkbox')}
+                Admin user</label>
+
         </div>
 
         <div class="controls">

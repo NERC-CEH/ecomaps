@@ -98,7 +98,7 @@ class DatasetController(BaseController):
 
         return render('dataset_preview.html')
 
-    def view_datasets(self):
+    def index(self):
         """Allow admin-user to see all available datasets. If user is non-admin, redirect to page not found.
         """
         identity = request.environ.get('REMOTE_USER')

@@ -9,5 +9,7 @@ class CreateUserForm(formencode.Schema):
     allow_extra_fields = False
     filter_extra_fields = True
 
+    user_name = formencode.validators.String(not_empty=True)
     name = formencode.validators.String(not_empty=True)
     email = formencode.validators.Email(not_empty=True)
+    is_admin = formencode.validators.Bool()
