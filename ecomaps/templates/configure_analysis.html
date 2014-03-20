@@ -175,21 +175,26 @@
                     $(this).append($("<option></option>").text("Loading..."));
                     $(this).attr("disabled", true);
                 });
-
-                $.getJSON("/dataset/columns/" + dataset_id,
-                    function(data) {
-
+                jQuery.support.cors = true;
+                $.ajax({
+                    url : "/dataset/columns/" + dataset_id,
+                    success: function(data) {
                         // Populate each list we know of
 
                         // Time
-                        populateVariableList("unit_of_time", data, $(unit_of_time_value).val(), 'year');
+                        populateVariableList("unit_of_time", data, $("input#unit_of_time_value").val(), 'year');
 
                         // Group by
-                        populateVariableList("random_group", data, $(random_group_value).val(), 'SERIES_NUM');
+                        populateVariableList("random_group", data, $("input#random_group_value").val(), 'SERIES_NUM');
 
                         // Model Var
-                        populateVariableList("model_variable", data, $(model_variable_value).val(), 'loi');
-                    });
+                        populateVariableList("model_variable", data, $("input#model_variable_value").val(), 'loi');
+                    },
+                    error: function(xhr, status, error) {
+                         alert(status);
+                       },
+                    dataType: 'json'
+                });
             };
 
             // Error span swap
