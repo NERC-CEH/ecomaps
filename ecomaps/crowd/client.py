@@ -262,13 +262,17 @@ class CrowdClient(object):
 
         except urllib2.HTTPError as h_ex:
 
-            # Interrogate the error response...
-            err_response = simplejson.loads(h_ex.read())
+            if hasattr(h_ex, "read"):
+                # Interrogate the error response...
+                err_response = simplejson.loads(h_ex.read())
 
-            # Use this info to look up the exception we should raise
-            reason = err_response['reason']
+                # Use this info to look up the exception we should raise
+                reason = err_response['reason']
 
-            try:
-                raise self._errorMap[reason]()
-            except:
-                raise ClientException
+                try:
+                    raise self._errorMap[reason]()
+                except:
+                    raise ClientException
+            else:
+                log.error("CROWD ERROR: %s" % h_ex)
+                raise h_ex
