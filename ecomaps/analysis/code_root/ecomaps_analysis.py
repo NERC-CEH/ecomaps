@@ -179,27 +179,10 @@ class EcomapsAnalysis(object):
         else:
            return before
 
-    def _intersect(self, row, geotransform, time_index, column_name, array):
-        northing = row['northing']
-        easting = row['easting']
-        xpixel, ypixel = self._mapToPixel(easting, northing, geotransform)
-
-        if time_index:
-                # Zero-based array, but the slices are assuming 1-based so-----------vv
-            row[column_name] = int(array[column_name][time_index-1, ypixel, xpixel])
-        else:
-            row[column_name] = int(array[column_name][ypixel, xpixel])
-
 
     def _geodataframe_intersect(self, north_list, east_list, dataframe,
                                 array, geotransform, column_name, time_index, progress_fn):
 
-
-        # dataframe.apply(self._intersect, axis=1, geotransform=geotransform,
-        #                 time_index=time_index, column_name=column_name,
-        #                 array=array)
-        #
-        # return dataframe
         for count, row in dataframe.iterrows():
             northing = row['northing']
             easting = row['easting']

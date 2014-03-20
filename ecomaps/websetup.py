@@ -92,10 +92,10 @@ def setup_app(command, conf, vars):
         session.add(model)
 
         # CEH
-        ds2 = Dataset()
-        ds2.dataset_type = pointDst
-        ds2.wms_url = 'http://localhost:8080/thredds/wms/testAll/JENP.nc?service=WMS&version=1.3.0&request=GetCapabilities'
-        ds2.netcdf_url = 'http://localhost:8080/thredds/dodsC/testAll/JENP.nc'
-        ds2.name = 'Example Point dataset'
+        #ds2 = Dataset()
+        #ds2.dataset_type = pointDst
+        #ds2.wms_url = 'http://localhost:8080/thredds/wms/testAll/JENP.nc?service=WMS&version=1.3.0&request=GetCapabilities'
+        #ds2.netcdf_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/ECOMAPSDetail/ECOMAPSInputLOI01.nc'
+        #ds2.name = 'Example Point dataset'
 
-        session.add(ds2)
+        #session.add(ds2)
