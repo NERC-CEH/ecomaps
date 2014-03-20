@@ -108,9 +108,9 @@
             <label for="Data Type" class="control-label">Data Type:</label>
 
             <select class="controls" id="data_type" name="data_type">
-                <option value="cont">Continuous</option>
-                <option value="count">Count</option>
-                <option value="binary">Binary</option>
+                <option py:attrs="{'selected': 'True'} if defined ('data_type') and data_type =='cont' else {}" value="cont">Continuous</option>
+                <option py:attrs="{'selected': 'True'} if defined ('data_type') and data_type =='count' else {}" value="count">Count</option>
+                <option py:attrs="{'selected': 'True'} if defined ('data_type') and data_type =='binary' else {}" value="binary">Binary</option>
             </select>
 
             <i class="icon-info-sign" data-toggle="tooltip" title="Distribution type of the data."></i>
