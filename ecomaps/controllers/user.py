@@ -92,6 +92,27 @@ class UserController(BaseController):
                                           "Admin" if c.form_result.get('is_admin') else "CEH")
                 return redirect(url(controller="user"))
 
+    def edit(self, id):
+        """ Action for updating a single user, denoted by the ID passed in
+
+            @param id: ID of the user to update
+        """
+
+        # Kick unauthorized users out straight away
+        if not self.current_user.access_level == 'Admin':
+            return render('not_found.html')
+
+        c.user_to_edit = self._user_service.get_user_by_id(id)
+
+        if not c.user_to_edit:
+            return render('not_found.html')
+
+        # GET request...
+        if not request.method == 'POST':
+
+            return render("edit_user.html")
+
+
 
 def custom_formatter(error):
     """Custom error formatter"""

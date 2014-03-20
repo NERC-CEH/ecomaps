@@ -40,6 +40,21 @@ class UserService(DatabaseService):
                 # We'll get an exception if the user can't be found
                 return None
 
+
+    def get_user_by_id(self, id):
+        """ Simply returns the user with the specified ID
+
+            @param id: ID of the user to get
+        """
+
+        with self.readonly_scope() as session:
+
+            try:
+                return session.query(User).get(id)
+            except:
+                return None
+
+
     def get_all_users(self):
         """Returns an array containing all the users"""
 
@@ -47,5 +62,23 @@ class UserService(DatabaseService):
 
             return session.query(User)
 
+
+    def update(self, full_name, email, access_level, user_id):
+        """ Updates the user specified by the ID passed in
+
+            @param full_name: New friendly name for the user
+            @param email: New email address
+            @param access_level: New access level
+            @param user_id: ID of the user to update
+        """
+        with self.transaction_scope() as session:
+
+            user = session.query(User).get(user_id)
+
+            user.name = full_name
+            user.email = email
+            user.access_level = access_level
+
+            session.add(user)
 
 
