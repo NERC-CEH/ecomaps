@@ -52,7 +52,7 @@ class AnalysisController(BaseController):
         """Default action for the analysis controller"""
 
         # Who am I?
-        user = self._user_service.get_user_by_username(request.environ['REMOTE_USER'])
+        user = self.current_user
 
         # Grab the analyses...
         c.private_analyses = self._analysis_service.get_analyses_for_user(user.id)
@@ -67,7 +67,7 @@ class AnalysisController(BaseController):
         """Action for sorting the analysis table using a particular column. Also responsible for filtering the table
         based on the model variable.
         """
-        user = self._user_service.get_user_by_username(request.environ['REMOTE_USER'])
+        user = self.current_user
         query_string = request.query_string
         params = urlparse.parse_qs(query_string)
 
@@ -213,9 +213,8 @@ class AnalysisController(BaseController):
         """Action for looking in detail at a single analysis
             id - ID of the analysis to look at
         """
-        user = request.environ.get('REMOTE_USER')
 
-        user_obj = self._user_service.get_user_by_username(user)
+        user_obj = self.current_user
 
         analysis = self._analysis_service.get_analysis_by_id(id, user_obj.id)
         c.run_by_user = analysis.run_by_user.name
@@ -243,8 +242,7 @@ class AnalysisController(BaseController):
 
             analysis_id = request.params.get('analysis_id')
 
-            user = request.environ.get('REMOTE_USER')
-            user_obj = self._user_service.get_user_by_username(user)
+            user_obj = self.current_user
             c.username = user_obj.name
 
             analysis = self._analysis_service.get_analysis_by_id(analysis_id, user_obj.id)
@@ -274,9 +272,8 @@ class AnalysisController(BaseController):
         """Action for re-running a particular analysis with same parameters as before
             id - ID of the analysis to look at
         """
-        user = request.environ.get('REMOTE_USER')
-        user_object = self._user_service.get_user_by_username(user)
-        user_id = user_object.id
+
+        user_id = self.current_user.id
         c.point_datasets = self._dataset_service.get_datasets_for_user(user_id,'Point')
         coverage_datasets = self._dataset_service.get_datasets_for_user(user_id, 'Coverage')
 
@@ -323,9 +320,7 @@ class AnalysisController(BaseController):
                 id: ID of analysis to get progress message for
         """
 
-        user = request.environ.get('REMOTE_USER')
-        user_obj = self._user_service.get_user_by_username(user)
-        analysis = self._analysis_service.get_analysis_by_id(id, user_obj.id)
+        analysis = self._analysis_service.get_analysis_by_id(id, self.current_user.id)
 
         return {
             'complete': analysis.complete,
@@ -341,13 +336,11 @@ class AnalysisController(BaseController):
         '''Action that allows the user to download a results dataset
         '''
 
-        user = request.environ.get('REMOTE_USER')
-        user_object = self._user_service.get_user_by_username(user)
-        user_id = user_object.id
+        user_id = self.current_user.id
 
         current_analysis = self._analysis_service.get_analysis_by_id(id, user_id)
         result_dataset_id = current_analysis.result_dataset_id
-        result_dataset = self._dataset_service.get_dataset_by_id(result_dataset_id)
+        result_dataset = self._dataset_service.get_dataset_by_id(result_dataset_id, user_id=user_id)
         url = result_dataset.netcdf_url
 
         data_file = self._analysis_service.get_netcdf_file(url)
@@ -372,9 +365,7 @@ class AnalysisController(BaseController):
             analysis_id = request.params.get('analysis_id')
 
             # Check user has access to the analysis before deleting
-            user = request.environ.get('REMOTE_USER')
-            user_object = self._user_service.get_user_by_username(user)
-            analysis = self._analysis_service.get_analysis_by_id(analysis_id, user_object.id)
+            analysis = self._analysis_service.get_analysis_by_id(analysis_id, self.current_user.id)
             if analysis:
                 self._analysis_service.delete_private_analysis(analysis_id)
                 return redirect(url(controller='analysis', action='index'))
