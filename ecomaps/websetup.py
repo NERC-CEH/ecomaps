@@ -74,28 +74,13 @@ def setup_app(command, conf, vars):
 
         # CEH Chess Data
         chess = Dataset()
-        chess.name = 'CHESS 1971 01'
+        chess.name = 'CHESS Annual Precipitation'
         chess.dataset_type = coverDst
         chess.netcdf_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/TestDetail/CHESS37YearAverageAnnualPrecip.nc'
         chess.low_res_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/TestDetail/CHESS37YearAverageAnnualPrecip.nc'
         chess.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/wms/TestDetail/CHESS37YearAverageAnnualPrecip.nc?service=WMS&version=1.3.0&request=GetCapabilities'
 
         session.add(chess)
-        # CEH
-        ds2 = Dataset()
-        ds2.dataset_type = pointDst
-        ds2.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/ECOMAPSDetail/ECOMAPSInputLOI01.nc?service=WMS&version=1.3.0&request=GetCapabilities'
-        ds2.netcdf_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/ECOMAPSDetail/ECOMAPSInputLOI01.nc'
-        ds2.name = 'Example Point dataset'
-
-        # LOCAL
-        # ds2 = Dataset()
-        # ds2.dataset_type = pointDst
-        # ds2.wms_url = 'http://localhost:8080/thredds/dodsC/testAll/ECOMAPSInputLOI01.nc?service=WMS&version=1.3.0&request=GetCapabilities'
-        # ds2.netcdf_url = 'http://localhost:8080/thredds/dodsC/testAll/ECOMAPSInputLOI01.nc'
-        # ds2.name = 'Example Point dataset'
-
-        session.add(ds2)
 
         # Model that provides the interface to the R code
         model = Model()
@@ -105,3 +90,12 @@ def setup_app(command, conf, vars):
         model.code_path = "code_root"
 
         session.add(model)
+
+        # CEH
+        #ds2 = Dataset()
+        #ds2.dataset_type = pointDst
+        #ds2.wms_url = 'http://localhost:8080/thredds/wms/testAll/JENP.nc?service=WMS&version=1.3.0&request=GetCapabilities'
+        #ds2.netcdf_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/ECOMAPSDetail/ECOMAPSInputLOI01.nc'
+        #ds2.name = 'Example Point dataset'
+
+        #session.add(ds2)

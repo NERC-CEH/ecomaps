@@ -148,9 +148,14 @@ class DatasetController(BaseController):
                                                             c.form_result.get('netcdf_url'),
                                                             c.form_result.get('low_res_url'))
                 else:
+                    # Point data, so we only need the netcdf OpenDAP url,
+                    # we need to generate a gridded copy for the WMS
+                    opendap_url = c.form_result.get('netcdf_url')
+                    wms_url = self._netcdf_service.overlay_point_data(opendap_url)
+
                     self._dataset_service.create_point_dataset(c.form_result.get('name'),
-                                                            c.form_result.get('wms_url'),
-                                                            c.form_result.get('netcdf_url'))
+                                                            wms_url,
+                                                            opendap_url)
 
                 return redirect(url(controller="dataset", action="view_datasets"))
 
