@@ -1,4 +1,6 @@
 import unittest
+from paste.deploy import appconfig
+from ecomaps.config.environment import load_environment
 from ecomaps.services.netcdf import EcoMapsNetCdfFile, NetCdfService
 
 __author__ = 'Phil Jenkins (Tessella)'
@@ -38,3 +40,11 @@ class EcoMapsNetCdfFileTest(unittest.TestCase):
 
         f = EcoMapsNetCdfFile('http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/ECOMAPSDetail/ECOMAPSInputLOI01.nc')
         g=0
+
+    def test_overlay_point_data(self):
+
+        conf = appconfig('config:test.ini', relative_to='.')
+        test_conf = load_environment(conf.global_conf, conf.local_conf)
+
+        s= NetCdfService(config=test_conf)
+        self.assertNotEqual(None, s.overlay_point_data('http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/ECOMAPSDetail/ECOMAPSInputLOI01.nc'))

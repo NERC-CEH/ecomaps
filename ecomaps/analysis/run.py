@@ -9,23 +9,25 @@ import os
 import uuid
 import stat
 from ecomaps.analysis.code_root.ecomaps_analysis import EcomapsAnalysis
+from ecomaps.lib.ecomaps_utils import WorkingDirectory, working_directory
 from ecomaps.model import Dataset, session_scope, Analysis
 
 __author__ = 'Phil Jenkins (Tessella)'
 
 log = logging.getLogger(__name__)
 
-class EcomapsAnalysisWorkingDirectory(object):
+class EcomapsAnalysisWorkingDirectory(WorkingDirectory):
     """Encapsulates the aspects of a directory containing the ecomaps analysis"""
 
     _working_dir = None
 
-    def __init__(self, working_dir):
+    def __init__(self):
         """Constructor for our temporary directory
             Params:
                 working_dir: The directory we're going to use as our base
         """
-        self._working_dir = working_dir
+
+        super(EcomapsAnalysisWorkingDirectory, self).__init__()
 
     @property
     def csv_folder(self):
@@ -50,39 +52,6 @@ class EcomapsAnalysisWorkingDirectory(object):
 
         return os.path.join(self._working_dir, "images")
 
-    @property
-    def root_folder(self):
-
-        return self._working_dir
-
-
-@contextmanager
-def working_directory(root_dir):
-    """Provides a temporary copy of a given root directory, deletes when done
-        Params:
-            root_dir: Root of directory to copy
-    """
-
-    try:
-        temp_dir = tempfile.mkdtemp()
-
-        working_dir = EcomapsAnalysisWorkingDirectory(os.path.join(temp_dir, 'working'))
-        shutil.copytree(root_dir, working_dir.root_folder)
-
-        # copytree() doesn't set the permissions properly on the copied files
-        # so we'll have to do it manually instead
-        for root, dirs, files in os.walk(working_dir.root_folder, topdown=False):
-            for dir in dirs:
-                os.chmod(os.path.join(root, dir), 0755)
-            for file in files:
-                os.chmod(os.path.join(root,file), 0755)
-
-        yield working_dir
-
-    finally:
-
-        # Clean up after ourselves
-        shutil.rmtree(temp_dir)
 
 class AnalysisRunner(object):
     """Utility to run an analysis within the context of a temporary directory"""
@@ -93,25 +62,28 @@ class AnalysisRunner(object):
     _open_ndap_format = None
     _analysis_obj = None
 
-    def __init__(self, source_dir):
+    def __init__(self, source_dir, config_file= None):
         """ Constructs our runner
             Params:
                 source_dir: Directory containing the code we want to run
+                config_file: Custom configuration, otherwise will use Pylons default
         """
 
         # Set up the temporary directory based on the directory
         # containing the analysis code
         self._source_dir = source_dir
 
-        # Read the config
-        from ConfigParser import SafeConfigParser
+        # Find out which config to look at
+        if config_file:
+            config = config_file
+        else:
+            from pylons import config as cfg
 
-        config = SafeConfigParser()
-        config.read(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'config.ini'))
+            config = cfg
 
-        self._thredds_wms_format = config.get('thredds', 'thredds_wms_format')
-        self._netcdf_file_store = config.get('thredds', 'netcdf_file_location')
-        self._open_ndap_format = config.get('thredds', 'open_ndap_format')
+        self._thredds_wms_format = config['thredds_wms_format']
+        self._netcdf_file_store = config['netcdf_file_location']
+        self._open_ndap_format = config['open_ndap_format']
 
     def run_async(self, analysis_obj):
         """Runs the analysis asynchonously
@@ -132,7 +104,8 @@ class AnalysisRunner(object):
 
         self._analysis_obj = analysis_obj
 
-        with working_directory(os.path.join(os.path.dirname(__file__), self._source_dir)) as dir:
+        with working_directory(EcomapsAnalysisWorkingDirectory(),
+                                os.path.join(os.path.dirname(__file__), self._source_dir)) as dir:
 
             log.debug("Analysis for %s has started" % self._analysis_obj.name)
 
@@ -146,8 +119,8 @@ class AnalysisRunner(object):
             coverage_dict = {}
 
             for ds in analysis_obj.coverage_datasets:
-                # Important - convert unicode to ascii in here to avoid the R code
-                # creating another list if only one column
+                # Make a sensible data structure to tie the columns chosen
+                # for each dataset with any time slice information
                 coverage_dict[ds.dataset] = [(c.column, c.time_index) for c in ds.columns]
 
             # Now we have enough information to kick the analysis off

@@ -13,10 +13,6 @@ from pylons.templating import render_genshi as render
 from paste import httpexceptions
 import paste.request
 
-import ecomaps.lib.helpers as h
-import ecomaps.model as model
-
-# To simplify upgrading to Pylons-1.0
 from ecomaps.services.user import UserService
 
 app_globals = config['pylons.app_globals']
