@@ -7,7 +7,7 @@ from ecomaps.services.dataset import DatasetService
 from pylons import tmpl_context as c, url
 from formencode import htmlfill
 import formencode
-from ecomaps.model.create_new_user_form import CreateUserForm
+from ecomaps.model.create_new_user_form import CreateUserForm, UpdateUserForm
 
 __author__ = 'Chirag Mistry'
 
@@ -73,7 +73,7 @@ class UserController(BaseController):
 
             # Username of the user will be set as the user's email address
             # Generate an error if the email address (and hence username) is already taken
-            if self._user_service.get_user_by_username(user_email):
+            if self._user_service.get_user_by_email_address(user_email):
                 c.form_errors = dict(c.form_errors.items() + {
                     'email': 'Email address is already taken - please choose another.'
                 }.items())
@@ -111,6 +111,46 @@ class UserController(BaseController):
         if not request.method == 'POST':
 
             return render("edit_user.html")
+
+        else:
+            schema = UpdateUserForm()
+            c.form_errors = {}
+            # POST
+            try:
+                c.form_result = schema.to_python(request.params)
+
+            except formencode.Invalid, error:
+
+                c.form_result = error.value
+                c.form_errors = error.error_dict or {}
+
+            user_email = str(c.form_result.get('email'))
+            user_id = int(c.form_result.get('user_id'))
+
+            # Username of the user will be set as the user's email address
+            # Generate an error if the email address (and hence username) is already taken
+            existing_user = self._user_service.get_user_by_email_address(user_email)
+
+            if existing_user and existing_user.id != user_id:
+
+                c.form_errors = dict(c.form_errors.items() + {
+                    'email': 'Email address is already taken - please choose another.'
+                }.items())
+
+            if c.form_errors:
+                html = render('edit_user.html')
+                return htmlfill.render(html,
+                                       defaults=c.form_result,
+                                       errors=c.form_errors,
+                                       auto_error_formatter=custom_formatter)
+            else:
+                # By default a user will be an external user
+                self._user_service.update(c.form_result.get('name'),
+                                          user_email,
+                                          "Admin" if c.form_result.get('is_admin') else "CEH",
+                                          c.form_result.get('user_id'))
+
+                return redirect(url(controller="user"))
 
 
 

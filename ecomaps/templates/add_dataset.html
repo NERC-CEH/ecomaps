@@ -14,15 +14,23 @@
         <div class="control-group">
             <label for="Name" class="control-label">Name:</label>
                ${h.html_tags.text('name', class_='controls')}
+        </div>
+        <div class="control-group">
             <label for="Type" class="control-label">Type:</label>
                 <select name="type" id="dataset_type" class="controls">
                     <option selected="selected" id="coverage" value="Coverage">Coverage</option>
                     <option id="point" value="Point">Point</option>
                </select>
+        </div>
+        <div class="control-group">
             <label for="netcdf_url" class="control-label">OpenDAP URL:</label>
                ${h.html_tags.text('netcdf_url', class_='controls')}
+        </div>
+        <div class="control-group">
             <label for="wms_url" id="wms_label" class="control-label">WMS URL:</label>
                ${h.html_tags.text('wms_url', class_='controls')}
+        </div>
+        <div class="control-group">
             <label for="low_res_url" id="low_res_label" class="control-label">HTTP file server URL:</label>
                ${h.html_tags.text('low_res_url', class_='controls')}
         </div>

@@ -13,20 +13,30 @@
     <form method="POST">
         <div class="control-group">
             <label for="user_name" class="control-label">
-                Login Name:
+                Login Name: ${c.user_to_edit.username}
             </label>
-                <div class="controls">
-                    ${c.user_to_edit.username}
-                </div>
+        </div>
+        <div class="control-group">
             <label for="Name" class="control-label">Full name:</label>
-               <input id="name" name="Name" type="text" value="${c.user_to_edit.name}" />
+               <input id="name" name="name" type="text" value="${c.user_to_edit.name}" class="controls" />
+        </div>
+        <div class="control-group">
+            <label for="Email" class="control-label">Email:</label>
+                <input type="text" name="email" class="controls" id="email" value="${c.user_to_edit.email}" />
+        </div>
+        <div class="control-group">
+            <label for="is_admin" class="checkbox">
+                <input type="checkbox" name="is_admin" class="checkbox" py:attrs="{ 'checked' : 'true' } if c.user_to_edit.access_level == 'Admin' else {}" />
+                Admin user
+            </label>
+        </div>
+            <input type="hidden" name="user_id" value="${c.user_to_edit.id}" />
             <!--<label for="Email" class="control-label" id="email">Email:</label>-->
                <!--${h.html_tags.text('email', class_='controls')}-->
             <!--<label for="is_admin" class="checkbox">-->
                 <!--${h.html_tags.checkbox('is_admin', class_='checkbox')}-->
                 <!--Admin user</label>-->
 
-        </div>
 
         <div class="controls">
             <input type="submit" class="btn btn-primary btn-large pull-right control-group" value="Update" />

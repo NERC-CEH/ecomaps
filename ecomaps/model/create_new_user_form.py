@@ -5,8 +5,8 @@ __author__ = 'Chirag Mistry (Tessella)'
 
 class UpdateUserForm(formencode.Schema):
 
-    allow_extra_fields = False
-    filter_extra_fields = True
+    allow_extra_fields = True
+    filter_extra_fields = False
 
     name = formencode.validators.String(not_empty=True)
     email = formencode.validators.Email(not_empty=True)

@@ -41,6 +41,23 @@ class UserService(DatabaseService):
                 return None
 
 
+    def get_user_by_email_address(self, email):
+        """ Returns a user with the given email (which should be unique)
+
+            @param email: email address to filter on
+        """
+
+        with self.readonly_scope() as session:
+
+            try:
+                return session.query(User).filter(User.email == email).one()
+
+            except:
+                # We'll get an exception if the user can't be found
+                return None
+
+
+
     def get_user_by_id(self, id):
         """ Simply returns the user with the specified ID
 

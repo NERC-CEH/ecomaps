@@ -3,7 +3,6 @@ from random import randint
 from sqlalchemy.orm import subqueryload, subqueryload_all, aliased, contains_eager, joinedload
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.sql import Alias, or_, asc, desc
-from ecomaps import websetup
 from ecomaps.model import Dataset, Analysis, AnalysisCoverageDatasetColumn
 from ecomaps.services.general import DatabaseService
 from ecomaps.model import AnalysisCoverageDataset

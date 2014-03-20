@@ -17,6 +17,7 @@
                 <th>Username</th>
                 <th>Email</th>
                 <th>Access Level</th>
+                <th></th>
             </thead>
             <tbody>
                 <tr py:for="user in c.all_users">
@@ -31,6 +32,9 @@
                     </td>
                     <td>
                         ${user.access_level}
+                    </td>
+                    <td>
+                        <a href="${url(controller='user', action='edit', id=user.id) }" class="btn btn-mini"><i class="icon-edit"></i> Edit</a>
                     </td>
                 </tr>
             </tbody>
