@@ -134,19 +134,30 @@
 //<![CDATA[
             $(function () {
 
-            var populateVariableList = function(listId, options, defaultValue) {
+            var populateVariableList = function(listId, options, selectedValue, defaultValue) {
 
                 listId = "#" + listId;
 
                 $(listId).attr("disabled", false);
                 $(listId).empty();
 
-                for(var i=0; i<options.length; i++) {
-                    $(listId).append($("<option></option>")
-                        .val(options[i])
-                        .text(options[i])
-                        .attr("selected", options[i] === defaultValue ? 'selected' : undefined));
+                if (selectedValue === ''){
+                    for(var i=0; i<options.length; i++) {
+                        $(listId).append($("<option></option>")
+                            .val(options[i])
+                            .text(options[i])
+                            .attr("selected", options[i] === defaultValue ? 'selected' : undefined));
 
+                    }
+                }
+                else{
+                     for(var i=0; i<options.length; i++) {
+                        $(listId).append($("<option></option>")
+                            .val(options[i])
+                            .text(options[i])
+                            .attr("selected", options[i] === selectedValue ? 'selected' : undefined));
+
+                    }
                 }
 
             };
@@ -171,13 +182,13 @@
                         // Populate each list we know of
 
                         // Time
-                        populateVariableList("unit_of_time_list", data, $(unit_of_time_value).val());
+                        populateVariableList("unit_of_time_list", data, $(unit_of_time_value).val(), 'year');
 
                         // Group by
-                        populateVariableList("random_group_list", data, $(random_group_value).val());
+                        populateVariableList("random_group_list", data, $(random_group_value).val(), 'SERIES_NUM');
 
                         // Model Var
-                        populateVariableList("model_variable_list", data, $(model_variable_value).val());
+                        populateVariableList("model_variable_list", data, $(model_variable_value).val(), 'loi');
                     });
             };
 
