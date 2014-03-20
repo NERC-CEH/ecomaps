@@ -79,7 +79,7 @@
 
             <input type="hidden" id='unit_of_time_value' py:attrs="{'value': unit_of_time} if defined('unit_of_time') else None"/>
 
-            <select id="unit_of_time_list" name="unit_of_time_list" class="controls model-param"></select>
+            <select id="unit_of_time" name="unit_of_time" class="controls model-param"></select>
 
             <i class="icon-info-sign" data-toggle="tooltip" title="Unit of time used in the model."></i>
         </div>
@@ -89,7 +89,7 @@
 
             <input type="hidden" id='random_group_value' py:attrs="{'value': random_group} if defined('random_group') else None"/>
 
-            <select id="random_group_list" name="random_group_list" class="controls model-param"></select>
+            <select id="random_group" name="random_group" class="controls model-param"></select>
 
             <i class="icon-info-sign" data-toggle="tooltip" title="A parameter used to group data in the model."></i>
         </div>
@@ -99,7 +99,7 @@
 
             <input type="hidden" id='model_variable_value' py:attrs="{'value': model_variable} if defined('model_variable') else None"/>
 
-            <select id="model_variable_list" name="model_variable_list" class="controls model-param"></select>
+            <select id="model_variable" name="model_variable" class="controls model-param"></select>
 
             <i class="icon-info-sign" data-toggle="tooltip" title="The variable being modelled"></i>
         </div>
@@ -107,7 +107,7 @@
         <div class="control-group">
             <label for="Data Type" class="control-label">Data Type:</label>
 
-            <select class="controls" name="data_type_list" id="data_type_list">
+            <select class="controls" id="data_type" name="data_type">
                 <option value="cont">Continuous</option>
                 <option value="count">Count</option>
                 <option value="binary">Binary</option>
@@ -182,13 +182,13 @@
                         // Populate each list we know of
 
                         // Time
-                        populateVariableList("unit_of_time_list", data, $(unit_of_time_value).val(), 'year');
+                        populateVariableList("unit_of_time", data, $(unit_of_time_value).val(), 'year');
 
                         // Group by
-                        populateVariableList("random_group_list", data, $(random_group_value).val(), 'SERIES_NUM');
+                        populateVariableList("random_group", data, $(random_group_value).val(), 'SERIES_NUM');
 
                         // Model Var
-                        populateVariableList("model_variable_list", data, $(model_variable_value).val(), 'loi');
+                        populateVariableList("model_variable", data, $(model_variable_value).val(), 'loi');
                     });
             };
 
