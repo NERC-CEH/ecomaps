@@ -141,6 +141,8 @@
                 $(listId).attr("disabled", false);
                 $(listId).empty();
 
+                alert(options.length);
+
                 if (selectedValue === ''){
                     for(var i=0; i<options.length; i++) {
                         $(listId).append($("<option></option>")
