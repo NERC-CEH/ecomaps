@@ -1,3 +1,4 @@
+import base64
 import datetime
 import logging
 import os
@@ -54,6 +55,9 @@ class CrowdClient(object):
 
     _token_cache = {}
 
+    crowd_user = None
+    crowd_password = None
+
     def __init__(self, api_url=None, app_name=None, app_pwd=None):
         """Constructor function
         Params:
@@ -61,26 +65,29 @@ class CrowdClient(object):
             app_name: Application login name for Crowd server
             app_pwd: Application password for Crowd server
         """
-
         # Load up the config from file
         from ConfigParser import SafeConfigParser
 
         config = SafeConfigParser()
         config.read(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'config.ini'))
 
+        self.crowd_user = app_name or config.get('crowd', 'app_name')
+        self.crowd_password = app_pwd or config.get('crowd', 'app_password')
+
+
         # Fall back to the config value if we haven't explicitly specified a URL
         # for the REST API, do the same for the application user and password too
         self.crowd_api = api_url or config.get('crowd', 'api_url')
-        password_mgr = urllib2.HTTPPasswordMgrWithDefaultRealm()
-        password_mgr.add_password(None,
-                                  self.crowd_api,
-                                  app_name or config.get('crowd', 'app_name'),
-                                  app_pwd or config.get('crowd', 'app_password'))
+        #password_mgr = urllib2.HTTPPasswordMgrWithDefaultRealm()
+        #password_mgr.add_password(None,
+        #                          self.crowd_api,
+        #                          app_name or config.get('crowd', 'app_name'),
+        #                          app_pwd or config.get('crowd', 'app_password'))
 
         # Use this credentials for subsequent urllib2 requests to crowd
-        handler = urllib2.HTTPBasicAuthHandler(password_mgr)
-        self.opener = urllib2.build_opener(handler)
-        self.opener_installed = False
+        #handler = urllib2.HTTPBasicAuthHandler(password_mgr)
+        #self.opener = urllib2.build_opener(handler)
+        #self.opener_installed = False
 
     def check_authenticated(self, user_name, password):
         """Checks if the user in question is in the crowd system
@@ -224,26 +231,29 @@ class CrowdClient(object):
 
         # Ask for JSON in return
         request.add_header("Accept", "application/json")
+        base64string = base64.encodestring('%s:%s' % (self.crowd_user, self.crowd_password)).replace('\n', '')
+        request.add_header("Authorization", "Basic %s" % base64string)
 
         if method:
             # Fancy verbs (like DELETE) can be dealt with here
             request.get_method = lambda: method
 
-        if not self.opener_installed:
+        #if not self.opener_installed:
             # If we haven't connected to Crowd yet,
             # make a dummy request in order to save our
             # application credentials
-            try:
-                self.opener.open(self.crowd_api + 'group/membership')
-            except urllib2.HTTPError as h_ex:
-                log.error("CROWD CONNECTION ISSUE: %s" % h_ex)
-                raise CrowdCommunicationExcpetion()
+        #    try:
+        #        self.opener.open(self.crowd_api + 'group/membership')
+        #    except urllib2.HTTPError as h_ex:
+        #        log.error("CROWD CONNECTION ISSUE: %s" % h_ex)
+        #        raise CrowdCommunicationExcpetion()
 
-            urllib2.install_opener(self.opener)
-            self.opener_installed = True
+            #urllib2.install_opener(self.opener)
+            #self.opener_installed = True
 
         try:
             # We're finally ready to make the request...
+
             f = urllib2.urlopen(request)
 
             # 204 is officially "No Content", so we won't have

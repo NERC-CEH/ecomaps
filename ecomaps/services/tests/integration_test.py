@@ -2,6 +2,7 @@ import unittest
 from ecomaps.model import initialise_session, Base, Session, User, Dataset, Analysis, DatasetType, AnalysisCoverageDataset
 from ecomaps.services.analysis import AnalysisService
 from ecomaps.services.dataset import DatasetService
+from ecomaps.services.user import UserService
 
 __author__ = 'Phil Jenkins (Tessella)'
 
@@ -17,10 +18,20 @@ class IntegrationTests(unittest.TestCase):
 
         super(IntegrationTests,self).__init__(*args, **kwargs)
         initialise_session(None, manual_connection_string=self._connectionstring)
+        Base.metadata.drop_all(bind=Session.bind)
+        Base.metadata.create_all(bind=Session.bind)
 
     def _populate_session(self):
 
         with self._service.transaction_scope() as session:
+
+            user = User()
+            user.username = 'test_user'
+            user.name = 'Test User'
+            user.email = "test@test.com"
+            user.access_level = 'CEH'
+
+            session.add(user)
 
             pointDst = DatasetType()
             pointDst.type = 'Point'
@@ -166,3 +177,17 @@ class IntegrationTests(unittest.TestCase):
 
             updated_analysis = another_session.query(Analysis).filter(Analysis.id == analysis.id).one()
             self.assertEqual(updated_analysis.viewable_by, None, "Expected viewable by field to be cleared out")
+
+    def test_update_user(self):
+
+        user_service = UserService()
+        username = "test_user"
+
+        old_user = user_service.get_user_by_username(username)
+
+        user_service.update("new test user name",
+                     "test2@test.com",
+                     "Admin",
+                     old_user.id)
+
+        g=0

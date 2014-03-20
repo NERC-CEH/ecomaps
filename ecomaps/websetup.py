@@ -39,6 +39,14 @@ def setup_app(command, conf, vars):
 
         session.add(user)
 
+        user2 = User()
+        user2.name = 'Mike Wilson'
+        user2.username = 'mw'
+        user2.email = 'mw@ceh.ac.uk'
+        user2.access_level = "Admin"
+
+        session.add(user2)
+
         pointDst = DatasetType()
         pointDst.type = 'Point'
 
