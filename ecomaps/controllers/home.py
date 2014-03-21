@@ -18,8 +18,7 @@ class HomeController(BaseController):
     def index(self):
         """Default action, shows the home page"""
 
-        user = self._user_service.get_user_by_username(request.environ['REMOTE_USER'])
-        c.name = user.name
+        c.name = self.current_user.name
 
         return render("home.html")
 
