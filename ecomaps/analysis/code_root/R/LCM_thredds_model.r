@@ -5,7 +5,35 @@ require(ncdf)
 require(ncdf4)
 require(gdata)
 
-##progress_fn is constantly updated to specify what part of the code we are up to
+# PJ ********* Inputs from Python *************
+#
+#   coverage_setup:
+#       Named list of columns, keyed by the URL of each dataset
+#   time_slices
+#       Named list keyed by column names, with a time index (if the column contains 3D data)
+#       e.g. ['LandCover'=3, 'precip'=1]
+#   progress_rep_file
+#       Location on disk of the progress reporting file
+#   user_name
+#       Name of the user running the analysis
+#   email_address
+#       Email address of the user running the analysis
+#   csv_file
+#       Location of the input CSV file
+#   map_image_file
+#       Location on disk to write the map image to
+#   fit_image_file
+#       Location on disk to write the fit image to
+#   temp_netcdf_file
+#       Location of the temporary netCDF container to use as a temporary store
+#   output_netcdf_file
+#       Location to write the output netCDF file to
+#
+########################################################
+
+
+# Writes a message to the predefined progress file, creates the file
+# if it doesn't exist
 progress_fn <- function(message) {
 
     if(!file.exists(progress_rep_file)) {
@@ -92,8 +120,6 @@ do_work <- function() {
 
         cov_dat <- nc_open(temp_netcdf_file)
 
-        progress_fn(paste(covariate_data[[i]]$vars))
-
         for(vn in 1:length(covariate_data[[i]]$vars)){
 
             nm_var[cn] <- toString(covariate_data[[i]]$vars[vn])
@@ -114,11 +140,14 @@ do_work <- function() {
 
             tmp.array[[cn]] <- ncvar_get(cov_dat,toString(nm_var[cn]))
 
+            # PJ: Check the time slices array to see if there's
+            # an entry with this column name, extract the slice at
+            # the designated index if so
             if(length(time_slices) > 0 && !is.na(time_slices[[nm_var[cn]]])){
-                progress_fn(paste("Time slice for: ", nm_var[cn], ": ",  time_slices[[nm_var[cn]]]))
+
                 tmp.array[[cn]] <- tmp.array[[cn]][,,(time_slices[[nm_var[cn]]])]
             }
-            progress_fn("TEST")
+
             ###retrieve meta-data from netcdf files
 
             #dlname <- att.get.ncdf(lcm1km07,nm_var,"long_name")$value
