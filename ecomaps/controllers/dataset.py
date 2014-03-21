@@ -157,7 +157,7 @@ class DatasetController(BaseController):
                                                             wms_url,
                                                             opendap_url)
 
-                return redirect(url(controller="dataset", action="view_datasets"))
+                return redirect(url(controller="dataset"))
 
     def timeselection(self, id):
         """ Gets the possible time points for a temporal dataset
