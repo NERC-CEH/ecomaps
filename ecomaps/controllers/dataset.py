@@ -41,7 +41,7 @@ class DatasetController(BaseController):
         """ Returns a list of the variable columns for the given dataset id
         @param id: The ID of the dataset to get columns for
         """
-        ds = self._dataset_service.get_dataset_by_id(id)
+        ds = self._dataset_service.get_dataset_by_id(id, user_id=self.current_user.id)
 
         if ds:
             return self._netcdf_service.get_variable_column_names(ds.netcdf_url)
@@ -157,7 +157,7 @@ class DatasetController(BaseController):
                                                             wms_url,
                                                             opendap_url)
 
-                return redirect(url(controller="dataset", action="view_datasets"))
+                return redirect(url(controller="dataset"))
 
     def timeselection(self, id):
         """ Gets the possible time points for a temporal dataset
