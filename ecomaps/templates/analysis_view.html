@@ -18,12 +18,12 @@
             <py:choose>
                 <py:when test="added_successfully">
                     <div class="alert alert-success">
-                        <b>Well done!</b> You have successfully published an Ecomap.
+                        <b>Analysis Published</b> Other users can now see your results.
                     </div>
                 </py:when>
                 <py:otherwise>
                     <div class="alert alert-error">
-                        <b>Oh snap!</b> Ecomap was not published correctly.
+                        <b>An error occurred publishing the analysis</b>
                     </div>
                 </py:otherwise>
             </py:choose>
@@ -132,7 +132,7 @@
                                 <h5>Fit values</h5>
                                 <dl class="dl-horizontal">
                                     <dt>AIC</dt>
-                                    <dd>${c.analysis.aic}</dd>
+                                    <dd>${c.analysis.attributes['AIC']}</dd>
                                     <dt>RMS Error</dt>
                                     <dd>${c.analysis.attributes['root_mean_square_error']}</dd>
                                     <dt>R<sup>2</sup></dt>
