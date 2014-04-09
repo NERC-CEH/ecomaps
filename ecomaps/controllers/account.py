@@ -77,19 +77,30 @@ class AccountController(BaseController):
                     # If we've got enough info, we should see if they are in
                     # the ecomaps database already
                     if request.environ['user.username']:
-                        log.debug("Looking for %s in Ecomaps DB" % request.environ['user.username'])
 
+                        user_name = request.environ['user.username']
+
+                        log.debug("Looking for %s in Ecomaps DB" % user_name)
 
                         u = self._user_service.get_user_by_username(request.environ['user.username'])
 
                         if not u:
 
-                            log.debug("Couldn't find %s in Ecomaps DB, creating user" % request.environ['user.username'])
+                            # Try again, just in case the user has entered their full email address...
+                            if '@' in user_name:
 
-                            self._user_service.create(request.environ['user.username'],
-                                                  request.environ['user.name'],
-                                                  request.environ['user.email'],
-                                                  None)
+                                user_name = user_name.split('@')[0]
+                                log.debug("Found an @ in the user name, trying to find user in Ecomaps DB with first part")
+                                u = self._user_service.get_user_by_username(request.environ['user.username'])
+
+                            if not u:
+
+                                log.debug("Couldn't find %s in Ecomaps DB, creating user" % user_name)
+
+                                self._user_service.create(user_name,
+                                                      request.environ['user.name'],
+                                                      request.environ['user.email'],
+                                                      None)
 
 
                     return HTTPFound(location=came_from, headers=headers)
