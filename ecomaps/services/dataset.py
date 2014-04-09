@@ -1,5 +1,5 @@
 from sqlalchemy import or_
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import joinedload, contains_eager
 from ecomaps.model import Dataset, DatasetType, Analysis
 from ecomaps.services.general import DatabaseService
 
@@ -26,7 +26,7 @@ class DatasetService(DatabaseService):
             # Note SQLAlchemy wants '== None' not 'is None'
             if dataset_type_id is None and dataset_type is None:
                 return session.query(DatasetType).join(DatasetType.datasets) \
-                                                .options(joinedload(DatasetType.datasets)) \
+                                                .options(contains_eager(DatasetType.datasets)) \
                                                 .filter(or_(Dataset.viewable_by_user_id == user_id,
                                                  Dataset.viewable_by_user_id == None)).all()
             elif dataset_type_id is None:
