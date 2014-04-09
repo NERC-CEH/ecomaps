@@ -83,6 +83,9 @@ class AccountController(BaseController):
                         u = self._user_service.get_user_by_username(request.environ['user.username'])
 
                         if not u:
+
+                            log.debug("Couldn't find %s in Ecomaps DB, creating user" % request.environ['user.username'])
+
                             self._user_service.create(request.environ['user.username'],
                                                   request.environ['user.name'],
                                                   request.environ['user.email'],

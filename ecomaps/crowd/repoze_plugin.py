@@ -1,9 +1,11 @@
+import logging
 from ecomaps.crowd.client import CrowdClient, ClientException
 from zope.interface import directlyProvides
 from repoze.who.interfaces import IChallengeDecider
 
 __author__ = 'Phil Jenkins (Tessella)'
 
+log = logging.getLogger(__name__)
 
 class CrowdRepozePlugin(object):
     """Implementation of a repoze.who plugin which communicates
@@ -35,16 +37,26 @@ class CrowdRepozePlugin(object):
         """
         try:
 
+            log.debug("--> Repoze authenticate")
+
             # Do we have an active session already?
             if 'token' in identity:
+
+                log.debug("--> Already got a token")
+
                 # If so, we can just return the user name
                 return identity['login']
 
             # Otherwise, it's a trip to Crowd to authenticate
+
+            log.debug("--> No token")
             username = identity['login']
             password = identity['password']
 
             user = self._client.check_authenticated(username, password)
+
+            log.debug("--> Auth result %s" % user)
+
             self._user = user
             return user['name']
 
