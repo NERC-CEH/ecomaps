@@ -7,21 +7,25 @@ __author__ = 'Phil Jenkins (Tessella)'
 class UserService(DatabaseService):
     """Provides operations on User objects"""
 
-    def create(self, username, fullname, email, access_level):
+    def create(self, username, first_name, last_name, email, access_level):
         """Creates a user (if the user doesn't already exist)
             Params:
                 username: The login name of the user
-                fullname: The user's friendly name
+                first_name: User's first name
+                last_name: User's last name
                 email: User's email address
+                access_level: Set to 'Admin' for administrative functions
         """
 
         with self.transaction_scope() as session:
 
             user = User()
             user.username = username
-            user.name = fullname
+            user.name = " ".join([first_name, last_name])
             user.email = email
             user.access_level = access_level
+            user.first_name = first_name
+            user.last_name = last_name
 
             session.add(user)
 
@@ -80,10 +84,11 @@ class UserService(DatabaseService):
             return session.query(User)
 
 
-    def update(self, full_name, email, access_level, user_id):
+    def update(self, first_name, last_name, email, access_level, user_id):
         """ Updates the user specified by the ID passed in
 
-            @param full_name: New friendly name for the user
+            @param first_name: New friendly name for the user
+            @param last_name: User's surname
             @param email: New email address
             @param access_level: New access level
             @param user_id: ID of the user to update
@@ -92,7 +97,9 @@ class UserService(DatabaseService):
 
             user = session.query(User).get(user_id)
 
-            user.name = full_name
+            user.first_name = first_name
+            user.last_name = last_name
+            user.name = " ".join([first_name, last_name])
             user.email = email
             user.access_level = access_level
 

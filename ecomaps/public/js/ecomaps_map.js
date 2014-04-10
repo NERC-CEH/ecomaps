@@ -203,6 +203,16 @@ var EcomapsMap = (function() {
 
         map = new OpenLayers.Map('map');
 
+//        var apiKey = "AlLzJcuciFYnzQhJZlyE5OGjGWtvWp2MfQNYDPL6kE4JnltPwiQL4gNayJbqS7MX";
+//
+//        //var map = new OpenLayers.Map( 'map');
+//
+//        // Bing's Road imagerySet
+//        var wms = new OpenLayers.Layer.Bing({
+//            key: apiKey,
+//            type: "Road"
+//        });
+
         // Add the custom loading panel here...
         map.addControl(new OpenLayers.Control.LoadingPanel());
         map.addControl(new OpenLayers.Control.ScaleLine())
@@ -214,7 +224,7 @@ var EcomapsMap = (function() {
 
         // Now to add the base layer
         var wms = new OpenLayers.Layer.WMS( "OpenLayers WMS",
-            "/dataset/base", {layers: 'basic'});
+           "/dataset/base", {layers: 'basic'});
         map.addLayer(wms);
         map.zoomToMaxExtent();
 

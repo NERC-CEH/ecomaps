@@ -196,6 +196,19 @@ class CrowdClient(object):
 
         return self._make_request('user', data=req.new_user_json())
 
+    def update_user(self, username, first_name, last_name,
+                    email, password):
+        """Asks the client to update the user record"""
+
+        req = UserRequest()
+        req.username = username
+        req.first_name = first_name
+        req.last_name = last_name
+        req.email = email
+        req.password = password
+
+        return self._make_request('user?username=%s' % username, data=req.new_user_json(), method='PUT')
+
 
     def delete_user(self, username):
         """ Performs a delete on a user

@@ -46,8 +46,12 @@ class BaseController(WSGIController):
         # available in environ['pylons.routes_dict'
 
         if 'login' not in environ.get('PATH_INFO'):
-            self.current_user = self._user_service.get_user_by_username(request.environ['REMOTE_USER'])
-            if self.current_user and self.current_user.access_level == "Admin":
+            self.current_user = self._user_service.get_user_by_username(environ.get('REMOTE_USER'))
+
+            if not self.current_user:
+                raise httpexceptions.HTTPUnauthorized()
+
+            if self.current_user.access_level == "Admin":
                 c.admin_user = True
             else:
                 c.admin_user = False

@@ -42,7 +42,7 @@ class CrowdRepozePlugin(object):
             # Do we have an active session already?
             if 'token' in identity:
 
-                log.debug("--> Already got a token")
+                log.debug("--> Already got a token, returning %s" % identity['login'])
 
                 # If so, we can just return the user name
                 return identity['login']
@@ -87,9 +87,12 @@ class CrowdRepozePlugin(object):
             return None
 
         try:
+
+            log.debug("Checking user session with token: %s" % token)
             # Verify the session is still valid...
             user_obj = self._client.verify_user_session(token)
 
+            log.debug("User OK: %s" % user_obj)
             # It is - so return the expected data structure
             return {
                 "login": user_obj['user']['name'],
@@ -97,6 +100,7 @@ class CrowdRepozePlugin(object):
             }
         except ClientException:
             # Session is invalid or deleted
+            log.debug("User session no longer valid")
             return None
 
     def remember(self, environ, identity):
@@ -133,6 +137,8 @@ class CrowdRepozePlugin(object):
             environ['user.name'] = user_info['display-name']
             environ['user.email'] = user_info['email']
             environ['user.username'] = username
+            environ['user.first-name'] = user_info['first-name']
+            environ['user.last-name'] = user_info['last-name']
 
         # Set a cookie in the user's browser by returning the correct header instruction
         cookie_val = "%s" % token

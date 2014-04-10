@@ -85,9 +85,13 @@ class UserController(BaseController):
                                        errors=c.form_errors,
                                        auto_error_formatter=custom_formatter)
             else:
+
+
+
                 # By default a user will be an external user
                 self._user_service.create(c.form_result.get('user_name'),
-                                          c.form_result.get('name'),
+                                          c.form_result.get('first_name'),
+                                          c.form_result.get('last_name'),
                                           user_email,
                                           "Admin" if c.form_result.get('is_admin') else "CEH")
                 return redirect(url(controller="user"))
@@ -145,7 +149,8 @@ class UserController(BaseController):
                                        auto_error_formatter=custom_formatter)
             else:
                 # By default a user will be an external user
-                self._user_service.update(c.form_result.get('name'),
+                self._user_service.update(c.form_result.get('first_name'),
+                                          c.form_result.get('last_name'),
                                           user_email,
                                           "Admin" if c.form_result.get('is_admin') else "CEH",
                                           c.form_result.get('user_id'))

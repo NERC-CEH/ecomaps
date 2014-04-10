@@ -49,6 +49,8 @@ class User(Base):
     email = Column(String(255))
     name = Column(String(50))
     access_level = Column(String(10))
+    first_name = Column(String(50))
+    last_name = Column(String(50))
 
     def __repr__(self):
         """String representation of the user"""
@@ -130,7 +132,7 @@ class Analysis(Base):
     result_dataset_id = Column(Integer, ForeignKey('datasets.id'))
     viewable_by = Column(Integer, ForeignKey('users.id'), nullable=True)
     model_id = Column(Integer, ForeignKey('models.id'))
-    aic = Column(Integer)
+    aic = Column(String(50))
     result_image = Column(Text(length=2**31))
     progress_message = Column(String(255))
     complete = Column(Boolean)
@@ -144,6 +146,7 @@ class Analysis(Base):
     model_variable = Column(String(255))
     data_type = Column(String(255))
     fit_image = Column(Text(length=2**31))
+    job_id = Column(Integer)
 
     # FK Relationships
     run_by_user = relationship("User", foreign_keys=[run_by])

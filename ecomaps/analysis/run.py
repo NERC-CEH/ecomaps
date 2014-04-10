@@ -8,6 +8,8 @@ from threading import Thread
 import os
 import uuid
 import stat
+from netCDF4 import Dataset as NetCDFDataset
+
 from ecomaps.analysis.code_root.ecomaps_analysis import EcomapsAnalysis
 from ecomaps.lib.ecomaps_utils import WorkingDirectory, working_directory
 from ecomaps.model import Dataset, session_scope, Analysis
@@ -125,7 +127,7 @@ class AnalysisRunner(object):
 
             # Now we have enough information to kick the analysis off
             output_file_loc, map_image_file_loc, \
-            fit_image_file_loc, aic_val = analysis.run(analysis_obj.point_dataset.netcdf_url,
+            fit_image_file_loc = analysis.run(analysis_obj.point_dataset.netcdf_url,
                                                            coverage_dict, self._update_progress)
 
             # Write the result image to
@@ -139,7 +141,17 @@ class AnalysisRunner(object):
                 encoded_image = base64.b64encode(img.read())
                 self._analysis_obj.fit_image = encoded_image
 
-            self._analysis_obj.goodness_of_fit = aic_val
+            # Grab the "convenience" values from the dataset, which
+            # we'll store against the analysis, saves looking in the netCDF each time
+            try:
+
+                netCdf = NetCDFDataset(output_file_loc, 'r', format='NETCDF4')
+
+                self._analysis_obj.aic = str(netCdf.AIC)
+                self._analysis_obj.model_formula = netCdf.model_formula
+
+            except:
+                log.warning('Failed to get netCDF attributes at the end of %s' % self._analysis_obj.name)
 
             # Copy the result file to the ecomaps THREDDS server
             # Set the file name to the name of the analysis + a bit of uniqueness
@@ -153,7 +165,7 @@ class AnalysisRunner(object):
             result_ds.name = self._analysis_obj.name
             result_ds.wms_url = wms_url
 
-            # TODO: Can we do something nicer than the ID?
+            # 3 = result dataset
             result_ds.dataset_type_id = 3
             result_ds.netcdf_url = self._open_ndap_format % file_name
             result_ds.viewable_by_user_id = analysis_obj.run_by_user.id
@@ -194,6 +206,7 @@ class AnalysisRunner(object):
             a.run_date = datetime.datetime.now()
             a.result_image = self._analysis_obj.result_image
             a.fit_image = self._analysis_obj.fit_image
-            a.goodness_of_fit = self._analysis_obj.goodness_of_fit
+            a.aic = self._analysis_obj.aic
+            a.model_formula = self._analysis_obj.model_formula
             session.add(result_ds)
             session.add(a)

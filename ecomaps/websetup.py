@@ -31,21 +31,21 @@ def setup_app(command, conf, vars):
 
     with session_scope(Session) as session:
 
-        user = User()
-        user.name = 'Phil Jenkins'
-        user.username = 'philip.jenkins@tessella.com'
-        user.email = 'philip.jenkins@tessella.com'
-        user.access_level = "Admin"
-
-        session.add(user)
-
-        user2 = User()
-        user2.name = 'Mike Wilson'
-        user2.username = 'mw'
-        user2.email = 'mw@ceh.ac.uk'
-        user2.access_level = "Admin"
-
-        session.add(user2)
+        # user = User()
+        # user.name = 'Phil Jenkins'
+        # user.username = 'philip.jenkins@tessella.com'
+        # user.email = 'philip.jenkins@tessella.com'
+        # user.access_level = "Admin"
+        #
+        # session.add(user)
+        #
+        # user2 = User()
+        # user2.name = 'Mike Wilson'
+        # user2.username = 'mw'
+        # user2.email = 'mw@ceh.ac.uk'
+        # user2.access_level = "Admin"
+        #
+        # session.add(user2)
 
         pointDst = DatasetType()
         pointDst.type = 'Point'
@@ -73,22 +73,22 @@ def setup_app(command, conf, vars):
         # LOCAL
         # ds = Dataset()
         # ds.dataset_type = coverDst
-        # ds.wms_url = 'http://localhost:8080/thredds/dodsC/testAll/LCM2007_GB_1K_DOM_TAR.nc?service=WMS&version=1.3.0&request=GetCapabilities'
+        # ds.wms_url = 'http://localhost:8080/thredds/wms/testAll/LCM2007_GB_1K_DOM_TAR.nc?service=WMS&version=1.3.0&request=GetCapabilities'
         # ds.name = 'Land Cover Map 2007'
         # ds.netcdf_url = 'http://localhost:8080/thredds/dodsC/testAll/LCM2007_GB_1K_DOM_TAR.nc'
-        # ds.low_res_url = 'http://localhost:8080/thredds/dodsC/testAll/LCM2007_GB_1K_DOM_TAR.nc'
+        # ds.low_res_url = 'http://localhost:8080/thredds/fileServer/testAll/LCM2007_GB_1K_DOM_TAR.nc'
 
         session.add(ds)
 
         # CEH Chess Data
-        chess = Dataset()
-        chess.name = 'CHESS Annual Precipitation'
-        chess.dataset_type = coverDst
-        chess.netcdf_url = 'http://tds-dev1.nerc-lancaster.ac.uk/thredds/dodsC/CHESSDetail/CHESSAnnualTotalPrecip.nc'
-        chess.low_res_url = 'http://tds-dev1.nerc-lancaster.ac.uk/thredds/fileServer/CHESSDetail/CHESSAnnualTotalPrecip.nc'
-        chess.wms_url = 'http://tds-dev1.nerc-lancaster.ac.uk/thredds/wms/CHESSDetail/CHESSAnnualTotalPrecip.nc?service=WMS&version=1.3.0&request=GetCapabilities'
-
-        session.add(chess)
+        # chess = Dataset()
+        # chess.name = 'CHESS Annual Precipitation'
+        # chess.dataset_type = coverDst
+        # chess.netcdf_url = 'http://tds-dev1.nerc-lancaster.ac.uk/thredds/dodsC/CHESSDetail/CHESSAnnualTotalPrecip.nc'
+        # chess.low_res_url = 'http://tds-dev1.nerc-lancaster.ac.uk/thredds/fileServer/CHESSDetail/CHESSAnnualTotalPrecip.nc'
+        # chess.wms_url = 'http://tds-dev1.nerc-lancaster.ac.uk/thredds/wms/CHESSDetail/CHESSAnnualTotalPrecip.nc?service=WMS&version=1.3.0&request=GetCapabilities'
+        #
+        # session.add(chess)
 
         # Model that provides the interface to the R code
         model = Model()
@@ -107,13 +107,13 @@ def setup_app(command, conf, vars):
         #ds2.name = 'Example Point dataset'
 
         # LOCAL
-        # ds2 = Dataset()
-        # ds2.dataset_type = pointDst
-        # ds2.wms_url = 'http://localhost:8080/thredds/dodsC/testAll/ECOMAPSInputLOI01.nc?service=WMS&version=1.3.0&request=GetCapabilities'
-        # ds2.netcdf_url = 'http://localhost:8080/thredds/dodsC/testAll/ECOMAPSInputLOI01.nc'
-        # ds2.name = 'Example Point dataset'
+        ds2 = Dataset()
+        ds2.dataset_type = pointDst
+        ds2.wms_url = 'http://localhost:8080/thredds/dodsC/testAll/ECOMAPSInputLOI01.nc?service=WMS&version=1.3.0&request=GetCapabilities'
+        ds2.netcdf_url = 'http://localhost:8080/thredds/dodsC/testAll/ECOMAPSInputLOI01.nc'
+        ds2.name = 'Example Point dataset'
 
-        #session.add(ds2)
+        session.add(ds2)
 
 
 

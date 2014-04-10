@@ -69,6 +69,7 @@ class AccountController(BaseController):
                 c.form_result = error.value
                 c.form_errors = error.error_dict or {}
             else:
+
                 authenticated, headers = who_api.login(c.form_result)
 
                 if authenticated:
@@ -86,19 +87,11 @@ class AccountController(BaseController):
 
                         if not u:
 
-                            # Try again, just in case the user has entered their full email address...
-                            if '@' in user_name:
+                            log.debug("Couldn't find %s in Ecomaps DB, creating user" % user_name)
 
-                                user_name = user_name.split('@')[0]
-                                log.debug("Found an @ in the user name, trying to find user in Ecomaps DB with first part")
-                                u = self._user_service.get_user_by_username(request.environ['user.username'])
-
-                            if not u:
-
-                                log.debug("Couldn't find %s in Ecomaps DB, creating user" % user_name)
-
-                                self._user_service.create(user_name,
-                                                      request.environ['user.name'],
+                            self._user_service.create(user_name,
+                                                      request.environ['user.first-name'],
+                                                      request.environ['user.last-name'],
                                                       request.environ['user.email'],
                                                       None)
 

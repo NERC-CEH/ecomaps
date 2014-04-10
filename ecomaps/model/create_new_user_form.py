@@ -8,8 +8,9 @@ class UpdateUserForm(formencode.Schema):
     allow_extra_fields = True
     filter_extra_fields = False
 
-    name = formencode.validators.String(not_empty=True)
-    email = formencode.validators.Email(not_empty=True)
+    first_name = formencode.validators.String(not_empty=True, max=50)
+    last_name = formencode.validators.String(not_empty=True, max=50)
+    email = formencode.validators.Email(not_empty=True, max=255)
     is_admin = formencode.validators.Bool()
 
 class CreateUserForm(UpdateUserForm):
