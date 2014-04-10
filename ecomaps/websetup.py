@@ -31,21 +31,21 @@ def setup_app(command, conf, vars):
 
     with session_scope(Session) as session:
 
-        # user = User()
-        # user.name = 'Phil Jenkins'
-        # user.username = 'philip.jenkins@tessella.com'
-        # user.email = 'philip.jenkins@tessella.com'
-        # user.access_level = "Admin"
-        #
-        # session.add(user)
-        #
-        # user2 = User()
-        # user2.name = 'Mike Wilson'
-        # user2.username = 'mw'
-        # user2.email = 'mw@ceh.ac.uk'
-        # user2.access_level = "Admin"
-        #
-        # session.add(user2)
+        user = User()
+        user.name = 'Phil Jenkins'
+        user.username = 'philip.jenkins@tessella.com'
+        user.email = 'philip.jenkins@tessella.com'
+        user.access_level = "Admin"
+
+        session.add(user)
+
+        user2 = User()
+        user2.name = 'Mike Wilson'
+        user2.username = 'mw'
+        user2.email = 'mw@ceh.ac.uk'
+        user2.access_level = "Admin"
+
+        session.add(user2)
 
         pointDst = DatasetType()
         pointDst.type = 'Point'
