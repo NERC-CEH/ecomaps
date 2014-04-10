@@ -33,6 +33,8 @@ def setup_app(command, conf, vars):
 
         user = User()
         user.name = 'Phil Jenkins'
+        user.first_name = 'Phil'
+        user.last_name = 'Jenkins'
         user.username = 'philip.jenkins@tessella.com'
         user.email = 'philip.jenkins@tessella.com'
         user.access_level = "Admin"
@@ -41,6 +43,8 @@ def setup_app(command, conf, vars):
 
         user2 = User()
         user2.name = 'Mike Wilson'
+        user2.first_name = 'Mike'
+        user2.last_name = 'Wilson'
         user2.username = 'mw'
         user2.email = 'mw@ceh.ac.uk'
         user2.access_level = "Admin"
