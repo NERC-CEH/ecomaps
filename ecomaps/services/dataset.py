@@ -1,5 +1,5 @@
 from sqlalchemy import or_
-from sqlalchemy.orm import joinedload, contains_eager
+from sqlalchemy.orm import joinedload, contains_eager, immediateload
 from ecomaps.model import Dataset, DatasetType, Analysis
 from ecomaps.services.general import DatabaseService
 
@@ -25,8 +25,7 @@ class DatasetService(DatabaseService):
             # or are public (null viewable_by)
             # Note SQLAlchemy wants '== None' not 'is None'
             if dataset_type_id is None and dataset_type is None:
-                return session.query(DatasetType).join(DatasetType.datasets) \
-                                                .options(contains_eager(DatasetType.datasets)) \
+                return session.query(DatasetType).options(joinedload(DatasetType.datasets)) \
                                                 .filter(or_(Dataset.viewable_by_user_id == user_id,
                                                  Dataset.viewable_by_user_id == None)).all()
             elif dataset_type_id is None:
@@ -67,10 +66,10 @@ class DatasetService(DatabaseService):
     def create_coverage_dataset(self,name,wms_url,netcdf_url,low_res_url):
         with self.transaction_scope() as session:
 
+            dataset_type = session.query(DatasetType).filter(DatasetType.type=='Coverage').one()
+
             dataset = Dataset()
             dataset.name = name
-            dataset_type = DatasetType()
-            dataset_type.type = 'Coverage'
             dataset.dataset_type = dataset_type
             dataset.netcdf_url = netcdf_url
             dataset.wms_url = wms_url
@@ -82,10 +81,10 @@ class DatasetService(DatabaseService):
     def create_point_dataset(self,name,wms_url,netcdf_url):
         with self.transaction_scope() as session:
 
+            dataset_type = session.query(DatasetType).filter(DatasetType.type=='Point').one()
+
             dataset = Dataset()
             dataset.name = name
-            dataset_type = DatasetType()
-            dataset_type.type = 'Point'
             dataset.dataset_type = dataset_type
             dataset.netcdf_url = netcdf_url
             dataset.wms_url = wms_url
