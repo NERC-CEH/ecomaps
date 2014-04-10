@@ -19,9 +19,9 @@
         </ul>
     </li>
 
-    <!--<div class="alert alert-info" py:if="c.analysis_id">-->
-        <!--<i class="icon-list-alt"></i> <a href="#analysis-detail" data-toggle="modal" class="view-analysis" data-analysisid="${c.analysis_id}">Analysis Quick View</a>-->
-    <!--</div>-->
+    <div class="alert alert-info" py:if="c.analysis_id">
+        <i class="icon-list-alt"></i> <a href="#analysis-detail" data-toggle="modal" class="view-analysis" data-analysisid="${c.analysis_id}">View Analysis: ${c.dataset.name}</a>
+    </div>
 
     <li py:for="layer in reversed(c.layers)" class="layer nav-header" data-layerid="${c.dataset.id}${layer.name}"><i class="icon-resize-vertical"></i>
         ${layer.title}
