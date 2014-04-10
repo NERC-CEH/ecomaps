@@ -25,7 +25,8 @@ class DatasetService(DatabaseService):
             # or are public (null viewable_by)
             # Note SQLAlchemy wants '== None' not 'is None'
             if dataset_type_id is None and dataset_type is None:
-                return session.query(DatasetType).options(joinedload(DatasetType.datasets)) \
+                return session.query(DatasetType).join(DatasetType.datasets) \
+                                                .options(contains_eager(DatasetType.datasets)) \
                                                 .filter(or_(Dataset.viewable_by_user_id == user_id,
                                                  Dataset.viewable_by_user_id == None)).all()
             elif dataset_type_id is None:
