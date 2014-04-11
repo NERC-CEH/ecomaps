@@ -1,8 +1,10 @@
+import logging
 from ecomaps.model import User
 from ecomaps.services.general import DatabaseService, ServiceException
 
 __author__ = 'Phil Jenkins (Tessella)'
 
+log = logging.getLogger(__name__)
 
 class UserService(DatabaseService):
     """Provides operations on User objects"""
@@ -40,8 +42,10 @@ class UserService(DatabaseService):
             try:
                 return session.query(User).filter(User.username == username).one()
 
-            except:
+            except Exception as e:
                 # We'll get an exception if the user can't be found
+
+                log.error("Get user by username error: %s", e)
                 return None
 
 
