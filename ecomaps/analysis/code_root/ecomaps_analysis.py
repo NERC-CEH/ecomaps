@@ -292,7 +292,7 @@ class EcomapsAnalysis(object):
             column_list = []
             for col, time_slice in columns:
                 if time_slice is not None:
-                    time_slices[col] = time_slice
+                    time_slices[col] = time_slice + 1
 
                 column_list.append(col)
             coverage_setup[ds.low_res_url] = column_list
