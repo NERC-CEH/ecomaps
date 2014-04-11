@@ -190,9 +190,8 @@ class EcomapsAnalysis(object):
             xpixel, ypixel = self._mapToPixel(easting, northing, geotransform)
 
             # Is this temporal data? If so, we need to take a 2D slice at a point in time
-            if time_index:
-                # Zero-based array, but the slices are assuming 1-based so-----------vv
-                dataframe.loc[count, column_name] = int(array[column_name][time_index-1, ypixel, xpixel])
+            if time_index is not None:
+                dataframe.loc[count, column_name] = int(array[column_name][time_index, ypixel, xpixel])
             else:
                 dataframe.loc[count, column_name] = int(array[column_name][ypixel, xpixel])
 
