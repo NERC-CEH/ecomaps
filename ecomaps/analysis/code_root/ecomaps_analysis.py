@@ -191,9 +191,9 @@ class EcomapsAnalysis(object):
 
             # Is this temporal data? If so, we need to take a 2D slice at a point in time
             if time_index is not None:
-                dataframe.loc[count, column_name] = int(array[column_name][time_index, ypixel, xpixel])
+                dataframe.loc[count, column_name] = float(array[column_name][time_index, ypixel, xpixel])
             else:
-                dataframe.loc[count, column_name] = int(array[column_name][ypixel, xpixel])
+                dataframe.loc[count, column_name] = float(array[column_name][ypixel, xpixel])
 
         return dataframe
 
@@ -258,7 +258,7 @@ class EcomapsAnalysis(object):
                 array = self._get_landcover_array(coverage_ds.netcdf_url, column_name)
 
                 #  Add new column to data frame to store data from coverage ds
-                points_gdf[column_name] = -9999
+                points_gdf[column_name] = -9999.99
 
                 progress_fn("Setting up the analysis: %s" % column_name)
 

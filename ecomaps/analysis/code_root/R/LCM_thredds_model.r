@@ -41,6 +41,7 @@ progress_fn <- function(message) {
     }
 
     file_obj <- file(progress_rep_file)
+    print(message)
     writeLines(message, file_obj)
     close(file_obj)
 }
@@ -157,6 +158,11 @@ do_work <- function() {
             #fillvalue <- att.get.ncdf(cov_dat,nm_var[cn],"_FillValue")
             fillvalue <- ncatt_get(cov_dat, nm_var[cn], "_FillValue")
 
+            #
+            if(!is.na(fillvalue$value)){
+              var_id_nd <- which(names(newdat)==nm_var[cn])
+              newdat[(newdat[,var_id_nd]==fillvalue$value & !is.na((newdat[,var_id_nd]))),var_id_nd]=NA
+            }
             # replace fillvalues with NAs
             tmp.array[[cn]][tmp.array[[cn]]==fillvalue$value] <- NA
 
@@ -215,13 +221,13 @@ do_work <- function() {
           if(!is.null(rand_grp) & !is.null(mult_year)){
             progress_fn("Applying GAMM, multi-year and grouped")
             mod=try(gamm(as.formula(form),random=list(temp_rand=~1),correlation=corAR1(form=~tm_var|temp_rand),data=newdat,family=data_fam,niterPQL=5))
-            if(class(mod)=="try-error"){
+            if(class(mod)=="try-error" | (summary(mod$gam)$r.sq)<0){
               mod=try(gamm(as.formula(form),random=list(rnd_group=~1),data=newdat,family=data_fam,niterPQL=5))
             }
           }
         }
       }
-      if(class(mod)=="try-error"){
+      if(class(mod)=="try-error" | (summary(mod$gam)$r.sq)<0){
         mod=list() ; mod$gam=try(gam(as.formula(form),data=newdat,family=data_fam))
         mod_t="norm_gam"
         if(class(mod$gam)=="try-error"){class(mod)="try-error"}
