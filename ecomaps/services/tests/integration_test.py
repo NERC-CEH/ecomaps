@@ -131,6 +131,15 @@ class IntegrationTests(unittest.TestCase):
 
         self._populate_session()
 
+    def test_get_user_by_username(self):
+
+        self._service = UserService()
+        user_name = 'test_user'
+        user = self._service.get_user_by_username(user_name)
+
+        self.assertNotEqual(None, user)
+
+
     def test_get_datasets_for_user(self):
 
         datasets = self._service.get_datasets_for_user(self._user_id, dataset_type_id=1)

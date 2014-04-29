@@ -75,7 +75,8 @@ class DatasetController(BaseController):
         """ Indirection layer to enable a base map wms service to be wrapped up in our domain
         """
 
-        redirect_url = "http://vmap0.tiles.osgeo.org/wms/vmap0?%s" % request.query_string
+        redirect_url = "https://map.bgs.ac.uk/arcgis/services/BGS_Detailed_Geology/MapServer/WMSServer?%s" % request.query_string
+        # redirect_url = "http://vmap0.tiles.osgeo.org/wms/vmap0?%s" % request.query_string
         return urllib2.urlopen(redirect_url).read()
 
     def preview(self, id):

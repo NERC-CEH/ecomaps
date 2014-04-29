@@ -201,17 +201,33 @@ var EcomapsMap = (function() {
      */
     var initMap = function() {
 
-        map = new OpenLayers.Map('map');
+        var WGS84 = new OpenLayers.Projection("EPSG:4326");
+        var WGS84_google_mercator = new OpenLayers.Projection("EPSG:3857");
 
-//        var apiKey = "AlLzJcuciFYnzQhJZlyE5OGjGWtvWp2MfQNYDPL6kE4JnltPwiQL4gNayJbqS7MX";
-//
-//        //var map = new OpenLayers.Map( 'map');
-//
-//        // Bing's Road imagerySet
-//        var wms = new OpenLayers.Layer.Bing({
-//            key: apiKey,
-//            type: "Road"
-//        });
+        OpenLayers.Projection.addTransform("EPSG:4326", "EPSG:3857", OpenLayers.Layer.SphericalMercator.projectForward);
+        OpenLayers.Projection.addTransform("EPSG:3857", "EPSG:4326", OpenLayers.Layer.SphericalMercator.projectInverse);
+
+        var options = {
+            projection: WGS84_google_mercator,
+            displayProjection: WGS84,
+            units: "m",
+            maxResolution: 156543.0339,
+            maxExtent: new OpenLayers.Bounds(-20037508.34, -20037508.34,
+                                             20037508.34, 20037508.34)
+        };
+
+        map = new OpenLayers.Map('map', options);
+
+        var apiKey = "AlLzJcuciFYnzQhJZlyE5OGjGWtvWp2MfQNYDPL6kE4JnltPwiQL4gNayJbqS7MX";
+
+        //var map = new OpenLayers.Map( 'map');
+
+        // Bing's Road imagerySet
+        var wms = new OpenLayers.Layer.Google("Test", {
+            //key: apiKey,
+            type: google.maps.MapTypeId.TERRAIN,
+            "sphericalMercator": true
+        });
 
         // Add the custom loading panel here...
         map.addControl(new OpenLayers.Control.LoadingPanel());
@@ -222,9 +238,13 @@ var EcomapsMap = (function() {
         var lon = -2;
         var position = new OpenLayers.LonLat(lon, lat);
 
+        position.transform(WGS84, new OpenLayers.Projection("EPSG:900913"));
+
+        console.log(position);
         // Now to add the base layer
-        var wms = new OpenLayers.Layer.WMS( "OpenLayers WMS",
-           "/dataset/base", {layers: 'basic'});
+        //var wms = new OpenLayers.Layer.WMS( "OpenLayers WMS",
+        //   "/dataset/base", {layers: 'Map'});
+
         map.addLayer(wms);
         map.zoomToMaxExtent();
 

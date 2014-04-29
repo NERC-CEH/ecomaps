@@ -92,7 +92,16 @@ def setup_app(command, conf, vars):
         # chess.low_res_url = 'http://tds-dev1.nerc-lancaster.ac.uk/thredds/fileServer/CHESSDetail/CHESSAnnualTotalPrecip.nc'
         # chess.wms_url = 'http://tds-dev1.nerc-lancaster.ac.uk/thredds/wms/CHESSDetail/CHESSAnnualTotalPrecip.nc?service=WMS&version=1.3.0&request=GetCapabilities'
         #
-        # session.add(chess)
+
+        chess = Dataset()
+        chess.name = 'CHESS Annual Precipitation'
+        chess.dataset_type = coverDst
+        chess.netcdf_url = 'http://localhost:8080/thredds/dodsC/testAll/CHESSAnnualTotalPrecip.nc'
+        chess.low_res_url = 'http://localhost:8080/thredds/fileServer/testAll/CHESSAnnualTotalPrecip.nc'
+        chess.wms_url = 'http://localhost:8080/thredds/wms/testAll/CHESSAnnualTotalPrecip.nc?service=WMS&version=1.3.0&request=GetCapabilities'
+
+
+        session.add(chess)
 
         # Model that provides the interface to the R code
         model = Model()
@@ -104,11 +113,11 @@ def setup_app(command, conf, vars):
         session.add(model)
 
         # CEH
-        # ds2 = Dataset()
-        # ds2.dataset_type = pointDst
-        # ds2.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/wms/ECOMAPSDetail/ECOMAPSInputLOI01.nc?service=WMS&version=1.3.0&request=GetCapabilities'
-        # ds2.netcdf_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/ECOMAPSDetail/ECOMAPSInputLOI01.nc'
-        # ds2.name = 'Example Point dataset'
+        ds2 = Dataset()
+        ds2.dataset_type = pointDst
+        ds2.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/wms/ECOMAPSDetail/ECOMAPSInputLOI01.nc?service=WMS&version=1.3.0&request=GetCapabilities'
+        ds2.netcdf_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/ECOMAPSDetail/ECOMAPSInputLOI01.nc'
+        ds2.name = 'Example Point dataset'
 
         # LOCAL
         # ds2 = Dataset()
@@ -117,7 +126,7 @@ def setup_app(command, conf, vars):
         # ds2.netcdf_url = 'http://localhost:8080/thredds/dodsC/testAll/ECOMAPSInputLOI01.nc'
         # ds2.name = 'Example Point dataset'
 
-        #session.add(ds2)
+        session.add(ds2)
 
 
 
