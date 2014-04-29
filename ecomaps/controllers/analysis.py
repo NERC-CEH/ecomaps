@@ -166,10 +166,6 @@ class AnalysisController(BaseController):
                                                            'model_id',
                                                            'analysis_description'])
 
-                test_analysis = self._analysis_service.get_public_analyses_with_identical_input(hash)
-
-                if test_analysis:
-                    return redirect(url(controller='analysis', action='view', id=test_analysis.id))
 
                 # Almost ready to create, although first we need to create a collection of
                 # time point indicies based on any temporal datasets we may have chosen
@@ -182,6 +178,12 @@ class AnalysisController(BaseController):
                     # If so, it'll have been given a name starting with 'time' - see dataset_time_values.html
                     if c.form_result.get('time_%s' % column):
                         time_indicies[column] = int(c.form_result.get('time_%s' % column))
+
+                test_analysis = self._analysis_service.get_public_analyses_with_identical_input(hash)
+
+                if test_analysis and not any(time_indicies):
+                    return redirect(url(controller='analysis', action='view', id=test_analysis.id))
+
 
                 analysis_id = self._analysis_service.create(c.form_result.get('analysis_name'),
                             c.form_result.get('point_dataset_id'),
