@@ -85,7 +85,7 @@ class Dataset(Base):
     dataset_type_id = Column(Integer, ForeignKey('dataset_types.id'))
     viewable_by_user_id = Column(Integer, ForeignKey('users.id'), nullable=True)
 
-    dataset_type = relationship("DatasetType", backref="datasets")
+    dataset_type = relationship("DatasetType", backref="datasets", lazy="joined")
 
     def __init__(self, id=None):
 
