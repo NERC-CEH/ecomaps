@@ -255,9 +255,9 @@ class AnalysisService(DatabaseService):
                         .filter(Analysis.input_hash == input_hash,
                                 Analysis.viewable_by == None,
                                 Analysis.deleted != True) \
-                        .one()
+                        .all()[0]
 
-            except NoResultFound:
+            except:
                 return None
 
     def delete_private_analysis(self, analysis_id):
