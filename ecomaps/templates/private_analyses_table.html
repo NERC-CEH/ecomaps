@@ -36,6 +36,7 @@
                         <th data-column="model_variable">Name of Variable</th>
                         <th data-column="aic">AIC</th>
                         <th data-column="model_formula">Model Formula</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -59,6 +60,17 @@
                         </td>
                         <td>
                             ${analysis.model_formula}
+                        </td>
+                        <td>
+                            <form method="POST" action="${url(controller='analysis', action='delete')}">
+                                <input type="hidden" id="analysis_id" name="analysis_id" value='${analysis.id}' />
+                                <button type="submit" class="btn btn-small">
+                                    <py:choose>
+                                        <py:when test="analysis.run_date">Delete</py:when>
+                                        <py:otherwise>Cancel</py:otherwise>
+                                    </py:choose>
+                                </button>
+                            </form>
                         </td>
                     </tr>
                 </tbody>

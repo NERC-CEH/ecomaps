@@ -17,6 +17,14 @@
 
              Analysis in progress
         </p>
+        <p>
+            <form method="POST" action="${url(controller='analysis', action='delete')}">
+                <input type="hidden" id="analysis_id" name="analysis_id" value='${c.analysis_id}' />
+                <button type="submit" class="btn btn-danger">
+                    Cancel Analysis
+                </button>
+            </form>
+        </p>
     </div>
     <div class="row">
         <div class="span6">
@@ -24,6 +32,8 @@
             <ul id="progress">
                 <li><i class="icon-tasks"></i>Checking progress...</li>
             </ul>
+
+
         </div>
         <div class="span6">
             <div class="alert alert-block alert-warning">

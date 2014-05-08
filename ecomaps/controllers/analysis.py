@@ -360,11 +360,11 @@ class AnalysisController(BaseController):
 
             return fapp(request.environ, self.start_response)
 
-    def delete(self):
+    def delete(self, id):
         """Action for when user wants to delete a private analysis"""
         if request.POST:
 
-            analysis_id = request.params.get('analysis_id')
+            analysis_id = request.params.get('analysis_id') or id
 
             # Check user has access to the analysis before deleting
             analysis = self._analysis_service.get_analysis_by_id(analysis_id, self.current_user.id)
