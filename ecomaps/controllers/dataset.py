@@ -1,7 +1,7 @@
 import logging
 import urllib2
 from pylons import url
-from pylons.controllers.util import redirect
+from pylons.controllers.util import redirect, Response
 import formencode
 from pylons.decorators import jsonify
 from ecomaps.lib.base import BaseController, request, render, c
@@ -75,9 +75,10 @@ class DatasetController(BaseController):
         """ Indirection layer to enable a base map wms service to be wrapped up in our domain
         """
 
-        redirect_url = "https://map.bgs.ac.uk/arcgis/services/BGS_Detailed_Geology/MapServer/WMSServer?%s" % request.query_string
-        # redirect_url = "http://vmap0.tiles.osgeo.org/wms/vmap0?%s" % request.query_string
-        return urllib2.urlopen(redirect_url).read()
+        redirect_url = "http://vmap0.tiles.osgeo.org/wms/vmap0?%s" % request.query_string
+        #return urllib2.urlopen(redirect_url).read()
+        return Response(body=urllib2.urlopen(redirect_url).read(), content_type='image/jpeg')
+
 
     def preview(self, id):
         """ Renders a preview view of the first 10 rows of a dataset (currently point data only!)
