@@ -14,3 +14,6 @@ class AddDatasetForm(formencode.Schema):
     wms_url = formencode.validators.String(if_missing=None)
     netcdf_url = formencode.validators.String(not_empty=True)
     low_res_url = formencode.validators.String(if_missing=None)
+    data_range_from = formencode.validators.Int(if_missing=None)
+    data_range_to = formencode.validators.Int(if_missing=None)
+    is_categorical = formencode.validators.Bool()

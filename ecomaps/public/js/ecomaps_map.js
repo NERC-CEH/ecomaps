@@ -173,9 +173,10 @@ var EcomapsMap = (function() {
                             visible: true,
                             wmsObject: null,
                             legendURL: null,
-                            scaleMin: 0,
-                            scaleMax: 50,
-                            styleName: data[i].styles[0].name
+                            scaleMin: data[i].data_range_from,
+                            scaleMax: data[i].data_range_to,
+                            styleName: data[i].styles[0].name,
+                            isCategorical: data[i].is_categorical
                         };
 
                         // Now to add to the map, and set a default style
@@ -438,6 +439,10 @@ var EcomapsMap = (function() {
                         "&LAYER=" + layerObj.data['name'] +
                         "&PALETTE=" + styleName +
                         "&colorscalerange=" + layerObj.scaleMin + "," + layerObj.scaleMax;
+
+        if(layerObj.isCategorical) {
+            legendURL += "&NUMCOLORBANDS=" + (layerObj.scaleMax-layerObj.scaleMin);
+        }
 
         $("div#legend").append("<img data-layerid='" + layerId + "' src='" + legendURL + "' />");
     };

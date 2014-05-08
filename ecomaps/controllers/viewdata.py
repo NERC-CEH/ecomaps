@@ -173,7 +173,17 @@ class ViewdataController(WmsvizController):
         """
         layer_list = self.datasetManager.get_ecomaps_layer_data(dataset)
 
-        return [layer.entity.getAsDict() for layer in layer_list[0]]
+        layer_collection = []
+
+        for layer in layer_list[0]:
+            layer_obj = layer.entity.getAsDict()
+            layer_obj['data_range_from'] = dataset.data_range_from
+            layer_obj['data_range_to'] = dataset.data_range_to
+            layer_obj['is_categorical'] = dataset.is_categorical
+            layer_collection.append(layer_obj)
+
+        return layer_collection
+        #return [layer.entity.getAsDict() for layer in layer_list[0]]
 
     def layers(self, id):
         """ Returns a view on a dataset's map layers

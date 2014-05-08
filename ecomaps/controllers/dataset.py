@@ -148,7 +148,10 @@ class DatasetController(BaseController):
                     self._dataset_service.create_coverage_dataset(c.form_result.get('name'),
                                                             c.form_result.get('wms_url'),
                                                             c.form_result.get('netcdf_url'),
-                                                            c.form_result.get('low_res_url'))
+                                                            c.form_result.get('low_res_url'),
+                                                            c.form_result.get('data_range_from'),
+                                                            c.form_result.get('data_range_to'),
+                                                            c.form_result.get('is_categorical'))
                 else:
                     # Point data, so we only need the netcdf OpenDAP url,
                     # we need to generate a gridded copy for the WMS

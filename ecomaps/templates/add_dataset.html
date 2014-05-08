@@ -27,14 +27,26 @@
                ${h.html_tags.text('netcdf_url', class_='controls')}
         </div>
         <div class="control-group">
-            <label for="wms_url" id="wms_label" class="control-label">WMS URL:</label>
-               ${h.html_tags.text('wms_url', class_='controls')}
+            <label for="wms_url" id="wms_label" class="control-label coverage-only-label">WMS URL:</label>
+               ${h.html_tags.text('wms_url', class_='controls coverage-only')}
         </div>
         <div class="control-group">
-            <label for="low_res_url" id="low_res_label" class="control-label">HTTP file server URL:</label>
-               ${h.html_tags.text('low_res_url', class_='controls')}
+            <label for="low_res_url" id="low_res_label" class="control-label coverage-only-label">HTTP file server URL:</label>
+               ${h.html_tags.text('low_res_url', class_='controls coverage-only')}
         </div>
-
+        <div class="control-group">
+            <label for="data_range_from" id="data_range_from_label" class="control-label coverage-only-label">Data Range From:</label>
+            ${h.html_tags.text('data_range_from', class_='controls input-mini coverage-only', value=0)}
+        </div>
+        <div class="control-group">
+            <label for="data_range_to" id="data_range_to_label" class="control-label coverage-only-label">Data Range To:</label>
+            ${h.html_tags.text('data_range_to', class_='controls input-mini coverage-only', value=50)}
+        </div>
+        <div class="control-group">
+            <label class="checkbox coverage-only-label">
+            <input type="checkbox" name="is_categorical" /> This dataset contains categorical data
+            </label>
+        </div>
         <div class="controls">
             <input type="submit" class="btn btn-primary btn-large pull-right control-group" value="Add" />
         </div>
@@ -55,19 +67,23 @@
 
         // Point dataset doesn't require a low-res_url, so shade out this box when Point Dataset is selected.
         $("#dataset_type").change(function(){
+
+
             var option = ($("#dataset_type").find(':selected')[0].id)
             if (option == "point"){
-                $("#low_res_label").attr("class","muted");
-                $("#low_res_url").attr("disabled","true");
+                $(".coverage-only-label").attr("class","muted");
+                $(".coverage-only").attr("disabled","true");
 
-                $("#wms_label").attr("class","muted");
-                $("#wms_url").attr("disabled","true");
+
+                //$("#wms_label").attr("class","muted");
+                //$("#wms_url").attr("disabled","true");
             }
             else{
-                $("#low_res_label").attr("class","control-label");
-                $("#low_res_url").removeAttr("disabled");
-                $("#wms_label").attr("class","control-label");
-                $("#wms_url").removeAttr("disabled");
+
+                $(".muted").attr("class","control-label coverage-only-label");
+                $(".coverage-only").removeAttr("disabled");
+                //$("#wms_label").attr("class","control-label");
+                //$("#wms_url").removeAttr("disabled");
             }
         });
 </script>

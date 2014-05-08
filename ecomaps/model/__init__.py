@@ -84,6 +84,9 @@ class Dataset(Base):
     low_res_url = Column(String(255))
     dataset_type_id = Column(Integer, ForeignKey('dataset_types.id'))
     viewable_by_user_id = Column(Integer, ForeignKey('users.id'), nullable=True)
+    data_range_from = Column(Integer, default=1)
+    data_range_to = Column(Integer, default=50)
+    is_categorical = Column(Boolean, default=False)
 
     dataset_type = relationship("DatasetType", backref="datasets", lazy="joined")
 

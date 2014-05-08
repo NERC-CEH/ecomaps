@@ -64,7 +64,8 @@ class DatasetService(DatabaseService):
                         .options(joinedload(Dataset.dataset_type)) \
                          .all()
 
-    def create_coverage_dataset(self,name,wms_url,netcdf_url,low_res_url):
+    def create_coverage_dataset(self,name,wms_url,netcdf_url,low_res_url,
+                                data_range_from, data_range_to, is_categorical):
         with self.transaction_scope() as session:
 
             dataset_type = session.query(DatasetType).filter(DatasetType.type=='Coverage').one()
@@ -75,6 +76,9 @@ class DatasetService(DatabaseService):
             dataset.netcdf_url = netcdf_url
             dataset.wms_url = wms_url
             dataset.low_res_url = low_res_url
+            dataset.data_range_from = data_range_from
+            dataset.data_range_to  = data_range_to
+            dataset.is_categorical = is_categorical
 
             session.add(dataset)
 
