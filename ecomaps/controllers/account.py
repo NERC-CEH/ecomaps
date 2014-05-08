@@ -83,22 +83,32 @@ class AccountController(BaseController):
 
                         log.debug("Looking for %s in Ecomaps DB" % user_name)
 
-                        u = self._user_service.get_user_by_username(request.environ['user.username'])
+                        try:
 
-                        if not u:
+                            u = self._user_service.get_user_by_username(request.environ['user.username'])
 
-                            log.debug("Couldn't find %s in Ecomaps DB, creating user" % user_name)
+                            if not u:
 
-                            self._user_service.create(user_name,
-                                                      request.environ['user.first-name'],
-                                                      request.environ['user.last-name'],
-                                                      request.environ['user.email'],
-                                                      None)
+                                log.debug("Couldn't find %s in Ecomaps DB, creating user" % user_name)
+
+                                self._user_service.create(user_name,
+                                                          request.environ['user.first-name'],
+                                                          request.environ['user.last-name'],
+                                                          request.environ['user.email'],
+                                                          None)
 
 
-                    return HTTPFound(location=came_from, headers=headers)
+                            return HTTPFound(location=came_from, headers=headers)
 
-                message = 'Login failed: check your username and/or password.'
+                        except ServiceException as sx:
+
+                            # Something has gone wrong at a fundamental level, so we can't realistically continue
+                            message = 'The EcoMaps database is unavailable, please contact technical support'
+                            log.error("EcoMaps database unavailable: %s" % sx)
+
+                else:
+                    # Authentication not successful
+                    message = 'Login failed: check your username and/or password.'
         else:
              # Forcefully forget any existing credentials.
             _, headers = who_api.login({})

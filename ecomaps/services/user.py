@@ -1,4 +1,5 @@
 import logging
+from sqlalchemy.orm.exc import NoResultFound
 from ecomaps.model import User
 from ecomaps.services.general import DatabaseService, ServiceException
 
@@ -42,11 +43,15 @@ class UserService(DatabaseService):
             try:
                 return session.query(User).filter(User.username == username).one()
 
-            except Exception as e:
+            except NoResultFound as e:
                 # We'll get an exception if the user can't be found
 
-                log.error("Get user by username error: %s", e)
+                log.error("No user found: %s", e)
                 return None
+            except Exception as ex:
+
+                # A general error has occurred - pass this up
+                raise ServiceException(ex)
 
 
     def get_user_by_email_address(self, email):
