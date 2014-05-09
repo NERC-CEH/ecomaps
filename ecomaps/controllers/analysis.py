@@ -370,6 +370,12 @@ class AnalysisController(BaseController):
             analysis = self._analysis_service.get_analysis_by_id(analysis_id, self.current_user.id)
             if analysis:
                 self._analysis_service.delete_private_analysis(analysis_id)
+
+                # Also soft-delete the result dataset to keep the
+                # list tidy
+                if analysis.result_dataset_id:
+                    self._dataset_service.delete(analysis.result_dataset_id, self.current_user.id)
+
                 return redirect(url(controller='analysis', action='index'))
 
 

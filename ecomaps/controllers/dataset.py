@@ -8,7 +8,7 @@ from ecomaps.lib.base import BaseController, request, render, c
 from ecomaps.services.dataset import DatasetService
 from ecomaps.services.netcdf import NetCdfService
 from ecomaps.services.user import UserService
-from ecomaps.model.add_dataset_form import AddDatasetForm
+from ecomaps.model.add_dataset_form import AddDatasetForm, UpdateDatasetForm
 from formencode import htmlfill
 
 
@@ -163,6 +163,56 @@ class DatasetController(BaseController):
                                                             opendap_url)
 
                 return redirect(url(controller="dataset"))
+
+    def edit(self, id):
+        """Enables a dataset's details to be updated, intended as an admin-only function
+
+            @param id: ID of the dataset to edit
+        """
+        # Kick unauthorized users out straight away
+        if not self.current_user.access_level == 'Admin':
+            return render('not_found.html')
+
+        c.dataset_to_edit = self._dataset_service.get_dataset_by_id(id, user_id=self.current_user.id)
+
+        # GET request...
+        if not request.method == 'POST':
+
+            return render('edit_dataset.html')
+
+        else:
+
+            # Define our form schema
+            schema = UpdateDatasetForm()
+            c.form_errors = {}
+
+            try:
+                c.form_result = schema.to_python(request.params)
+
+            except formencode.Invalid, error:
+
+                c.form_result = error.value
+                c.form_errors = error.error_dict or {}
+
+            if c.form_errors:
+                html = render('edit_dataset.html')
+                return htmlfill.render(html,
+                                       defaults=c.form_result,
+                                       errors=c.form_errors,
+                                       auto_error_formatter=custom_formatter)
+            else:
+
+                # Perform the update
+                pass
+                # By default a user will be an external user
+                # self._user_service.update(c.form_result.get('first_name'),
+                #                           c.form_result.get('last_name'),
+                #                           user_email,
+                #                           "Admin" if c.form_result.get('is_admin') else "CEH",
+                #                           c.form_result.get('user_id'))
+
+                return redirect(url(controller="dataset"))
+
 
     def timeselection(self, id):
         """ Gets the possible time points for a temporal dataset

@@ -28,13 +28,13 @@ class DatasetService(DatabaseService):
                 return session.query(DatasetType).join(DatasetType.datasets) \
                                                 .options(contains_eager(DatasetType.datasets)) \
                                                 .filter(or_(Dataset.viewable_by_user_id == user_id,
-                                                 Dataset.viewable_by_user_id == None)).all()
+                                                 Dataset.viewable_by_user_id == None), Dataset.deleted == False).all()
             elif dataset_type_id is None:
                 return session.query(Dataset).join(DatasetType).filter(DatasetType.type == dataset_type, or_(Dataset.viewable_by_user_id == user_id,
-                                                 Dataset.viewable_by_user_id == None)).all()
+                                                 Dataset.viewable_by_user_id == None), Dataset.deleted == False).all()
             else:
                 return session.query(Dataset).filter(Dataset.dataset_type_id == dataset_type_id, or_(Dataset.viewable_by_user_id == user_id,
-                                                 Dataset.viewable_by_user_id == None)).all()
+                                                 Dataset.viewable_by_user_id == None), Dataset.deleted == False).all()
 
 
 
@@ -59,13 +59,27 @@ class DatasetService(DatabaseService):
                                                  Dataset.viewable_by_user_id == None)).one()
 
     def get_all_datasets(self):
+        """
+        Returns a list of all active datasets in EcoMaps
+        """
         with self.readonly_scope() as session:
             return session.query(Dataset)\
                         .options(joinedload(Dataset.dataset_type)) \
-                         .all()
+                        .filter(Dataset.deleted == False) \
+                        .all()
 
     def create_coverage_dataset(self,name,wms_url,netcdf_url,low_res_url,
                                 data_range_from, data_range_to, is_categorical):
+        """
+        Creates a coverage dataset in the EcoMaps DB
+            @param name: Display name of the dataset
+            @param wms_url: Endpoint for the mapping server
+            @param netcdf_url: URL of the OpenDAP endpoint for this dataset
+            @param low_res_url: URL for accessing the NetCDF file over the HTTP protocol
+            @param data_range_from: Low range for the data
+            @param data_range_to: High range for the data
+            @param is_categorical: Set to true if the data is categorical (not continuous)
+        """
         with self.transaction_scope() as session:
 
             dataset_type = session.query(DatasetType).filter(DatasetType.type=='Coverage').one()
@@ -82,8 +96,14 @@ class DatasetService(DatabaseService):
 
             session.add(dataset)
 
-
     def create_point_dataset(self,name,wms_url,netcdf_url):
+        """
+        Creates a point dataset in the EcoMaps DB
+            @param name: Display name of the dataset
+            @param wms_url: Endpoint for the mapping server
+            @param netcdf_url: URL of the OpenDAP endpoint for this dataset
+        """
+
         with self.transaction_scope() as session:
 
             dataset_type = session.query(DatasetType).filter(DatasetType.type=='Point').one()
@@ -96,3 +116,18 @@ class DatasetService(DatabaseService):
             dataset.low_res_url = None
 
             session.add(dataset)
+
+    def delete(self, id, user_id):
+        """
+        Soft-deletes a dataset to remove it from active lists
+            @param id: ID of dataset to delete
+            @param user_id: ID of the user attempting the delete operation
+        """
+        # First let's make sure the user specified can access the dataset
+        ds = self.get_dataset_by_id(id, user_id)
+
+        if ds:
+            with self.transaction_scope() as session:
+
+                dataset = session.query(Dataset).get(id)
+                dataset.deleted = True

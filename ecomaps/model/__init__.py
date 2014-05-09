@@ -87,6 +87,7 @@ class Dataset(Base):
     data_range_from = Column(Integer, default=1)
     data_range_to = Column(Integer, default=50)
     is_categorical = Column(Boolean, default=False)
+    deleted = Column(Boolean, default=False)
 
     dataset_type = relationship("DatasetType", backref="datasets", lazy="joined")
 

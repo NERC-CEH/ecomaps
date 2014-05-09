@@ -15,7 +15,8 @@
             <thead>
                 <th>Name</th>
                 <th>Type</th>
-                <th>Webdata</th>
+                <th>Endpoints</th>
+                <th></th>
             </thead>
             <tbody>
                 <tr py:for="dataset in c.datasets">
@@ -32,6 +33,9 @@
                                 data-toggle="tooltip" title="${dataset.netcdf_url}">NetCDF URL</a>
                         <a py:if="dataset.low_res_url" href="${dataset.low_res_url}" class="btn btn-mini"
                                 data-toggle="tooltip" title="${dataset.low_res_url}">Low Res URL</a>
+                    </td>
+                     <td>
+                        <a href="${url(controller='dataset', action='edit', id=dataset.id) }" class="btn btn-mini"><i class="icon-edit"></i> Edit</a>
                     </td>
                 </tr>
             </tbody>
