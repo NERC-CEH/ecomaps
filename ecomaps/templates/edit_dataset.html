@@ -30,6 +30,7 @@
             <input type="checkbox" name="is_categorical" py:attrs="{ 'checked' : 'true' } if c.dataset_to_edit.is_categorical else {}" /> This dataset contains categorical data
             </label>
         </div>
+        <input type="hidden" name="dataset_id" value="${c.dataset_to_edit.id}" />
         <!--<div class="control-group">-->
             <!--<label for="first_name" class="control-label">First name:</label>-->
                <!--<input id="first_name" name="first_name" type="text" value="${c.user_to_edit.first_name}" class="controls" />-->

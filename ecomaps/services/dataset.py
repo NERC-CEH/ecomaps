@@ -131,3 +131,23 @@ class DatasetService(DatabaseService):
 
                 dataset = session.query(Dataset).get(id)
                 dataset.deleted = True
+
+                session.add(dataset)
+
+    def update(self, id, data_range_from, data_range_to, is_categorical):
+        """
+        Updates basic properties on the dataset specified
+            @param id: ID of the dataset to update
+            @param data_range_from: Low range of data
+            @param data_range_to: High range of data
+            @param is_categorical: Set to true for non-continuous data
+        """
+        with self.transaction_scope() as session:
+
+            dataset = session.query(Dataset).get(id)
+
+            dataset.data_range_from = data_range_from
+            dataset.data_range_to = data_range_to
+            dataset.is_categorical = is_categorical
+
+            session.add(dataset)

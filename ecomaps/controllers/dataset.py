@@ -203,7 +203,10 @@ class DatasetController(BaseController):
             else:
 
                 # Perform the update
-                pass
+                self._dataset_service.update(c.form_result.get('dataset_id'),
+                                             c.form_result.get('data_range_from'),
+                                             c.form_result.get('data_range_to'),
+                                             c.form_result.get('is_categorical'))
                 # By default a user will be an external user
                 # self._user_service.update(c.form_result.get('first_name'),
                 #                           c.form_result.get('last_name'),

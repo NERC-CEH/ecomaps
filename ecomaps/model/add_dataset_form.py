@@ -4,7 +4,7 @@ __author__ = 'Chirag Mistry (Tessella)'
 
 class UpdateDatasetForm(formencode.Schema):
 
-    allow_extra_fields = False
+    allow_extra_fields = True
     filter_extra_fields = False
 
     data_range_from = formencode.validators.Int(if_missing=None)
@@ -15,7 +15,7 @@ class AddDatasetForm(UpdateDatasetForm):
     """Used to validate data from the Add New Dataset page"""
 
     allow_extra_fields = False
-    filter_extra_fields = False
+    filter_extra_fields = True
 
     name = formencode.validators.String(not_empty=True)
     type = formencode.validators.String(not_empty=True)
