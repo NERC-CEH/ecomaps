@@ -315,11 +315,12 @@ class ViewdataController(WmsvizController):
         """Downloads a previously generated file.
         """
         log.debug("running viewdata.download")
-        if 'file' in request.params:
-            return self._send_file_response(request.params['file'])
-        else:
-            response.content_type = 'text/plain'
-            return 'No file to download has been specified.\n'
+        return 'Method not implemented'
+        # if 'file' in request.params:
+        #     return self._send_file_response(request.params['file'])
+        # else:
+        #     response.content_type = 'text/plain'
+        #     return 'No file to download has been specified.\n'
 
     def _send_file_response(self, filename):
         """Returns a file's contents as a response.
