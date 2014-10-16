@@ -1,13 +1,15 @@
-from _bisect import bisect_right
 from bisect import bisect_left
 import logging
 from threading import Thread
 import os
 import time
-import pyper
+
 from pydap.client import open_url
+
+import pyper
 from geopandas import GeoDataFrame, GeoSeries
 from shapely.geometry import Point
+
 
 __author__ = 'Phil Jenkins (Tessella)'
 

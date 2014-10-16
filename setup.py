@@ -12,15 +12,24 @@ setup(
     #author='',
     #author_email='',
     #url='',
-    install_requires=["Pylons==1.0", "genshi"],
+    install_requires=["Pylons",
+                      "genshi",
+                      "SQLAlchemy==0.9.1",
+                      "netCDF4==1.1.1",
+                      "numpy==1.8.0",
+                      "pydap",
+                      "coards==1.0.5",
+                      "geopandas",
+                      "pyper",
+                      "repoze.who==2.2",
+                      "owslib",
+                      "matplotlib",
+                      "libxml2dom"
+                      ],
     packages=find_packages(exclude=['ez_setup']),
     include_package_data=True,
     test_suite='nose.collector',
     package_data={'ecomaps['i18n/*/LC_MESSAGES/*.mo']},
-    #message_extractors = {'cowsclient': [
-    #        ('**.py', 'python', None),
-    #        ('templates/**.mako', 'mako', None),
-    #        ('public/**', 'ignore', None)]},
     entry_points="""
     [paste.app_factory]
     main = ecomaps.config.middleware:make_app

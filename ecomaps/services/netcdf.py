@@ -1,13 +1,14 @@
 from netCDF4 import Dataset
 import datetime
-import numpy
 import os
-from pydap.client import open_url
-import paste
-import pylons
-from coards import parse
 import shutil
+
+import numpy
+from pydap.client import open_url
+from coards import parse
+
 from ecomaps.lib.ecomaps_utils import WorkingDirectory, working_directory, find_closest
+
 
 __author__ = 'Phil Jenkins (Tessella)'
 
@@ -27,7 +28,6 @@ class DatasetConversionWorkingDirectory(WorkingDirectory):
 
     @property
     def coverage_map(self):
-
         return os.path.join(self.root_folder, "coverage.nc")
 
 
@@ -77,8 +77,7 @@ class EcoMapsNetCdfFile(object):
         for column in points.keys():
 
             if points[column].shape:
-
-                ##column_dictionary[column.upper()] = points[column][:]
+                # #column_dictionary[column.upper()] = points[column][:]
                 # Data may have been created on a machine with a different byte order to the one on which you are running
                 # Python.  To deal with this issue should convert to the native system byte order BEFORE passing it to a
                 # Series/DataFrame/Panel constructor.
@@ -88,8 +87,9 @@ class EcoMapsNetCdfFile(object):
         del points
         return column_dictionary
 
+
 class NetCdfService(object):
-    """ Provides operations to read elements of NetCDF files stored in our associcated THREDDS server
+    """ Provides operations to read elements of NetCDF files stored in our associated THREDDS server
     """
 
     _config = None
@@ -102,7 +102,6 @@ class NetCdfService(object):
             self._config = cfg
         else:
             self._config = config
-
 
     def get_attributes(self, netcdf_url, column_filter=None):
         """Gets a dictionary of attributes stored on the file, optionally filtered
@@ -120,7 +119,6 @@ class NetCdfService(object):
         else:
             return ds.attributes
 
-
     def get_variable_column_names(self, netcdf_url):
         """ Gets a list of column names that are part of a particular dataset, but
             not the standard column names (x, y, transverse_mercator)
@@ -132,7 +130,6 @@ class NetCdfService(object):
 
         return [col for col in ds.columns if col not in columns_to_ignore]
 
-
     def get_point_data_preview(self, netcdf_url, no_of_rows=10):
         """ Gets a 2D preview of the point dataset at the given NetCDF url
             @param netcdf_url: URL to the point dataset
@@ -142,13 +139,12 @@ class NetCdfService(object):
 
         return ds.get_preview_data(no_of_rows)
 
-
     def get_time_points(self, netcdf_url):
         """ Returns a list of datetime objects corresponding to the
             possible time points in a temporal dataset
 
             @param netcdf_url: URL to the netCDF dataset to interrogate
-            @returns : A list of datetimes, or empty list if no temporal dimension
+            @returns : A list of datetime, or empty list if no temporal dimension
         """
 
         ds = EcoMapsNetCdfFile(netcdf_url)
@@ -164,7 +160,7 @@ class NetCdfService(object):
 
         # First let's create a temporary directory
         with working_directory(DatasetConversionWorkingDirectory(),
-                               os.path.join(os.path.dirname(__file__),"grid_data")) as working_dir:
+                               os.path.join(os.path.dirname(__file__), "grid_data")) as working_dir:
 
             points = coverage = None
 
@@ -194,21 +190,20 @@ class NetCdfService(object):
 
                 # Now pull out the Land Cover variable, and reset
                 # to below 0, so the points are invisible
-                value = coverage.variables['LandCover'][:,:]
+                value = coverage.variables['LandCover'][:, :]
 
-                for (y,x), _ in numpy.ndenumerate(value):
-                    value[y,x] = -1
+                for (y, x), _ in numpy.ndenumerate(value):
+                    value[y, x] = -1
 
                 # Now look for the points in the coverage map, and set the value
                 # to the maximum when found
-                for x,y in zip(east_list, north_list):
+                for x, y in zip(east_list, north_list):
+                    index_x = numpy.where(coverage_east == find_closest(coverage_east, x))[0][0]
+                    index_y = numpy.where(coverage_north == find_closest(coverage_north, y))[0][0]
 
-                    index_x = numpy.where(coverage_east==find_closest(coverage_east, x))[0][0]
-                    index_y = numpy.where(coverage_north==find_closest(coverage_north, y))[0][0]
+                    value[index_y, index_x] = 50
 
-                    value[index_y,index_x] = 50
-
-                coverage.variables['LandCover'][:,:] = value
+                coverage.variables['LandCover'][:, :] = value
 
                 # OK, now we need to copy the coverage map to
                 # the map server location defined in the config

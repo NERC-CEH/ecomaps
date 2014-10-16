@@ -1,2 +1,2 @@
-Pylons==1.0
+Pylons
 genshi

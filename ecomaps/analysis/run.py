@@ -1,18 +1,15 @@
 import base64
-from contextlib import contextmanager
 import logging
-import tempfile
 import shutil
 import datetime
 from threading import Thread
 import os
-import uuid
-import stat
 from netCDF4 import Dataset as NetCDFDataset
 
 from ecomaps.analysis.code_root.ecomaps_analysis import EcomapsAnalysis
 from ecomaps.lib.ecomaps_utils import WorkingDirectory, working_directory
 from ecomaps.model import Dataset, session_scope, Analysis
+
 
 __author__ = 'Phil Jenkins (Tessella)'
 
