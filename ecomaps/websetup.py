@@ -20,7 +20,7 @@ def _get_result_image():
 
         return image_file.read()
 
-def registerThreddsDatasets(url, session):
+def registerThreddsDatasets(url, types, session):
     """Scan over the given url for thredds datasets. Add to the session"""
     xml = parse(urllib2.urlopen(url))
   
@@ -29,7 +29,14 @@ def registerThreddsDatasets(url, session):
             # Here we should lookup the sevicename which (contained in this element)
             # and find out the services base. 
             ds = Dataset()
-            #ds.dataset_type = NOT_SURE_HOW_TO_SET_THIS
+            ds.dataset_type = types['GRID'] # Set to GRID type by default
+
+            # See if a dataType has been defined for this dataset. If so, look 
+            # it up
+            dataTypes = dataset.getElementsByTagName('dataType')
+            if dataTypes.length == 1:
+                ds.dataset_type = types[dataTypes[0].firstChild.nodeValue]
+
             path = dataset.attributes['urlPath'].value
             ds.name = dataset.attributes['name'].value
             ds.wms_url = urljoin(url, '/thredds/wms/' + path + '?service=WMS&version=1.3.0&request=GetCapabilities')
@@ -40,7 +47,7 @@ def registerThreddsDatasets(url, session):
     # Look for any catalogRef elements on the page, scan these
     for catRef in xml.getElementsByTagName("catalogRef"):
         path = urljoin(url, catRef.attributes['xlink:href'].value)
-        registerThreddsDatasets(path, session)
+        registerThreddsDatasets(path, types, session)
 
 def setup_app(command, conf, vars):
     """Place any commands to setup ecomaps here - currently creating db tables"""
@@ -88,5 +95,12 @@ def setup_app(command, conf, vars):
         session.add(coverDst)
         session.add(resultDst)
 
+        # Define a datasetType lookup. This will conver the possible thredds 
+        # datasets into their EcoMaps equivalents.
+        datasetTypes = {
+            "GRID": # Now what?
+            "POINT": pointDst
+        }
+
         # Populate from thredds
-        registerThreddsDatasets('http://thredds.ceh.ac.uk/thredds/ecomaps.xml', session)
+        registerThreddsDatasets('http://thredds.ceh.ac.uk/thredds/ecomaps.xml', datasetTypes, session)
