@@ -82,6 +82,15 @@ def setup_app(command, conf, vars):
 
         session.add(user2)
 
+        # Model that provides the interface to the R code
+        model = Model()
+        model.name = "LCM Thredds Model"
+        model.id = 1
+        model.description = "LCM Thredds model written in R"
+        model.code_path = "code_root"
+
+        session.add(model)
+
         pointDst = DatasetType()
         pointDst.type = 'Point'
 
