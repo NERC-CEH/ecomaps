@@ -98,7 +98,7 @@ def setup_app(command, conf, vars):
         # Define a datasetType lookup. This will conver the possible thredds 
         # datasets into their EcoMaps equivalents.
         datasetTypes = {
-            "GRID": # Now what?
+            "GRID": coverDst,
             "POINT": pointDst
         }
 
