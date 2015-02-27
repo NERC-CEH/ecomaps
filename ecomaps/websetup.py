@@ -2,6 +2,7 @@ import datetime
 import os
 import pylons.test
 import urllib2
+from itertools import groupby
 from xml.dom.minidom import parse
 from urlparse import urljoin
 from ecomaps.config.environment import load_environment
