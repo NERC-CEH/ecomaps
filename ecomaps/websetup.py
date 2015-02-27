@@ -56,7 +56,7 @@ def registerThreddsDatasets(url, types, session):
       
       for catRef in scan:
         path = urljoin(url, catRef.attributes['xlink:href'].value)
-        registerDatasets(path, types, session)
+        registerThreddsDatasets(path, types, session)
 
 def setup_app(command, conf, vars):
     """Place any commands to setup ecomaps here - currently creating db tables"""
