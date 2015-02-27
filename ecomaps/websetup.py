@@ -44,10 +44,18 @@ def registerThreddsDatasets(url, types, session):
 
             session.add(ds) # Register the dataset to the session
 
-    # Look for any catalogRef elements on the page, scan these
-    for catRef in xml.getElementsByTagName("catalogRef"):
+    # Group sibling catalogRefs together. If any of these have an aggregation we will scan them
+    # otherwise just scan all of the catalogueRegs
+    catalogRefs = xml.getElementsByTagName("catalogRef")
+    for key, group in groupby(catalogRefs, lambda e: e.parentNode):
+      groupList = list(group)
+      aggregations = filter(lambda x: x.attributes['xlink:title'].value.lower().endswith('aggregation'), groupList)
+    
+      scan = aggregations if len(aggregations) > 0 else groupList # Were there any aggregations?
+      
+      for catRef in scan:
         path = urljoin(url, catRef.attributes['xlink:href'].value)
-        registerThreddsDatasets(path, types, session)
+        registerDatasets(path, types, session)
 
 def setup_app(command, conf, vars):
     """Place any commands to setup ecomaps here - currently creating db tables"""
