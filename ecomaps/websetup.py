@@ -59,6 +59,8 @@ def registerThreddsDatasets(url, types, session):
         scan = aggregations if len(aggregations) > 0 else groupList # Were there any aggregations?
 
         for catRef in scan:
+            # Check if the current catRef node has any sibling datasets which are aggregations.
+            # If it does, ignore this catRef
             if not hasSiblingAggregationDatasets(catRef):
                 path = urljoin(url, catRef.attributes['xlink:href'].value)
                 registerThreddsDatasets(path, types, session)
