@@ -21,6 +21,10 @@ def _get_result_image():
 
         return image_file.read()
 
+def hasSiblingAggregationDatasets(catRef):
+  datasets = catRef.parentNode.getElementsByTagName("dataset")
+  return any(map(lambda d: d.attributes['name'].value.lower().endswith('aggregation'), datasets))
+
 def registerThreddsDatasets(url, types, session):
     """Scan over the given url for thredds datasets. Add to the session"""
     xml = parse(urllib2.urlopen(url))
@@ -49,14 +53,15 @@ def registerThreddsDatasets(url, types, session):
     # otherwise just scan all of the catalogueRegs
     catalogRefs = xml.getElementsByTagName("catalogRef")
     for key, group in groupby(catalogRefs, lambda e: e.parentNode):
-      groupList = list(group)
-      aggregations = filter(lambda x: x.attributes['xlink:title'].value.lower().endswith('aggregation'), groupList)
-    
-      scan = aggregations if len(aggregations) > 0 else groupList # Were there any aggregations?
-      
-      for catRef in scan:
-        path = urljoin(url, catRef.attributes['xlink:href'].value)
-        registerThreddsDatasets(path, types, session)
+        groupList = list(group)
+        aggregations = filter(lambda x: x.attributes['xlink:title'].value.lower().endswith('aggregation'), groupList)
+
+        scan = aggregations if len(aggregations) > 0 else groupList # Were there any aggregations?
+
+        for catRef in scan:
+            if not hasSiblingAggregationDatasets(catRef):
+                path = urljoin(url, catRef.attributes['xlink:href'].value)
+                registerThreddsDatasets(path, types, session)
 
 def setup_app(command, conf, vars):
     """Place any commands to setup ecomaps here - currently creating db tables"""
