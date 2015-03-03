@@ -28,15 +28,15 @@ def hasSiblingAggregationDatasets(catRef):
 def registerThreddsDatasets(url, types, session):
     """Scan over the given url for thredds datasets. Add to the session"""
     xml = parse(urllib2.urlopen(url))
-  
+
     for dataset in xml.getElementsByTagName('dataset'):
         if dataset.hasAttribute('urlPath'):
             # Here we should lookup the sevicename which (contained in this element)
-            # and find out the services base. 
+            # and find out the services base.
             ds = Dataset()
             ds.dataset_type = types['GRID'] # Set to GRID type by default
 
-            # See if a dataType has been defined for this dataset. If so, look 
+            # See if a dataType has been defined for this dataset. If so, look
             # it up
             dataTypes = dataset.getElementsByTagName('dataType')
             if dataTypes.length == 1:
@@ -98,6 +98,16 @@ def setup_app(command, conf, vars):
 
         session.add(user2)
 
+        user3 = User()
+        user3.name = 'Simon Wright'
+        user3.first_name = 'Simon'
+        user3.last_name = 'Wright'
+        user3.username = 'smw'
+        user3.email = 'smw@ceh.ac.uk'
+        user3.access_level = "Admin"
+
+        session.add(user3)
+
         # Model that provides the interface to the R code
         model = Model()
         model.name = "LCM Thredds Model"
@@ -120,7 +130,7 @@ def setup_app(command, conf, vars):
         session.add(coverDst)
         session.add(resultDst)
 
-        # Define a datasetType lookup. This will conver the possible thredds 
+        # Define a datasetType lookup. This will conver the possible thredds
         # datasets into their EcoMaps equivalents.
         datasetTypes = {
             "GRID": coverDst,
