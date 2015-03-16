@@ -1,10 +1,6 @@
 import datetime
 import os
 import pylons.test
-import urllib2
-from itertools import groupby
-from xml.dom.minidom import parse
-from urlparse import urljoin
 from ecomaps.config.environment import load_environment
 from ecomaps.model import session_scope, DatasetType, Dataset, Analysis, User, AnalysisCoverageDataset, \
     AnalysisCoverageDatasetColumn, Model
@@ -21,49 +17,6 @@ def _get_result_image():
 
         return image_file.read()
 
-def hasSiblingAggregationDatasets(catRef):
-  datasets = catRef.parentNode.getElementsByTagName("dataset")
-  return any(map(lambda d: d.attributes['name'].value.lower().endswith('aggregation'), datasets))
-
-def registerThreddsDatasets(url, types, session):
-    """Scan over the given url for thredds datasets. Add to the session"""
-    xml = parse(urllib2.urlopen(url))
-
-    for dataset in xml.getElementsByTagName('dataset'):
-        if dataset.hasAttribute('urlPath'):
-            # Here we should lookup the sevicename which (contained in this element)
-            # and find out the services base.
-            ds = Dataset()
-            ds.dataset_type = types['GRID'] # Set to GRID type by default
-
-            # See if a dataType has been defined for this dataset. If so, look
-            # it up
-            dataTypes = dataset.getElementsByTagName('dataType')
-            if dataTypes.length == 1:
-                ds.dataset_type = types[dataTypes[0].firstChild.nodeValue]
-
-            path = dataset.attributes['urlPath'].value
-            ds.name = dataset.attributes['name'].value
-            ds.wms_url = urljoin(url, '/thredds/wms/' + path + '?service=WMS&version=1.3.0&request=GetCapabilities')
-            ds.netcdf_url = urljoin(url, '/thredds/dodsC/' + path)
-
-            session.add(ds) # Register the dataset to the session
-
-    # Group sibling catalogRefs together. If any of these have an aggregation we will scan them
-    # otherwise just scan all of the catalogueRegs
-    catalogRefs = xml.getElementsByTagName("catalogRef")
-    for key, group in groupby(catalogRefs, lambda e: e.parentNode):
-        groupList = list(group)
-        aggregations = filter(lambda x: x.attributes['xlink:title'].value.lower().endswith('aggregation'), groupList)
-
-        scan = aggregations if len(aggregations) > 0 else groupList # Were there any aggregations?
-
-        for catRef in scan:
-            # Check if the current catRef node has any sibling datasets which are aggregations.
-            # If it does, ignore this catRef
-            if not hasSiblingAggregationDatasets(catRef):
-                path = urljoin(url, catRef.attributes['xlink:href'].value)
-                registerThreddsDatasets(path, types, session)
 
 def setup_app(command, conf, vars):
     """Place any commands to setup ecomaps here - currently creating db tables"""
@@ -108,15 +61,6 @@ def setup_app(command, conf, vars):
 
         session.add(user3)
 
-        # Model that provides the interface to the R code
-        model = Model()
-        model.name = "LCM Thredds Model"
-        model.id = 1
-        model.description = "LCM Thredds model written in R"
-        model.code_path = "code_root"
-
-        session.add(model)
-
         pointDst = DatasetType()
         pointDst.type = 'Point'
 
@@ -130,12 +74,80 @@ def setup_app(command, conf, vars):
         session.add(coverDst)
         session.add(resultDst)
 
-        # Define a datasetType lookup. This will conver the possible thredds
-        # datasets into their EcoMaps equivalents.
-        datasetTypes = {
-            "GRID": coverDst,
-            "POINT": pointDst
-        }
+        # Sample land coverage map
 
-        # Populate from thredds
-        registerThreddsDatasets('http://thredds.ceh.ac.uk/thredds/ecomaps.xml', datasetTypes, session)
+        # CEH
+##        ds = Dataset()
+##        ds.dataset_type = coverDst
+##        ds.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/wms/LCM2007_1kmDetail/LCM2007_GB_1K_DOM_TAR.nc?service=WMS&version=1.3.0&request=GetCapabilities'
+##        ds.name = 'Land Cover Map 2007'
+##        ds.netcdf_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/LCM2007_25mAggregation/DetailWholeDataset.ncml'
+##        ds.low_res_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/fileServer/LCM2007_1kmDetail/LCM2007_GB_1K_DOM_TAR.nc'
+        ds = Dataset()
+        ds.dataset_type = coverDst
+        ds.wms_url = 'http://thredds.ceh.ac.uk/thredds/wms/EcoMapsLCM2007_1kmDetail/LCM2007_GB_1K_DOM_TAR.nc?service=WMS&version=1.3.0&request=GetCapabilities'
+        ds.name = 'Land Cover Map 2007'
+        ds.netcdf_url = 'http://thredds.ceh.ac.uk/thredds/dodsC/EcoMapsLCM2007_25mAggregation/DetailWholeDataset.ncml'
+        ds.low_res_url = 'http://thredds.ceh.ac.uk/thredds/fileServer/EcoMapsLCM2007_1kmDetail/LCM2007_GB_1K_DOM_TAR.nc'
+
+        # LOCAL
+        # ds = Dataset()
+        # ds.dataset_type = coverDst
+        # ds.wms_url = 'http://localhost:8080/thredds/wms/testAll/LCM2007_GB_1K_DOM_TAR.nc?service=WMS&version=1.3.0&request=GetCapabilities'
+        # ds.name = 'Land Cover Map 2007'
+        # ds.netcdf_url = 'http://localhost:8080/thredds/dodsC/testAll/LCM2007_GB_1K_DOM_TAR.nc'
+        # ds.low_res_url = 'http://localhost:8080/thredds/fileServer/testAll/LCM2007_GB_1K_DOM_TAR.nc'
+
+        session.add(ds)
+
+        # CEH Chess Data
+        # chess = Dataset()
+        # chess.name = 'CHESS Annual Precipitation'
+        # chess.dataset_type = coverDst
+        # chess.netcdf_url = 'http://tds-dev1.nerc-lancaster.ac.uk/thredds/dodsC/CHESSDetail/CHESSAnnualTotalPrecip.nc'
+        # chess.low_res_url = 'http://tds-dev1.nerc-lancaster.ac.uk/thredds/fileServer/CHESSDetail/CHESSAnnualTotalPrecip.nc'
+        # chess.wms_url = 'http://tds-dev1.nerc-lancaster.ac.uk/thredds/wms/CHESSDetail/CHESSAnnualTotalPrecip.nc?service=WMS&version=1.3.0&request=GetCapabilities'
+        #
+
+        #chess = Dataset()
+        #chess.name = 'CHESS Annual Precipitation'
+        #chess.dataset_type = coverDst
+        #chess.netcdf_url = 'http://localhost:8080/thredds/dodsC/testAll/CHESSAnnualTotalPrecip.nc'
+        #chess.low_res_url = 'http://localhost:8080/thredds/fileServer/testAll/CHESSAnnualTotalPrecip.nc'
+        #chess.wms_url = 'http://localhost:8080/thredds/wms/testAll/CHESSAnnualTotalPrecip.nc?service=WMS&version=1.3.0&request=GetCapabilities'
+
+
+        #session.add(chess)
+
+        # Model that provides the interface to the R code
+        model = Model()
+        model.name = "LCM Thredds Model"
+        model.id = 1
+        model.description = "LCM Thredds model written in R"
+        model.code_path = "code_root"
+
+        session.add(model)
+
+        # CEH
+        #ds2 = Dataset()
+        #ds2.dataset_type = pointDst
+        #ds2.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/wms/ECOMAPSDetail/ECOMAPSInputLOI01.nc?service=WMS&version=1.3.0&request=GetCapabilities'
+        #ds2.netcdf_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/ECOMAPSDetail/ECOMAPSInputLOI01.nc'
+        #ds2.name = 'Example Point dataset'
+        ds2 = Dataset()
+        ds2.dataset_type = pointDst
+        ds2.wms_url = 'http://thredds.ceh.ac.uk/thredds/wms/EcoMapsPoints/Detail/ECOMAPSInput2007LOI01.nc?service=WMS&version=1.3.0&request=GetCapabilities'
+        ds2.netcdf_url = 'http://thredds.ceh.ac.uk/thredds/dodsC/EcoMapsPoints/Detail/ECOMAPSInput2007LOI01.nc'
+        ds2.name = 'Example Point dataset'
+
+        # LOCAL
+        # ds2 = Dataset()
+        # ds2.dataset_type = pointDst
+        # ds2.wms_url = 'http://localhost:8080/thredds/dodsC/testAll/ECOMAPSInputLOI01.nc?service=WMS&version=1.3.0&request=GetCapabilities'
+        # ds2.netcdf_url = 'http://localhost:8080/thredds/dodsC/testAll/ECOMAPSInputLOI01.nc'
+        # ds2.name = 'Example Point dataset'
+
+        session.add(ds2)
+
+
+
