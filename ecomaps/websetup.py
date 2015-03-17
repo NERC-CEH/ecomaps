@@ -75,49 +75,14 @@ def setup_app(command, conf, vars):
         session.add(resultDst)
 
         # Sample land coverage map
-
         # CEH
-##        ds = Dataset()
-##        ds.dataset_type = coverDst
-##        ds.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/wms/LCM2007_1kmDetail/LCM2007_GB_1K_DOM_TAR.nc?service=WMS&version=1.3.0&request=GetCapabilities'
-##        ds.name = 'Land Cover Map 2007'
-##        ds.netcdf_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/LCM2007_25mAggregation/DetailWholeDataset.ncml'
-##        ds.low_res_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/fileServer/LCM2007_1kmDetail/LCM2007_GB_1K_DOM_TAR.nc'
         ds = Dataset()
         ds.dataset_type = coverDst
         ds.wms_url = 'http://thredds.ceh.ac.uk/thredds/wms/EcoMapsLCM2007_1kmDetail/LCM2007_GB_1K_DOM_TAR.nc?service=WMS&version=1.3.0&request=GetCapabilities'
         ds.name = 'Land Cover Map 2007'
         ds.netcdf_url = 'http://thredds.ceh.ac.uk/thredds/dodsC/EcoMapsLCM2007_25mAggregation/DetailWholeDataset.ncml'
         ds.low_res_url = 'http://thredds.ceh.ac.uk/thredds/fileServer/EcoMapsLCM2007_1kmDetail/LCM2007_GB_1K_DOM_TAR.nc'
-
-        # LOCAL
-        # ds = Dataset()
-        # ds.dataset_type = coverDst
-        # ds.wms_url = 'http://localhost:8080/thredds/wms/testAll/LCM2007_GB_1K_DOM_TAR.nc?service=WMS&version=1.3.0&request=GetCapabilities'
-        # ds.name = 'Land Cover Map 2007'
-        # ds.netcdf_url = 'http://localhost:8080/thredds/dodsC/testAll/LCM2007_GB_1K_DOM_TAR.nc'
-        # ds.low_res_url = 'http://localhost:8080/thredds/fileServer/testAll/LCM2007_GB_1K_DOM_TAR.nc'
-
         session.add(ds)
-
-        # CEH Chess Data
-        # chess = Dataset()
-        # chess.name = 'CHESS Annual Precipitation'
-        # chess.dataset_type = coverDst
-        # chess.netcdf_url = 'http://tds-dev1.nerc-lancaster.ac.uk/thredds/dodsC/CHESSDetail/CHESSAnnualTotalPrecip.nc'
-        # chess.low_res_url = 'http://tds-dev1.nerc-lancaster.ac.uk/thredds/fileServer/CHESSDetail/CHESSAnnualTotalPrecip.nc'
-        # chess.wms_url = 'http://tds-dev1.nerc-lancaster.ac.uk/thredds/wms/CHESSDetail/CHESSAnnualTotalPrecip.nc?service=WMS&version=1.3.0&request=GetCapabilities'
-        #
-
-        #chess = Dataset()
-        #chess.name = 'CHESS Annual Precipitation'
-        #chess.dataset_type = coverDst
-        #chess.netcdf_url = 'http://localhost:8080/thredds/dodsC/testAll/CHESSAnnualTotalPrecip.nc'
-        #chess.low_res_url = 'http://localhost:8080/thredds/fileServer/testAll/CHESSAnnualTotalPrecip.nc'
-        #chess.wms_url = 'http://localhost:8080/thredds/wms/testAll/CHESSAnnualTotalPrecip.nc?service=WMS&version=1.3.0&request=GetCapabilities'
-
-
-        #session.add(chess)
 
         # Model that provides the interface to the R code
         model = Model()
@@ -125,29 +90,25 @@ def setup_app(command, conf, vars):
         model.id = 1
         model.description = "LCM Thredds model written in R"
         model.code_path = "code_root"
-
         session.add(model)
 
+        # Sample CS points
         # CEH
-        #ds2 = Dataset()
-        #ds2.dataset_type = pointDst
-        #ds2.wms_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/wms/ECOMAPSDetail/ECOMAPSInputLOI01.nc?service=WMS&version=1.3.0&request=GetCapabilities'
-        #ds2.netcdf_url = 'http://thredds-prod.nerc-lancaster.ac.uk/thredds/dodsC/ECOMAPSDetail/ECOMAPSInputLOI01.nc'
-        #ds2.name = 'Example Point dataset'
-        ds2 = Dataset()
-        ds2.dataset_type = pointDst
-        ds2.wms_url = 'http://thredds.ceh.ac.uk/thredds/wms/EcoMapsPoints/Detail/ECOMAPSInput2007LOI01.nc?service=WMS&version=1.3.0&request=GetCapabilities'
-        ds2.netcdf_url = 'http://thredds.ceh.ac.uk/thredds/dodsC/EcoMapsPoints/Detail/ECOMAPSInput2007LOI01.nc'
-        ds2.name = 'Example Point dataset'
+        ds3 = Dataset()
+        ds3.dataset_type = pointDst
+        ds3.wms_url = 'http://thredds.ceh.ac.uk/thredds/wms/EcoMapsPoints/Detail/ECOMAPSInputLOI01.nc?service=WMS&version=1.3.0&request=GetCapabilities'
+        ds3.netcdf_url = 'http://thredds.ceh.ac.uk/thredds/dodsC/EcoMapsPoints/Detail/ECOMAPSInputLOI01.nc'
+        ds3.name = 'Example Point dataset'
+        session.add(ds3)
 
-        # LOCAL
-        # ds2 = Dataset()
-        # ds2.dataset_type = pointDst
-        # ds2.wms_url = 'http://localhost:8080/thredds/dodsC/testAll/ECOMAPSInputLOI01.nc?service=WMS&version=1.3.0&request=GetCapabilities'
-        # ds2.netcdf_url = 'http://localhost:8080/thredds/dodsC/testAll/ECOMAPSInputLOI01.nc'
-        # ds2.name = 'Example Point dataset'
-
-        session.add(ds2)
+        # Sample CS 2007 points
+        # CEH
+        ds4 = Dataset()
+        ds4.dataset_type = pointDst
+        ds4.wms_url = 'http://thredds.ceh.ac.uk/thredds/wms/EcoMapsPoints/Detail/ECOMAPSInput2007LOI01.nc?service=WMS&version=1.3.0&request=GetCapabilities'
+        ds4.netcdf_url = 'http://thredds.ceh.ac.uk/thredds/dodsC/EcoMapsPoints/Detail/ECOMAPSInput2007LOI01.nc'
+        ds4.name = 'Example Point dataset for 2007'
+        session.add(ds4)
 
 
 
