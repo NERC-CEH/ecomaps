@@ -43,8 +43,10 @@ progress_fn <- function(message) {
     file_obj <- file(progress_rep_file)
     print(message)
     writeLines(message, file_obj)
+    ##cat(message, file=progress_rep_file, sep='\n', append=TRUE)
     close(file_obj)
 }
+
 
 do_work <- function() {
 
@@ -72,15 +74,17 @@ do_work <- function() {
 
         covariate_data[[i]] = list()
         url = names(coverage_setup)[i]
+
         covariate_data[[i]]$linkfile = url
         covariate_data[[i]]$vars = c(coverage_setup[[url]])
     }
 
-    #read in concatonated point data (simon's python script does this)
+    #read in concatenated point data (simon's python script does this)
     dat=read.csv(csv_file)
-
+    progress_fn("Read CSV.")
     #user defined inputs. mult year defines if temporal correlation needed. rand_grp defines if random effects needed.
     mult_year <- "year" ; rand_grp <- "SERIES_NUM" ; data_type <- "Cont" ; model_variable="loi"
+
 
     ## define the family of distributions to choose from
     poss_fam <- c("gaussian","Gamma","quasibinomial","quasipoisson")
@@ -117,7 +121,9 @@ do_work <- function() {
     for(i in 1:length(covariate_data)){
 
         #download the files locally to enable easy reading in
-        download.file(url=covariate_data[[i]]$linkfile,destfile=temp_netcdf_file, mode="wb")
+        download.file(url=covariate_data[[i]]$linkfile, destfile=temp_netcdf_file, mode="wb", method="curl")
+
+        require(ncdf4)
 
         cov_dat <- nc_open(temp_netcdf_file)
 
@@ -176,6 +182,8 @@ do_work <- function() {
 
     progress_fn("Constructing Model formula")
 
+
+
     ###need to know which variables are factors
 
       factor_vars <- nm_var[dunits==0]
@@ -221,7 +229,7 @@ do_work <- function() {
           if(!is.null(rand_grp) & !is.null(mult_year)){
             progress_fn("Applying GAMM, multi-year and grouped")
             mod=try(gamm(as.formula(form),random=list(temp_rand=~1),correlation=corAR1(form=~tm_var|temp_rand),data=newdat,family=data_fam,niterPQL=5))
-            if(class(mod)=="try-error" | (summary(mod$gam)$r.sq)<0){
+            if(class(mod)=="try-error"){# | (summary(mod$gam)$r.sq)<0){
               mod=try(gamm(as.formula(form),random=list(rnd_group=~1),data=newdat,family=data_fam,niterPQL=5))
             }
           }
@@ -258,6 +266,7 @@ do_work <- function() {
          ##write model results to the assocaited values
 
           progress_fn("Predicting model over full spatial grid")
+
 
           #### predict model
           pred_points <- expand.grid(north[[resuse]],east[[resuse]])
@@ -466,6 +475,7 @@ do_work <- function() {
 }
 #########################
 #########################
+
 
 #do_work()
 tryCatch(do_work(), error=function(e) { progress_fn(geterrmessage()); return(NA)})
