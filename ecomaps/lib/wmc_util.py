@@ -96,7 +96,7 @@ def RetrieveWebMapContext(self, endpoint):
 
     req = urllib2.Request(urlstring)
     try:
-        req.add_header('Cookie', request.headers.get('Cookie', ''))
+        req.add_header('Remote-User', request.headers.get('Remote-User', None))
     except:
         pass
     filehandle = openURL(req)
@@ -110,7 +110,7 @@ def GetWebMapCapabilities(endpoint):
     log.debug("urlstring = %s" % (urlstring,))
     req = urllib2.Request(urlstring)
     try:
-        req.add_header('Cookie', request.headers.get('Cookie', ''))
+        req.add_header('Remote-User', request.headers.get('Remote-User', None))
     except:
         pass
 
@@ -138,7 +138,7 @@ def GetFeatureInfo(endpoint):
     log.debug("urlstring = %s" % (urlstring,))
     req = urllib2.Request(urlstring)
     try:
-        req.add_header('Cookie', request.headers.get('Cookie', ''))
+        req.add_header('Remote-User', request.headers.get('Remote-User', None))
     except:
         pass
 
@@ -167,7 +167,7 @@ def GetFeatureInfo(endpoint):
 def GetResponse(url):
     req = urllib2.Request(url)
     try:
-        req.add_header('Cookie', request.headers.get('Cookie', ''))
+        req.add_header('Remote-User', request.headers.get('Remote-User', None))
     except:
         pass
     filehandle = openURL(req)

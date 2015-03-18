@@ -68,7 +68,7 @@ class OldwmsvizController(BaseController):
             self.removeAllViewItems()
             urlstring=str(self.inputs['ENDPOINT'])
             req = urllib2.Request(urlstring)
-            req.add_header('Cookie', request.headers.get('Cookie', ''))
+            req.add_header('Remote-User', request.headers.get('Remote-User', None))
             try:
 	            filehandle = urllib2.urlopen(req)
             except urllib2.HTTPError, e:
