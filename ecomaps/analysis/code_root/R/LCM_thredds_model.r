@@ -83,7 +83,7 @@ do_work <- function() {
     dat=read.csv(csv_file)
     progress_fn("Read CSV.")
     #user defined inputs. mult year defines if temporal correlation needed. rand_grp defines if random effects needed.
-    mult_year <- "year" ; rand_grp <- "SERIES_NUM" ; data_type <- "Cont" ; model_variable="loi"
+    mult_year <- NULL ; rand_grp <- "SERIES_NUM" ; data_type <- "Cont" ; model_variable="loi"
 
 
     ## define the family of distributions to choose from
@@ -121,7 +121,7 @@ do_work <- function() {
     for(i in 1:length(covariate_data)){
 
         #download the files locally to enable easy reading in
-        download.file(url=covariate_data[[i]]$linkfile, destfile=temp_netcdf_file, mode="wb", method="curl")
+        download.file(url=covariate_data[[i]]$linkfile, destfile=temp_netcdf_file, mode="wb")
 
         require(ncdf4)
 
@@ -141,7 +141,7 @@ do_work <- function() {
 
             spat_res[cn] <- abs(mean(diff(north[[cn]])))
 
-            #Next, the data are read using the get.var.ncdf()function, and some �attributes� are read, like the long name of the variable and its missing value.  Then the missing values in the data array are replaced by R/S+ "data not available" values.
+            #Next, the data are read using the get.var.ncdf()function, and some ?attributes? are read, like the long name of the variable and its missing value.  Then the missing values in the data array are replaced by R/S+ "data not available" values.
 
             # get the data and attributes
 
@@ -210,20 +210,19 @@ do_work <- function() {
     progress_fn("Running Model")
 
       x=newdat[newdat$rnd_group==newdat$rnd_group[1] & newdat$tm_var==newdat$tm_var[1],]
-      y=newdat[newdat$rnd_group==newdat$rnd_group[1],]
-
       v=which(apply(x,2,function(X){length(unique(X))})==dim(x)[1])
-      w=which(apply(y,2,function(X){length(unique(X))})<(dim(y)[1]-3))
-      len_id = apply(newdat[,which(is.element(names(newdat),intersect(names(v),names(w))))],2,function(X){length(unique(X))})
-      tmp_nm = names(len_id)[which.max(len_id)]
+      tm_id <- which(sapply(x[,v],class)=="factor")[1]
+      tmp_nm = names(v)[tm_id]
+
       newdat$temp_rand = newdat[,which(names(newdat)==tmp_nm)]
       mod_t = "mix_gam"
       if(!is.null(rand_grp) & is.null(mult_year)){
         progress_fn("Applying GAMM, grouped data")
         mod=try(gamm(as.formula(form),random=list(rnd_group=~1),data=newdat,family=data_fam,niterPQL=5))
       }else{
-        progress_fn("Applying GAMM, multi-year")
+
         if(is.null(rand_grp) & !is.null(mult_year)){
+          progress_fn("Applying GAMM, multi-year")
           mod=try(gamm(as.formula(form),correlation=corAR1(form=~tm_var|temp_rand),data=newdat,family=data_fam,niterPQL=5))
         }else{
           if(!is.null(rand_grp) & !is.null(mult_year)){
@@ -235,7 +234,10 @@ do_work <- function() {
           }
         }
       }
-      if(class(mod)=="try-error" | (summary(mod$gam)$r.sq)<0){
+
+      if(class(mod)!="try-error" ){md_rsq <- (summary(mod$gam)$r.sq)}else{md_rsq <- (-9999)}
+
+      if(class(mod)=="try-error" | md_rsq<0){
         mod=list() ; mod$gam=try(gam(as.formula(form),data=newdat,family=data_fam))
         mod_t="norm_gam"
         if(class(mod$gam)=="try-error"){class(mod)="try-error"}
@@ -321,8 +323,8 @@ do_work <- function() {
            }
            legend("topright",legend=as.character(lb),col=cols,pch=15,pt.cex=2.4,bty="n",title=model_variable,cex=0.75)
 
-
-          brk=c(seq(1,3,length=10),100)
+          qts=round(quantile(c(out_mat_var),c(0.1,0.9),na.rm=TRUE))
+          brk=c(seq(qts[1],qts[2],length=10),100)
           cols=rev(grey(seq(0.1,0.9,len=10)))
           par(mai=c(0,0,0.4,0));image(east[[resuse]],rev(north[[resuse]]),(out_mat_var[,1300:1]),asp=1,main="",col=cols,xaxt="n",breaks=brk,xlab="",yaxt="n",ylab="")
           lb=c()
