@@ -1,0 +1,7 @@
+{
+  "name": "ecomaps",
+  "version": "0.1.0",
+  "devDependencies": {
+    "bootstrap-theme-ceh": "1.0.1"
+  }
+}
