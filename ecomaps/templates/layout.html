@@ -8,11 +8,11 @@
             EcoMaps<py:if test="title"> | ${title}</py:if>
         </title>
 
-        <link href="/layout/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen" />
-        <link href="/layout/ecomaps.css" rel="stylesheet" media="screen" />
+        <link href="/css/bootstrap.min.css" rel="stylesheet" media="screen" />
+        <!-- <link href="/layout/ecomaps.css" rel="stylesheet" media="screen" /> -->
 
-        <script src="/js/jquery.js"></script>
-        <script type="text/javascript" src="/layout/bootstrap/js/bootstrap.js"></script>
+        <script src="/js/jquery.min.js"></script>
+        <script type="text/javascript" src="/js/bootstrap.min.js"></script>
 
         <script type="text/javascript" src="/js/ecomaps_general.js"></script>
 
@@ -26,17 +26,23 @@
 <py:match path="body" once="true">
     <body py:attrs="select('@*')">
         <div id="wrap">
-            <div class="navbar navbar-inverse navbar-fixed-top">
-                <div class="navbar-inner">
-                    <div class="container">
+            <div class="navbar navbar-default navbar-static-top">
+                <div class="container-fluid">
+                    <!-- Brand and toggle get grouped for better mobile display -->
+                    <div id="sso-brand" class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="${h.url(controller='home')}">EcoMaps</a>
+                    </div>
 
-                            <a class="btn pull-right" href="${h.url(controller='account', action='logout')}">Log out</a>
-                            <p id="status" class="navbar-text pull-right">
-                                Map server status <span id="status-message" class="label">Testing...</span>
-                            </p>
-                        <a class="brand" href="${h.url(controller='home')}">EcoMaps</a>
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="navbar-collapse collapse">
 
-                        <ul class="nav">
+                        <ul class="nav navbar-nav" id="nav">
                             <li>
                                 <a href="${h.url(controller='map')}">Explore</a>
                             </li>
@@ -49,25 +55,34 @@
                             <li>
                                 <a href="${h.url(controller='home', action='about')}">About</a>
                             </li>
+                        </ul>
+
+                        <ul id="secondary-nav" class="nav navbar-nav navbar-right">
                             <py:if test="c.admin_user">
-                                <li class="dropdown">
-                                    <a data-toggle="dropdown" class="dropdown-toggle">
-                                        Admin Options
-                                        <b class="caret"></b>
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        <li>
-                                            <a href="${h.url(controller='user')}">Users</a>
-                                        </li>
-                                        <li>
-                                            <a href="${h.url(controller='dataset')}">Datasets</a>
-                                        </li>
-                                    </ul>
-                                </li>
+                            <li id="sso-user" class="dropdown" data-dropdown="dropdown">
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                    Admin Options
+                                    <b class="caret"></b>
+                                </a>
+                                <ul class="dropdown-menu" id="personaltool-menu">
+                                    <li>
+                                        <a href="${h.url(controller='user')}">Users</a>
+                                    </li>
+                                    <li>
+                                        <a href="${h.url(controller='dataset')}">Datasets</a>
+                                    </li>
+                                    <li>
+                                        <a href="${h.url(controller='account', action='logout')}">Log out</a>
+                                    </li>
+                                </ul>
+                            </li>
                             </py:if>
                         </ul>
                     </div>
+                    <!-- /.navbar-collapse -->
+
                 </div>
+                <!-- /.container -->
             </div>
             <div class="container">
                 <div id="server-offline" class="alert alert-danger hide"><strong>Map Server Offline:</strong> EcoMaps functionality will be reduced while the map server is offline.</div>
@@ -75,9 +90,17 @@
             </div>
             <div id="push"></div>
         </div>
-        <div id="footer">
-                <a class="pull-left" href="http://www.ceh.ac.uk" target="_blank"><img src="/layout/images/ceh_transparent.gif" /></a>
-                <a class="pull-right" href="http://www.tessella.co.uk" target="_blank"><img src="/layout/images/tessella.png" /></a>
+        <div id="footer" class="footer">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <a class="pull-left" href="http://www.ceh.ac.uk" target="_blank"><img src="/layout/images/ceh_transparent.gif" /></a>
+                    </div>
+                    <div class="col-sm-6">
+                        <a class="pull-right" href="http://www.tessella.co.uk" target="_blank"><img src="/layout/images/tessella.png" /></a>
+                    </div>
+                </div>
+            </div>
         </div>
     </body>
 </py:match>

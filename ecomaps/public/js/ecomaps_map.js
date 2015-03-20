@@ -92,7 +92,7 @@ var EcomapsMap = (function() {
             group: 'layers',
             itemSelector : "li.layer",
             nested: false,
-            handle: 'i.icon-resize-vertical',
+            handle: 'i.glyphicon-resize-vertical',
             onDragStart: function ($item, position, _super) {
                 var layerContainer = $("div#layer-list");
 

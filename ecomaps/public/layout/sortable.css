@@ -41,6 +41,6 @@ ol.sortable li.placeholder:before {
     top: -4px;
     width: 0;
 }
-i.icon-resize-vertical {
+i.glyphicon-resize-vertical {
     cursor: pointer;
 }
