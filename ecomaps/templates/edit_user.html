@@ -2,63 +2,90 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:xi="http://www.w3.org/2001/XInclude"
       xmlns:py="http://genshi.edgewall.org/">
-<xi:include href="layout.html" />
+<xi:include href="layout.html"/>
 <head>
     <title>Edit User</title>
     <link rel="stylesheet" type="text/css" href="../layout/ecomaps.css"/>
 </head>
 <body>
-    <h1>Edit user</h1>
+<div class="row">
+    <div class="col-sm-12">
+        <h1>Edit user</h1>
+    </div>
+</div>
 
-    <form method="POST">
-        <div class="control-group">
-            <label for="user_name" class="control-label">
-                Login Name: ${c.user_to_edit.username}
-            </label>
-        </div>
-        <div class="control-group">
-            <label for="first_name" class="control-label">First name:</label>
-               <input id="first_name" name="first_name" type="text" value="${c.user_to_edit.first_name}" class="controls" />
-        </div>
-        <div class="control-group">
-            <label for="last_name" class="control-label">Last name:</label>
-               <input id="last_name" name="last_name" type="text" value="${c.user_to_edit.last_name}" class="controls" />
-        </div>
-        <div class="control-group">
-            <label for="Email" class="control-label">Email:</label>
-                <input type="text" name="email" class="controls" id="email" value="${c.user_to_edit.email}" />
-        </div>
-        <div class="control-group">
-            <label for="is_admin" class="checkbox">
-                <input type="checkbox" name="is_admin" class="checkbox" py:attrs="{ 'checked' : 'true' } if c.user_to_edit.access_level == 'Admin' else {}" />
-                Admin user
-            </label>
-        </div>
-            <input type="hidden" name="user_id" value="${c.user_to_edit.id}" />
+<div class="row">
+    <div class="col-sm-12">
+        <form class="form-horizontal" method="POST">
+            <div class="form-group">
+                <label for="user_name" class="control-label col-sm-2">Login Name:</label>
+
+                <div class="col-sm-5" name="user_name">
+                        ${c.user_to_edit.username}
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="first_name" class="control-label col-sm-2">First name:</label>
+
+                <div class="col-sm-5">
+                    <input id="first_name" name="first_name" type="text"
+                           value="${c.user_to_edit.first_name}"
+                           class="form-control"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="last_name" class="control-label col-sm-2">Last name:</label>
+
+                <div class="col-sm-5">
+                    <input id="last_name" name="last_name" type="text"
+                           value="${c.user_to_edit.last_name}"
+                           class="form-control"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="Email" class="control-label col-sm-2">Email:</label>
+
+                <div class="col-sm-5">
+                    <input type="text" name="email" class="form-control" id="email"
+                           value="${c.user_to_edit.email}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="is_admin" class="checkbox col-sm-7 col-sm-offset-2">
+                    <input type="checkbox" name="is_admin" class="checkbox"
+                           py:attrs="{ 'checked' : 'true' } if c.user_to_edit.access_level == 'Admin' else {}"/>
+                    Admin user
+                </label>
+            </div>
+            <input type="hidden" name="user_id" value="${c.user_to_edit.id}"/>
             <!--<label for="Email" class="control-label" id="email">Email:</label>-->
-               <!--${h.html_tags.text('email', class_='controls')}-->
+            <!--${h.html_tags.text('email', class_='form-control')}-->
             <!--<label for="is_admin" class="checkbox">-->
-                <!--${h.html_tags.checkbox('is_admin', class_='checkbox')}-->
-                <!--Admin user</label>-->
+            <!--${h.html_tags.checkbox('is_admin', class_='checkbox')}-->
+            <!--Admin user</label>-->
 
 
-        <div class="controls">
-            <input type="submit" class="btn btn-primary btn-large pull-right control-group" value="Update" />
-        </div>
-    </form>
+            <div class="form-group">
+                <div class="col-sm-10 col-sm-offset-2">
+                    <input type="submit" class="btn btn-primary btn-large" value="Update"/>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 
 <script type="text/javascript" language="JavaScript">
-            $(function () {
+    $(function () {
 
-            // Error span swap
-            $("span.help-inline").each(function(index, el){
+        // Error span swap
+        $("span.help-inline").each(function (index, el) {
 
-                // Find the parent control group
-                // Swap the message with the input
-                $(el).insertAfter($(el).next());
-                $(el).closest("div.control-group").addClass("error");
-            });
-        })
+            // Find the parent control group
+            // Swap the message with the input
+            $(el).insertAfter($(el).next());
+            $(el).closest("div.control-group").addClass("error");
+        });
+    })
 </script>
 
 </body>

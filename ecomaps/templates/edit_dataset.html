@@ -8,35 +8,50 @@
     <link rel="stylesheet" type="text/css" href="../layout/ecomaps.css"/>
 </head>
 <body>
-    <h1>Edit Dataset</h1>
+<div class="row">
+    <div class="col-sm-12">
+            <h1>Edit Dataset</h1>
+        </div>
+    </div>
 
-    <form method="POST">
-        <div class="control-group">
-            <h5>
-                ${c.dataset_to_edit.name}
-            </h5>
-        </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <form class="form-horizontal" method="POST">
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        <h2>${c.dataset_to_edit.name}</h2>
+                    </div>
+                </div>
 
-        <div class="control-group">
-            <label for="data_range_from" id="data_range_from_label" class="control-label coverage-only-label">Data Range From:</label>
-            ${h.html_tags.text('data_range_from', class_='controls input-mini coverage-only', value=c.dataset_to_edit.data_range_from)}
-        </div>
-        <div class="control-group">
-            <label for="data_range_to" id="data_range_to_label" class="control-label coverage-only-label">Data Range To:</label>
-            ${h.html_tags.text('data_range_to', class_='controls input-mini coverage-only', value=c.dataset_to_edit.data_range_to)}
-        </div>
-        <div class="control-group">
-            <label class="checkbox coverage-only-label">
-            <input type="checkbox" name="is_categorical" py:attrs="{ 'checked' : 'true' } if c.dataset_to_edit.is_categorical else {}" /> This dataset contains categorical data
-            </label>
-        </div>
-        <input type="hidden" name="dataset_id" value="${c.dataset_to_edit.id}" />
+                <div class="form-group">
+                    <label for="data_range_from" id="data_range_from_label" class="control-label coverage-only-label col-sm-2">Data Range From:</label>
+                    <div class="col-sm-5">
+                        ${h.html_tags.text('data_range_from', class_='form-control input-mini coverage-only', value=c.dataset_to_edit.data_range_from)}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="data_range_to" id="data_range_to_label" class="control-label coverage-only-label col-sm-2">Data Range To:</label>
+                    <div class="col-sm-5">
+                        ${h.html_tags.text('data_range_to', class_='form-control input-mini coverage-only', value=c.dataset_to_edit.data_range_to)}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="is_categorical" class="checkbox coverage-only-label col-sm-7 col-offset-sm-2">
+                        <input type="checkbox" name="is_categorical" py:attrs="{ 'checked' : 'true' } if c.dataset_to_edit.is_categorical else {}" />
+                        This dataset contains categorical data
+                    </label>
+                </div>
+                <input type="hidden" name="dataset_id" value="${c.dataset_to_edit.id}" />
 
 
-        <div class="controls">
-            <input type="submit" class="btn btn-primary btn-large pull-right control-group" value="Update" />
+                <div class="form-group">
+                    <div class="col-sm-10 col-sm-offset-2">
+                        <input type="submit" class="btn btn-primary btn-large" value="Update" />
+                    </div>
+                </div>
+            </form>
         </div>
-    </form>
+    </div>
 
 <script type="text/javascript" language="JavaScript">
             $(function () {
