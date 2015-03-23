@@ -79,7 +79,7 @@ def buildImage(layerInfoList, imageCache):
             requestURL = wmc_util.parseEndpointString(layerInfo.endpoint, layerInfo.params)
 
             req = urllib2.Request(requestURL)
-            req.add_header('Remote-User', request.headers.get('Remote-User', None))
+            req.add_header('Cookie', request.headers.get('Cookie', ''))
 
             filehandle = wmc_util.openURL(req)           
             imageString = StringIO(filehandle.read())

@@ -142,7 +142,7 @@ class LegendImageBuilder(object):
                 continue
 
             req = urllib2.Request(info.legendURL)
-            req.add_header('Remote-User', request.headers.get('Remote-User', None))
+            req.add_header('Cookie', request.headers.get('Cookie', ''))
 
             try:
                 filehandle = openURL(req)
