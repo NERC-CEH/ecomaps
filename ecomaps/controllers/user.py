@@ -37,6 +37,7 @@ class UserController(BaseController):
 
         if user.access_level == "Admin":
 
+            c.name = user.name
             c.all_users = self._user_service.get_all_users()
 
             return render('list_of_users.html')

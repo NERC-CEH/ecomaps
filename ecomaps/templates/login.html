@@ -2,56 +2,58 @@
 <html xmlns:py="http://genshi.edgewall.org/"
       xmlns="http://www.w3.org/1999/xhtml"
       xmlns:xi="http://www.w3.org/2001/XInclude">
+<xi:include href="layout.html" />
 <head>
     <title>ECOMAPS // Welcome</title>
 
-    <link href="/layout/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen" />
+    <!--?<link href="/layout/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen" />-->
 
     <script src="http://code.jquery.com/jquery.js"></script>
     <script type="text/javascript" src="/layout/bootstrap/js/bootstrap.js"></script>
-    <link rel="stylesheet" type="text/css" href="/layout/login.css"/>
+    <!--?<link rel="stylesheet" type="text/css" href="/layout/login.css"/>-->
 </head>
 <body>
     <div id="logo"></div>
     <div id="banner"></div>
 
     <div class="container">
-        <div class="row">
-            <div class="span12">
-                <h1>Welcome to EcoMaps</h1>
-            </div>
-        </div>
 
-        <div class="row">
-            <div class="span12">
-
-            </div>
-            <div class="row" id="login-form">
-                <p class="lead">Please log in</p>
+        <div class="row well">
+            <div class="col-sm-offset-1 col-sm-10 col-lg-offset-1 col-lg-10">
+                <div class="page-header">
+                    <h3 class="text-center">Login to the ECOMAPS application</h3>
+                </div>
 
                 <py:if test="message">
-                <div class="alert alert-error">${message}</div>
+                    <div class="alert alert-error">${message}</div>
                 </py:if>
 
-                <form class="form-horizontal" action="/account/dologin?came_from=${came_from}" method="POST">
-                    <div class="control-group">
-                        <label class="control-label" for="login">User Name:</label>
-                        <div class="controls">
-                            ${h.html_tags.text('login', placeholder='User Name')}
+                <div id="login-form">
+
+                    <py:if test="message">
+                    <div class="alert alert-error">${message}</div>
+                    </py:if>
+
+                    <form class="form-horizontal" action="/account/dologin?came_from=${came_from}" method="POST">
+                        <div class="form-group">
+                            <label class="col-sm-2 col-lg-2 control-label" for="login">User Name</label>
+                            <div class="col-sm-8 col-lg-8 controls">
+                                ${h.html_tags.text('login', placeholder='User Name', class_='form-control')}
+                            </div>
                         </div>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label" for="password">Password:</label>
-                        <div class="controls">
-                            ${h.html_tags.password('password', placeholder='Password')}
+                        <div class="form-group">
+                            <label class="col-sm-2 col-lg-2 control-label" for="password">Password</label>
+                            <div class="col-sm-8 col-lg-8 controls">
+                                ${h.html_tags.password('password', placeholder='Password', class_='form-control')}
+                            </div>
                         </div>
-                    </div>
-                    <div class="control-group">
-                        <div class="controls">
-                            <button type="submit" class="btn btn-primary">Log In</button>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-8 col-lg-offset-2 col-lg-8 controls">
+                                <button type="submit" class="btn btn-primary">Login</button>
+                            </div>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -67,7 +69,7 @@
                 // Swap the message with the input
                 $(el).insertAfter($(el).next());
 
-                $(el).closest("div.control-group").addClass("error");
+                $(el).closest("div.form-group").addClass("error");
             });
         })
 

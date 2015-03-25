@@ -62,7 +62,8 @@
                         </ul>
 
                         <ul id="secondary-nav" class="nav navbar-nav navbar-right">
-                            <li id="sso-user" class="dropdown" data-dropdown="dropdown">
+                            <div py:choose="" py:strip="True">
+                            <li py:when="c.name != ''" id="sso-user" class="dropdown" data-dropdown="dropdown">
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                                     <i class="glyphicon glyphicon-user"></i>
                                         ${c.name}
@@ -84,6 +85,10 @@
                                     </li>
                                 </ul>
                             </li>
+                            <li py:otherwise="c.name == ''" id="sso-user">
+                                <a href="${h.url(controller='account', action='login')}">Login</a>
+                            </li>
+                            </div>
                         </ul>
                     </div>
                     <!-- /.navbar-collapse -->

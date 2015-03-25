@@ -220,6 +220,7 @@ class AnalysisController(BaseController):
         """
 
         user_obj = self.current_user
+        c.name = user_obj.name
 
         analysis = self._analysis_service.get_analysis_by_id(id, user_obj.id)
         c.run_by_user = analysis.run_by_user.name
@@ -249,6 +250,7 @@ class AnalysisController(BaseController):
 
             user_obj = self.current_user
             c.username = user_obj.name
+            c.name = self.current_user.name
 
             analysis = self._analysis_service.get_analysis_by_id(analysis_id, user_obj.id)
 
@@ -333,6 +335,7 @@ class AnalysisController(BaseController):
         }
 
     def test(self, id):
+        c.name = self.current_user.name
 
         c.analysis_id = id
         return render('analysis_progress.html')
