@@ -18,7 +18,7 @@ class HomeController(BaseController):
     def index(self):
         """Default action, shows the home page"""
 
-        c.name = self.current_user.first_name
+        c.name = self.current_user.name
 
         return render("home.html")
 

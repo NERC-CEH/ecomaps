@@ -53,8 +53,10 @@ class AnalysisController(BaseController):
 
         # Who am I?
         user = self.current_user
+        c.name = user.name
 
-        # Grab the analyses...
+
+    # Grab the analyses...
         c.private_analyses = self._analysis_service.get_analyses_for_user(user.id)
         c.public_analyses = self._analysis_service.get_public_analyses()
 
@@ -100,6 +102,7 @@ class AnalysisController(BaseController):
         """ Creates the configure analysis page"""
 
         user_id = self.current_user.id
+        c.name = self.current_user.name
 
         c.all_models = self._model_service.get_all_models()
 

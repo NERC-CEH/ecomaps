@@ -106,6 +106,7 @@ class DatasetController(BaseController):
         identity = request.environ.get('REMOTE_USER')
 
         user = self._user_service.get_user_by_username(identity)
+        c.name = self.current_user.name
 
         if user.access_level == "Admin":
 

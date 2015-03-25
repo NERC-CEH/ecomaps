@@ -27,6 +27,7 @@ class MapController(BaseController):
 
         user = self._user_service.get_user_by_username(request.environ['REMOTE_USER'])
 
+        c.name = self.current_user.name
         c.dataset_types = self._dataset_service.get_datasets_for_user(user.id)
 
 

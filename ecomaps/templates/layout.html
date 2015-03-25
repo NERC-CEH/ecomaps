@@ -35,7 +35,7 @@
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                         </button>
-                        <a class="navbar-brand" href="${h.url(controller='home')}">
+                        <a class="navbar-brand" href="https://lwis.ceh.ac.uk/">
                             <img src="/layout/images/cehlogo-reverse.png" alt="CEH Logo"></img>
                         </a>
                     </div>
@@ -44,6 +44,9 @@
                     <div class="navbar-collapse collapse">
 
                         <ul class="nav navbar-nav" id="nav">
+                            <li>
+                                <a href="https://lwis.ceh.ac.uk/">Home</a>
+                            </li>
                             <li>
                                 <a href="${h.url(controller='map')}">Explore</a>
                             </li>
@@ -54,30 +57,33 @@
                                 <a href="${h.url(controller='analysis')}">My Ecomaps</a>
                             </li>
                             <li>
-                                <a href="${h.url(controller='home', action='about')}">About</a>
+                                <a href="https://lwis.ceh.ac.uk/ecomaps">About</a>
                             </li>
                         </ul>
 
                         <ul id="secondary-nav" class="nav navbar-nav navbar-right">
-                            <py:if test="c.admin_user">
                             <li id="sso-user" class="dropdown" data-dropdown="dropdown">
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                                    Admin Options
-                                    <b class="caret"></b>
+                                    <i class="glyphicon glyphicon-user"></i>
+                                        ${c.name}
+                                    <span class="caret"></span>
                                 </a>
                                 <ul class="dropdown-menu" id="personaltool-menu">
+                                    <py:if test="c.admin_user">
                                     <li>
                                         <a href="${h.url(controller='user')}">Users</a>
                                     </li>
                                     <li>
                                         <a href="${h.url(controller='dataset')}">Datasets</a>
                                     </li>
+                                    </py:if>
                                     <li>
-                                        <a href="${h.url(controller='account', action='logout')}">Log out</a>
+                                        <form class="navbar-form" action="${h.url(controller='account', action='logout')}" method="post">
+                                            <input class="btn btn-sm btn-default" type="submit" value="Logout" />
+                                        </form>
                                     </li>
                                 </ul>
                             </li>
-                            </py:if>
                         </ul>
                     </div>
                     <!-- /.navbar-collapse -->
@@ -91,18 +97,7 @@
             </div>
             <div id="push"></div>
         </div>
-        <div id="footer" class="footer">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-sm-6">
-                        <a class="pull-left" href="http://www.ceh.ac.uk" target="_blank"><img src="/layout/images/ceh_transparent.gif" /></a>
-                    </div>
-                    <div class="col-sm-6">
-                        <a class="pull-right" href="http://www.tessella.co.uk" target="_blank"><img src="/layout/images/tessella.png" /></a>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <script type="text/javascript" src="https://jira.ceh.ac.uk/s/d41d8cd98f00b204e9800998ecf8427e/en_UKfqje4i-1988229788/6264/37/1.4.7/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?collectorId=434a3395"></script>
     </body>
 </py:match>
 </html>
